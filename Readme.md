@@ -2,23 +2,69 @@
 
 This library is intended to contain Code mods for use in Nx generators.
 
-- `prependArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
+- `appendImport`
+- `insertIntoNamedArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
 
-## Prepend Array
+## Append import
+
+Appends an import statement to the end of import declarations.
+
+```ts
+export function appendImport(
+    tree: Tree,
+    { projectRoot, relTargetFilePath, codeToInsert }: AppendImportOptions
+  )
+```  
+
+### Sample usage
+
+```ts
+  const codeToInsert = `import { x } from 'x';
+  `;
+  appendImport(tree,
+    {
+        normalizedOptions.projectRoot,
+        relTargetFilePath: '/src/app/app-routing.module.ts',
+        codeToInsert
+    }
+  );
+  await formatFiles(tree);
+```
+
+## Insert into named Array
 
 The function takes the following arguments
 
 ```ts
-const prependArray = (
+export function insertIntoNamedArray(
   tree: Tree,
-  { projectRoot, relTargetFilePath, targetIdName, toInsert }
+  { projectRoot, relTargetFilePath, targetIdName, codeToInsert, insertPos }: InsertArrayOptions
 )
 ```
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
-It takes the `toInsert` string and prepends it to a non-empty array with an Identifier matching the `targetIdName`
+It takes the `toInsert` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
 
 ### Sample usage
+
+```ts
+  const codeToInsert = `{
+    x: 2
+  },
+  `;
+  insertIntoNamedArray(tree,
+    {
+        normalizedOptions.projectRoot,
+        relTargetFilePath: '/src/app/app-routing.module.ts',
+        targetIdName: 'Routes',
+        codeToInsert,
+        insertPos: 'end'
+    }
+  );
+  await formatFiles(tree);
+```
+
+## Full example
 
 ```ts
 import {
@@ -73,16 +119,17 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
 export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   // code to be pre-pended to array
-  const toInsert = `{
+  const codeToInsert = `{
     x: 2
   },
   `;
-  prependArray(tree,
+  insertIntoNamedArray(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
         targetIdName: 'Routes',
-        toInsert
+        codeToInsert,
+        insertPos: 'end'
     }
   );
   await formatFiles(tree);
