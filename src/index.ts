@@ -3,7 +3,7 @@ export * from './find';
 export * from './insert-named-array';
 export * from './insert-named-object';
 export * from './insert-class-decorator';
-export * from './insert-class-method-arg-decorator';
+export * from './insert-class-method-param-decorator';
 export * from './insert-class-method-decorator';
 export * from './insert-class-method';
 export * from './insert-class-property';

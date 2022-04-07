@@ -4,6 +4,12 @@
   "description": "Nx generator code mods using tsquery",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "homepage": "https://github.com/kristianmandrup/nx-code-mods#readme",
+  "bugs": {
+    "url" : "https://github.com/kristianmandrup/nx-code-mods/issues",
+    "email" : "kmandrup@gmail.com"
+  },
+  "repository": "github:kristianmandrup/nx-code-mods",
   "scripts": {
     "test": "jest --config jest.config.json",
     "build": "tsc",
