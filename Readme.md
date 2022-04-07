@@ -72,11 +72,10 @@ insertIntoNamedObject = (
 
 ```ts
 insertInObject = (
-  node: any,
   id: string,
   codeToInsert: string,
   insertPos: ObjectPosition,
-): string | undefined
+)
 ```
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
@@ -121,11 +120,10 @@ insertIntoNamedArray = (
 
 ```ts
 insertInArray = (
-  node: any,
   id: string,
   codeToInsert: string,
   insertPos: ArrayPosition,
-): string | undefined
+)
 ```
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.

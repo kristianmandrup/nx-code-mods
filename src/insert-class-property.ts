@@ -4,6 +4,8 @@ import * as path from 'path';
 import { Tree } from '@nrwl/devkit';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { findBlock, findClassDeclaration } from './find';
+import { modifyFile, AnyOpts } from './modify-file';
+import { Node } from 'typescript';
 
 export interface ClassPropInsertOptions {
   projectRoot: string;
@@ -12,11 +14,8 @@ export interface ClassPropInsertOptions {
   codeToInsert: string;
 }
 
-const insertAtTopOfClassScope = (
-  node: any,
-  className: string,
-  codeToInsert: string,
-) => {
+const insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node) => {
+  const { className, codeToInsert } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const block = findBlock(classDecl);
@@ -25,24 +24,6 @@ const insertAtTopOfClassScope = (
   return insertCode(node, blockIndex, codeToInsert);
 };
 
-export function insertClassProperty(
-  tree: Tree,
-  {
-    projectRoot,
-    relTargetFilePath,
-    className,
-    codeToInsert,
-  }: ClassPropInsertOptions,
-) {
-  const targetFilePath = path.join(projectRoot, relTargetFilePath);
-  const targetFile = readFileIfExisting(targetFilePath);
-
-  if (targetFile !== '') {
-    const ast = tsquery.ast(targetFile);
-    const newContents = insertAtTopOfClassScope(ast, className, codeToInsert);
-
-    if (newContents !== targetFile && newContents) {
-      tree.write(targetFilePath, newContents);
-    }
-  }
+export function insertClassProperty(tree: Tree, opts: ClassPropInsertOptions) {
+  modifyFile(tree, 'ClassDeclaration', insertAtTopOfClassScope, opts);
 }

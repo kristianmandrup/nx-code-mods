@@ -1,14 +1,8 @@
-import { insertBeforeFirstMethod } from './insert-class-method';
 import { insertCode } from './insert-code';
-import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
-import * as path from 'path';
 import { Tree } from '@nrwl/devkit';
-import { tsquery } from '@phenomnomnominal/tsquery';
-import {
-  findClassDeclaration,
-  findFirstMethodDeclaration,
-  findMethodDeclaration,
-} from './find';
+import { findClassDeclaration, findMethodDeclaration } from './find';
+import { modifyFile, AnyOpts } from './modify-file';
+import { Node } from 'typescript';
 
 export interface ClassMethodDecArgInsertOptions {
   projectRoot: string;
@@ -18,12 +12,8 @@ export interface ClassMethodDecArgInsertOptions {
   codeToInsert: string;
 }
 
-export const insertArgInMatchingMethod = (
-  node: any,
-  className: string,
-  methodId: string,
-  codeToInsert: string,
-) => {
+export const insertArgInMatchingMethod = (opts: AnyOpts) => (node: Node) => {
+  const { className, methodId, codeToInsert } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const methodDecl = findMethodDeclaration(classDecl, methodId);
@@ -34,28 +24,7 @@ export const insertArgInMatchingMethod = (
 
 export function insertClassMethodArgDecorator(
   tree: Tree,
-  {
-    projectRoot,
-    relTargetFilePath,
-    methodId,
-    className,
-    codeToInsert,
-  }: ClassMethodDecArgInsertOptions,
+  opts: ClassMethodDecArgInsertOptions,
 ) {
-  const targetFilePath = path.join(projectRoot, relTargetFilePath);
-  const targetFile = readFileIfExisting(targetFilePath);
-
-  if (targetFile !== '') {
-    const ast = tsquery.ast(targetFile);
-    const newContents = insertArgInMatchingMethod(
-      ast,
-      className,
-      methodId,
-      codeToInsert,
-    );
-
-    if (newContents !== targetFile && newContents) {
-      tree.write(targetFilePath, newContents);
-    }
-  }
+  modifyFile(tree, 'ClassDeclaration', insertArgInMatchingMethod, opts);
 }

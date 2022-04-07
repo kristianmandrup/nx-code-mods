@@ -1,15 +1,16 @@
+import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { insertCode } from './insert-code';
 import { findDeclarationIdentifier } from './find';
 import { Tree } from '@nrwl/devkit';
-import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
-import { tsquery } from '@phenomnomnominal/tsquery';
+import { Node } from 'typescript';
+
 import {
-  ArrayLiteralExpression,
   ObjectLiteralElementLike,
   ObjectLiteralExpression,
   VariableStatement,
 } from 'typescript';
 import * as path from 'path';
+import { AnyOpts, modifyFile } from './modify-file';
 
 export interface InsertObjectOptions {
   projectRoot: string;
@@ -26,9 +27,9 @@ const insertIntoObject = (
   objLiteral: ObjectLiteralExpression,
   codeToInsert: string,
   insertPos: ObjectPosition,
-) => {
+): string | null => {
   const objSize = objLiteral.properties.length;
-  if (objLiteral.properties.length == 0) return;
+  if (objLiteral.properties.length == 0) return null;
   const props = objLiteral.properties; // ObjectLiteralElementLike;
   let insertPosition;
   if (insertPos === 'start') {
@@ -56,43 +57,33 @@ const insertIntoObject = (
     );
     insertPosition = matchingProp?.getStart();
   }
-  if (!insertPosition) return;
+  if (!insertPosition) return null;
   return insertCode(vsNode, insertPosition, codeToInsert);
 };
 
-export const insertInObject = (
-  node: any,
-  id: string,
-  codeToInsert: string,
-  insertPos: ObjectPosition,
-): string | undefined => {
-  const vsNode = node as VariableStatement;
-  const declaration = findDeclarationIdentifier(vsNode, id);
-  if (!declaration) return node;
-  const objLiteral = declaration.initializer as ObjectLiteralExpression;
-  const newTxt = insertIntoObject(vsNode, objLiteral, codeToInsert, insertPos);
-  return newTxt;
+export type InsertInObjectFn = {
+  id: string;
+  codeToInsert: string;
+  insertPos: ObjectPosition;
 };
 
-export function insertIntoNamedObject(
-  tree: Tree,
-  {
-    projectRoot,
-    relTargetFilePath,
-    id,
-    codeToInsert,
-    insertPos,
-  }: InsertObjectOptions,
-) {
-  const targetFilePath = path.join(projectRoot, relTargetFilePath);
-  const targetFile = readFileIfExisting(targetFilePath);
+export const insertInObject =
+  (opts: AnyOpts): TSQueryStringTransformer =>
+  (node: Node): string | null | undefined => {
+    const { id, codeToInsert, insertPos } = opts;
+    const vsNode = node as VariableStatement;
+    const declaration = findDeclarationIdentifier(vsNode, id);
+    if (!declaration) return;
+    const objLiteral = declaration.initializer as ObjectLiteralExpression;
+    const newTxt = insertIntoObject(
+      vsNode,
+      objLiteral,
+      codeToInsert,
+      insertPos,
+    );
+    return newTxt;
+  };
 
-  if (targetFile !== '') {
-    const ast = tsquery.ast(targetFile);
-    const newContents = insertInObject(ast, id, codeToInsert, insertPos);
-
-    if (newContents !== targetFile && newContents) {
-      tree.write(targetFilePath, newContents);
-    }
-  }
+export function insertIntoNamedObject(tree: Tree, opts: InsertObjectOptions) {
+  modifyFile(tree, 'VariableStatement', insertInObject, opts);
 }

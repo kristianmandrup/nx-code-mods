@@ -1,9 +1,11 @@
+import { AnyOpts, modifyFile } from './modify-file';
 import { insertCode } from './insert-code';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { Tree } from '@nrwl/devkit';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { findClassDeclaration, findFirstMethodDeclaration } from './find';
+import { Node } from 'typescript';
 
 export interface ClassMethodInsertOptions {
   projectRoot: string;
@@ -12,11 +14,8 @@ export interface ClassMethodInsertOptions {
   codeToInsert: string;
 }
 
-export const insertBeforeFirstMethod = (
-  node: any,
-  className: string,
-  codeToInsert: string,
-) => {
+const insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node) => {
+  const { className, codeToInsert } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const methodDecl = findFirstMethodDeclaration(classDecl);
@@ -25,24 +24,6 @@ export const insertBeforeFirstMethod = (
   return insertCode(node, methodDeclIndex, codeToInsert);
 };
 
-export function insertClassMethod(
-  tree: Tree,
-  {
-    projectRoot,
-    relTargetFilePath,
-    className,
-    codeToInsert,
-  }: ClassMethodInsertOptions,
-) {
-  const targetFilePath = path.join(projectRoot, relTargetFilePath);
-  const targetFile = readFileIfExisting(targetFilePath);
-
-  if (targetFile !== '') {
-    const ast = tsquery.ast(targetFile);
-    const newContents = insertBeforeFirstMethod(ast, className, codeToInsert);
-
-    if (newContents !== targetFile && newContents) {
-      tree.write(targetFilePath, newContents);
-    }
-  }
+export function insertClassMethod(tree: Tree, opts: ClassMethodInsertOptions) {
+  modifyFile(tree, 'ClassDeclaration', insertAtTopOfClassScope, opts);
 }

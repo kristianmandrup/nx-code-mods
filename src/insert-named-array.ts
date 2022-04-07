@@ -1,9 +1,11 @@
+import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
+import { AnyOpts, modifyFile, ModifyFn } from './modify-file';
 import { insertCode } from './insert-code';
 import { findDeclarationIdentifier } from './find';
 import { Tree } from '@nrwl/devkit';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import { tsquery } from '@phenomnomnominal/tsquery';
-import { ArrayLiteralExpression, VariableStatement } from 'typescript';
+import { ArrayLiteralExpression, Node, VariableStatement } from 'typescript';
 import * as path from 'path';
 
 export interface InsertArrayOptions {
@@ -16,12 +18,11 @@ export interface InsertArrayOptions {
 
 type ArrayPosition = 'start' | 'end' | number;
 
-const insertIntoArray = (
-  vsNode: any,
-  arrLiteral: ArrayLiteralExpression,
-  codeToInsert: string,
-  insertPos: ArrayPosition,
-) => {
+export const insertIntoArray = (
+  node: any,
+  opts: AnyOpts,
+): string | undefined => {
+  const { arrLiteral, codeToInsert, insertPos } = opts;
   const arrLength = arrLiteral.elements.length;
   if (arrLiteral.elements.length == 0) return;
   const nodeArray = arrLiteral.elements;
@@ -40,42 +41,26 @@ const insertIntoArray = (
     const lastIndex = arrLiteral.elements.length - 1;
     insertPosition = nodeArray[lastIndex].getEnd();
   }
-  return insertCode(vsNode, insertPosition, codeToInsert);
+  return insertCode(node, insertPosition, codeToInsert);
 };
 
-export const insertInArray = (
-  node: any,
-  id: string,
-  codeToInsert: string,
-  insertPos: ArrayPosition,
-): string | undefined => {
-  const vsNode = node as VariableStatement;
-  const declaration = findDeclarationIdentifier(vsNode, id);
-  if (!declaration) return node;
-  const arrLiteral = declaration.initializer as ArrayLiteralExpression;
-  const newTxt = insertIntoArray(vsNode, arrLiteral, codeToInsert, insertPos);
-  return newTxt;
-};
+export const insertInArray =
+  (opts: AnyOpts): TSQueryStringTransformer =>
+  (node: Node): string | null | undefined => {
+    const { id, codeToInsert, insertPos } = opts;
+    const vsNode = node as VariableStatement;
+    const declaration = findDeclarationIdentifier(vsNode, id);
+    if (!declaration) return;
+    const arrLiteral = declaration.initializer as ArrayLiteralExpression;
 
-export function insertIntoNamedArray(
-  tree: Tree,
-  {
-    projectRoot,
-    relTargetFilePath,
-    id,
-    codeToInsert,
-    insertPos,
-  }: InsertArrayOptions,
-) {
-  const targetFilePath = path.join(projectRoot, relTargetFilePath);
-  const targetFile = readFileIfExisting(targetFilePath);
+    const newTxt = insertIntoArray(vsNode, {
+      arrLiteral,
+      codeToInsert,
+      insertPos,
+    });
+    return newTxt;
+  };
 
-  if (targetFile !== '') {
-    const ast = tsquery.ast(targetFile);
-    const newContents = insertInArray(ast, id, codeToInsert, insertPos);
-
-    if (newContents !== targetFile && newContents) {
-      tree.write(targetFilePath, newContents);
-    }
-  }
+export function insertIntoNamedArray(tree: Tree, opts: InsertArrayOptions) {
+  modifyFile(tree, 'VariableStatement', insertInArray, opts);
 }
