@@ -64,6 +64,37 @@ It takes the `toInsert` string and inserts it to a non-empty array with an Ident
   await formatFiles(tree);
 ```
 
+## Insert code
+
+Insert code at a specific position relative to a node
+
+```ts
+export const insertCode = (vsNode: any, insertPosition: number, codeToInsert: string): string
+```
+
+## Finders
+
+```ts
+export const findDeclarationIdentifier = (vsNode: VariableStatement, targetIdName: string, where?: WhereFn): VariableDeclaration | undefined
+```
+
+```ts
+export const findFunctionDeclaration = (vsNode: Statement, targetIdName: string): FunctionDeclaration | undefined
+```
+
+```ts
+export const findFunction = (vsNode: VariableStatement, targetIdName: string): FindFunReturn | undefined
+```
+
+```ts
+export const findFunctionBlock = (vsNode: VariableStatement, targetIdName: string): : Block | undefined
+```
+
+```ts
+export const findBlockStatementByIndex = (block: Block, index: number): : Statement | undefined
+```
+
+
 ## Full example
 
 ```ts

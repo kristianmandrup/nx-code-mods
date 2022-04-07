@@ -1,4 +1,4 @@
-export const insertCode = (vsNode: any, insertPosition: number, codeToInsert: string) => {
+export const insertCode = (vsNode: any, insertPosition: number, codeToInsert: string): string => {
     const previousTxt = vsNode.getFullText();
     const prefix = previousTxt.substring(0, insertPosition);
     const suffix = previousTxt.substring(insertPosition);
