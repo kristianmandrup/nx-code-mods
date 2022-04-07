@@ -12,15 +12,16 @@ export interface ClassPropInsertOptions {
   relTargetFilePath: string;
   className: string;
   codeToInsert: string;
+  indexAdj?: number;
 }
 
 const insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node) => {
-  const { className, codeToInsert } = opts;
+  const { className, codeToInsert, indexAdj } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const block = findBlock(classDecl);
   if (!block) return;
-  const blockIndex = block.getStart();
+  const blockIndex = block.getStart() + (indexAdj || 0);
   return insertCode(node, blockIndex, codeToInsert);
 };
 

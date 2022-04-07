@@ -10,16 +10,17 @@ export interface ClassMethodDecInsertOptions {
   className: string;
   methodId: string;
   codeToInsert: string;
+  indexAdj?: number;
 }
 
 export const insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node) => {
-  const { className, methodId, codeToInsert } = opts;
+  const { className, methodId, codeToInsert, indexAdj } = opts;
 
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const methodDecl = findMethodDeclaration(classDecl, methodId);
   if (!methodDecl) return;
-  const methodDeclIndex = methodDecl.getStart();
+  const methodDeclIndex = methodDecl.getStart() + (indexAdj || 0);
   return insertCode(node, methodDeclIndex, codeToInsert);
 };
 

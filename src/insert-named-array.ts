@@ -14,6 +14,7 @@ export interface InsertArrayOptions {
   id: string;
   codeToInsert: string;
   insertPos: ArrayPosition;
+  indexAdj?: number;
 }
 
 type ArrayPosition = 'start' | 'end' | number;
@@ -22,7 +23,7 @@ export const insertIntoArray = (
   node: any,
   opts: AnyOpts,
 ): string | undefined => {
-  const { arrLiteral, codeToInsert, insertPos } = opts;
+  const { arrLiteral, codeToInsert, insertPos, indexAdj } = opts;
   const arrLength = arrLiteral.elements.length;
   if (arrLiteral.elements.length == 0) return;
   const nodeArray = arrLiteral.elements;
@@ -34,7 +35,7 @@ export const insertIntoArray = (
         `insertIntoArray: Invalid insertPos ${insertPos} argument`,
       );
     }
-    insertPosition = nodeArray[insertPosNum].getStart();
+    insertPosition = nodeArray[insertPosNum].getStart() + (indexAdj || 0);
   }
 
   if (insertPos === 'end') {

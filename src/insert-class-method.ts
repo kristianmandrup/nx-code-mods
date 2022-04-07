@@ -12,15 +12,16 @@ export interface ClassMethodInsertOptions {
   relTargetFilePath: string;
   className: string;
   codeToInsert: string;
+  indexAdj?: number;
 }
 
 const insertBeforeFirstMethod = (opts: AnyOpts) => (node: Node) => {
-  const { className, codeToInsert } = opts;
+  const { className, codeToInsert, indexAdj } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const methodDecl = findFirstMethodDeclaration(classDecl);
   if (!methodDecl) return;
-  const methodDeclIndex = methodDecl.getStart();
+  const methodDeclIndex = methodDecl.getStart() + (indexAdj || 0);
   return insertCode(node, methodDeclIndex, codeToInsert);
 };
 

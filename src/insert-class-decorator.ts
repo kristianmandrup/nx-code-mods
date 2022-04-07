@@ -12,13 +12,14 @@ export interface ClassDecInsertOptions {
   relTargetFilePath: string;
   className: string;
   codeToInsert: string;
+  indexAdj?: number;
 }
 
 export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
-  const { className, codeToInsert } = opts;
+  const { className, codeToInsert, indexAdj } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
-  const classDeclIndex = classDecl.getStart();
+  const classDeclIndex = classDecl.getStart() + (indexAdj || 0);
   return insertCode(node, classDeclIndex, codeToInsert);
 };
 

@@ -18,6 +18,7 @@ export interface InsertObjectOptions {
   id: string;
   codeToInsert: string;
   insertPos: ObjectPosition;
+  indexAdj?: number;
 }
 
 type ObjectPosition = 'start' | 'end' | string | number;
@@ -27,6 +28,7 @@ const insertIntoObject = (
   objLiteral: ObjectLiteralExpression,
   codeToInsert: string,
   insertPos: ObjectPosition,
+  indexAdj?: number,
 ): string | null => {
   const objSize = objLiteral.properties.length;
   if (objLiteral.properties.length == 0) return null;
@@ -58,6 +60,7 @@ const insertIntoObject = (
     insertPosition = matchingProp?.getStart();
   }
   if (!insertPosition) return null;
+  insertPosition = insertPosition + (indexAdj || 0);
   return insertCode(vsNode, insertPosition, codeToInsert);
 };
 
@@ -65,6 +68,7 @@ export type InsertInObjectFn = {
   id: string;
   codeToInsert: string;
   insertPos: ObjectPosition;
+  indexAdj?: number;
 };
 
 export const insertInObject =
