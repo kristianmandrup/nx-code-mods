@@ -2,7 +2,7 @@
 
 This library is intended to contain Code mods for use in Nx generators.
 
-- `appendImport`
+- `appendAfterImports`
 - `insertIntoNamedObject`
 - `insertIntoNamedArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
 
@@ -14,35 +14,36 @@ Generic utility functions
 - `findFunction`
 - `findFunctionBlock`
 - `findBlockStatementByIndex`
-
-TODO (WIP)
-
-- `findClass`
-- `findClassMethod`
-- `findProperty`
+- `findClassDeclaration`
+- `findMethodDeclaration`
+- `findClassPropertyDeclaration`
 - `insertClassProperty`
 - `insertClassMethod`
 - `insertClassDecorator`
 - `insertClassMethodDecorator`
 - `insertClassMethodParamDecorator`
 
-## Append import
+## Append after last import
 
 Appends an import statement to the end of import declarations.
 
 ```ts
-export function appendImport(
-    tree: Tree,
-    { projectRoot, relTargetFilePath, codeToInsert }: AppendImportOptions
-  )
-```  
+appendAfterImports = (
+  tree: Tree,
+  { projectRoot, relTargetFilePath, codeToInsert }: AppendImportOptions,
+);
+```
+
+```ts
+insertAfterLastImport = (node: any, codeToInsert: string): string | undefined
+```
 
 ### Sample usage
 
 ```ts
   const codeToInsert = `import { x } from 'x';
   `;
-  appendImport(tree,
+  appendAfterImports(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
@@ -57,10 +58,25 @@ export function appendImport(
 The function takes the following arguments
 
 ```ts
-export function insertIntoNamedObject(
+insertIntoNamedObject = (
   tree: Tree,
-  { projectRoot, relTargetFilePath, targetIdName, codeToInsert, insertPos }: InsertObjectOptions
-)
+  {
+    projectRoot,
+    relTargetFilePath,
+    targetIdName,
+    codeToInsert,
+    insertPos,
+  }: InsertObjectOptions,
+);
+```
+
+```ts
+insertInObject = (
+  node: any,
+  id: string,
+  codeToInsert: string,
+  insertPos: ObjectPosition,
+): string | undefined
 ```
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
@@ -80,7 +96,7 @@ It takes the `codeToInsert` string and inserts it into a non-empty object with a
         targetIdName: 'Routes',
         codeToInsert,
         // insert code before this property assignment in the object
-        insertPos: 'name' 
+        insertPos: 'name'
     }
   );
   await formatFiles(tree);
@@ -91,10 +107,25 @@ It takes the `codeToInsert` string and inserts it into a non-empty object with a
 The function takes the following arguments
 
 ```ts
-export function insertIntoNamedArray(
+insertIntoNamedArray = (
   tree: Tree,
-  { projectRoot, relTargetFilePath, targetIdName, codeToInsert, insertPos }: InsertArrayOptions
-)
+  {
+    projectRoot,
+    relTargetFilePath,
+    targetIdName,
+    codeToInsert,
+    insertPos,
+  }: InsertArrayOptions,
+);
+```
+
+```ts
+insertInArray = (
+  node: any,
+  id: string,
+  codeToInsert: string,
+  insertPos: ArrayPosition,
+): string | undefined
 ```
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
@@ -127,7 +158,29 @@ Insert code at a specific position relative to a node
 export const insertCode = (vsNode: any, insertPosition: number, codeToInsert: string): string
 ```
 
+## Where
+
+```ts
+export const whereHasArrowFunction = (node: Node) =>
+```
+
+```ts
+export const whereHasDecorator = (node: Node, id?: string)
+```
+
 ## Finders
+
+```ts
+findClassDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): ClassDeclaration | undefined
+```
+
+```ts
+export const findMethodDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): MethodDeclaration | undefined =>
+```
+
+```ts
+export const findClassPropertyDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): PropertyDeclaration | undefined
+```
 
 ```ts
 export const findDeclarationIdentifier = (vsNode: VariableStatement, targetIdName: string, where?: WhereFn): VariableDeclaration | undefined
@@ -148,7 +201,6 @@ export const findFunctionBlock = (vsNode: VariableStatement, targetIdName: strin
 ```ts
 export const findBlockStatementByIndex = (block: Block, index: number): : Statement | undefined
 ```
-
 
 ## Full example
 
