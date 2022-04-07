@@ -14,7 +14,7 @@ export interface ClassMethodInsertOptions {
   codeToInsert: string;
 }
 
-const insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node) => {
+const insertBeforeFirstMethod = (opts: AnyOpts) => (node: Node) => {
   const { className, codeToInsert } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
@@ -25,5 +25,5 @@ const insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node) => {
 };
 
 export function insertClassMethod(tree: Tree, opts: ClassMethodInsertOptions) {
-  modifyFile(tree, 'ClassDeclaration', insertAtTopOfClassScope, opts);
+  modifyFile(tree, 'ClassDeclaration', insertBeforeFirstMethod, opts);
 }

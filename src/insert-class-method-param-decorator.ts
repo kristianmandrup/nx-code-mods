@@ -12,7 +12,7 @@ export interface ClassMethodDecArgInsertOptions {
   codeToInsert: string;
 }
 
-export const insertArgInMatchingMethod = (opts: AnyOpts) => (node: Node) => {
+export const insertParamInMatchingMethod = (opts: AnyOpts) => (node: Node) => {
   const { className, methodId, codeToInsert } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
@@ -22,9 +22,9 @@ export const insertArgInMatchingMethod = (opts: AnyOpts) => (node: Node) => {
   return insertCode(node, parametersIndex, codeToInsert);
 };
 
-export function insertClassMethodArgDecorator(
+export function insertClassMethodParamDecorator(
   tree: Tree,
   opts: ClassMethodDecArgInsertOptions,
 ) {
-  modifyFile(tree, 'ClassDeclaration', insertArgInMatchingMethod, opts);
+  modifyFile(tree, 'ClassDeclaration', insertParamInMatchingMethod, opts);
 }

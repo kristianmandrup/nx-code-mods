@@ -53,6 +53,72 @@ insertAfterLastImport = (node: any, codeToInsert: string): string | undefined
   await formatFiles(tree);
 ```
 
+## Insert before Class Declaration
+
+Can f.ex be used to add class methods to a class
+
+```ts
+insertBeforeFirstMethod = (opts: AnyOpts) => (node: Node)
+```
+
+```ts
+insertClassMethod(tree: Tree, opts: ClassMethodInsertOptions)
+```
+
+## Insert before Class Declaration
+
+Can be used to add class properties to a class
+
+```ts
+insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node)
+```
+
+```ts
+insertClassProperty(tree: Tree, opts: ClassPropInsertOptions)
+```
+
+## Insert before Class Declaration
+
+Can f.ex be used to add decorators to a class
+
+```ts
+insertBeforeClassDecl = (opts: AnyOpts) => (node: Node)
+```
+
+```ts
+insertClassDecorator(tree: Tree, opts: ClassDecInsertOptions)
+```
+
+## Insert Class Method Parameter Decorator
+
+Can be used to add special decorators for dependency injection etc, such as with NestJS
+
+```ts
+insertParamInMatchingMethod = (opts: AnyOpts) => (node: Node)
+```
+
+```ts
+insertClassMethodParamDecorator(
+  tree: Tree,
+  opts: ClassMethodDecArgInsertOptions,
+)
+```
+
+## Insert Class Method Decorator
+
+Can be used to add method decorators such as for NestJS
+
+```ts
+insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node)
+```
+
+```ts
+insertClassMethodDecorator(
+  tree: Tree,
+  opts: ClassMethodDecInsertOptions,
+)
+```
+
 ## Insert into named Object
 
 The function takes the following arguments
@@ -63,7 +129,7 @@ insertIntoNamedObject = (
   {
     projectRoot,
     relTargetFilePath,
-    targetIdName,
+    id,
     codeToInsert,
     insertPos,
   }: InsertObjectOptions,
@@ -92,7 +158,7 @@ It takes the `codeToInsert` string and inserts it into a non-empty object with a
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
-        targetIdName: 'Routes',
+        id: 'Routes',
         codeToInsert,
         // insert code before this property assignment in the object
         insertPos: 'name'
@@ -111,7 +177,7 @@ insertIntoNamedArray = (
   {
     projectRoot,
     relTargetFilePath,
-    targetIdName,
+    id,
     codeToInsert,
     insertPos,
   }: InsertArrayOptions,
@@ -140,7 +206,7 @@ It takes the `codeToInsert` string and inserts it to a non-empty array with an I
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
-        targetIdName: 'Routes',
+        id: 'Routes',
         codeToInsert,
         insertPos: 'end'
     }
@@ -169,35 +235,45 @@ export const whereHasDecorator = (node: Node, id?: string)
 ## Finders
 
 ```ts
+findLastImport = (txtNode: any): ImportDeclaration | undefined
+```
+
+```ts
 findClassDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): ClassDeclaration | undefined
 ```
 
 ```ts
-export const findMethodDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): MethodDeclaration | undefined =>
+findMethodDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): MethodDeclaration | undefined =>
 ```
 
 ```ts
-export const findClassPropertyDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): PropertyDeclaration | undefined
+ findFirstMethodDeclaration = (
+  vsNode: Node,
+): MethodDeclaration | undefined
 ```
 
 ```ts
-export const findDeclarationIdentifier = (vsNode: VariableStatement, targetIdName: string, where?: WhereFn): VariableDeclaration | undefined
+findClassPropertyDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): PropertyDeclaration | undefined
 ```
 
 ```ts
-export const findFunctionDeclaration = (vsNode: Statement, targetIdName: string): FunctionDeclaration | undefined
+findDeclarationIdentifier = (vsNode: VariableStatement, targetIdName: string, where?: WhereFn): VariableDeclaration | undefined
 ```
 
 ```ts
-export const findFunction = (vsNode: VariableStatement, targetIdName: string): FindFunReturn | undefined
+findFunctionDeclaration = (vsNode: Statement, targetIdName: string): FunctionDeclaration | undefined
 ```
 
 ```ts
-export const findFunctionBlock = (vsNode: VariableStatement, targetIdName: string): : Block | undefined
+findFunction = (vsNode: VariableStatement, targetIdName: string): FindFunReturn | undefined
 ```
 
 ```ts
-export const findBlockStatementByIndex = (block: Block, index: number): : Statement | undefined
+findFunctionBlock = (vsNode: VariableStatement, targetIdName: string): : Block | undefined
+```
+
+```ts
+findBlockStatementByIndex = (block: Block, index: number): : Statement | undefined
 ```
 
 ## Full example
@@ -263,7 +339,7 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
-        targetIdName: 'Routes',
+        id: 'Routes',
         codeToInsert,
         insertPos: 'end'
     }
