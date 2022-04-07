@@ -9,11 +9,6 @@ import {
 } from 'typescript';
 import * as path from 'path';
 
-export interface NormalizedSchema {
-    projectRoot: string;
-
-}
-
 export interface PrependArrayOptions { 
     projectRoot: string
     relTargetFilePath: string
