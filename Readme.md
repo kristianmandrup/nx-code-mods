@@ -3,7 +3,28 @@
 This library is intended to contain Code mods for use in Nx generators.
 
 - `appendImport`
+- `insertIntoNamedObject`
 - `insertIntoNamedArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
+
+Generic utility functions
+
+- `insertCode`
+- `findDeclarationIdentifier`
+- `findFunctionDeclaration`
+- `findFunction`
+- `findFunctionBlock`
+- `findBlockStatementByIndex`
+
+TODO (WIP)
+
+- `findClass`
+- `findClassMethod`
+- `findProperty`
+- `insertClassProperty`
+- `insertClassMethod`
+- `insertClassDecorator`
+- `insertClassMethodDecorator`
+- `insertClassMethodParamDecorator`
 
 ## Append import
 
@@ -31,6 +52,40 @@ export function appendImport(
   await formatFiles(tree);
 ```
 
+## Insert into named Object
+
+The function takes the following arguments
+
+```ts
+export function insertIntoNamedObject(
+  tree: Tree,
+  { projectRoot, relTargetFilePath, targetIdName, codeToInsert, insertPos }: InsertObjectOptions
+)
+```
+
+The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
+It takes the `codeToInsert` string and inserts it into a non-empty object with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end`, an index in the object or a name of a property of the object.
+
+### Sample usage
+
+```ts
+  const codeToInsert = `{
+    x: 2
+  },
+  `;
+  insertIntoNamedObject(tree,
+    {
+        normalizedOptions.projectRoot,
+        relTargetFilePath: '/src/app/app-routing.module.ts',
+        targetIdName: 'Routes',
+        codeToInsert,
+        // insert code before this property assignment in the object
+        insertPos: 'name' 
+    }
+  );
+  await formatFiles(tree);
+```
+
 ## Insert into named Array
 
 The function takes the following arguments
@@ -43,7 +98,7 @@ export function insertIntoNamedArray(
 ```
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
-It takes the `toInsert` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
+It takes the `codeToInsert` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
 
 ### Sample usage
 

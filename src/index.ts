@@ -1,4 +1,5 @@
 export * from './insert-named-array'
+export * from './insert-named-object'
 export * from './append-import'
 export * from './insert-code'
 export * from './find'
