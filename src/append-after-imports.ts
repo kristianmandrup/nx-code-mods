@@ -5,10 +5,13 @@ import { getFirstStatement, findLastImport } from './find';
 import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
 
 export interface InsertOptions {
-  projectRoot: string;
-  relTargetFilePath: string;
   codeToInsert: string;
   indexAdj?: number;
+}
+
+export interface InsertTreeOptions extends InsertOptions {
+  projectRoot: string;
+  relTargetFilePath: string;
 }
 
 export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
@@ -42,6 +45,6 @@ export function appendAfterImportsInFile(
 
 const hasAnyImportDecl = (node: SourceFile) => Boolean(findLastImport(node));
 
-export function appendAfterImportsInTree(tree: Tree, opts: InsertOptions) {
+export function appendAfterImportsInTree(tree: Tree, opts: InsertTreeOptions) {
   return modifyTree(tree, 'ImportDeclaration', insertAfterLastImport, opts);
 }

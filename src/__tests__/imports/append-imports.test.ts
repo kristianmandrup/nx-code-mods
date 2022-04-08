@@ -1,4 +1,4 @@
-import { appendAfterImportsInFile } from '..';
+import { appendAfterImportsInFile } from '../..';
 import * as path from 'path';
 
 const context = describe;

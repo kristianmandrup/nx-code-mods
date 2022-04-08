@@ -7,12 +7,15 @@ import { Tree } from '@nrwl/devkit';
 import { ArrayLiteralExpression, Node, VariableStatement } from 'typescript';
 
 export interface InsertArrayOptions {
-  projectRoot: string;
-  relTargetFilePath: string;
   id: string;
   codeToInsert: string;
-  insertPos: ArrayPosition;
+  insertPos?: ArrayPosition;
   indexAdj?: number;
+}
+
+export interface InsertArrayTreeOptions extends InsertArrayOptions {
+  projectRoot: string;
+  relTargetFilePath: string;
 }
 
 type ArrayPosition = 'start' | 'end' | number;
@@ -69,7 +72,7 @@ export function insertIntoNamedArrayInFile(
 
 export function insertIntoNamedArrayInTree(
   tree: Tree,
-  opts: InsertArrayOptions,
+  opts: InsertArrayTreeOptions,
 ) {
   return modifyTree(tree, 'VariableStatement', insertInArray, opts);
 }
