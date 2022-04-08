@@ -1,9 +1,7 @@
 import { insertCode } from './insert-code';
-import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
-import * as path from 'path';
 import { Tree } from '@nrwl/devkit';
-import { tsquery } from '@phenomnomnominal/tsquery';
 import { findLastImport } from './find';
+import { modifyTree, AnyOpts, modifyFile } from './modify-file';
 
 export interface InsertOptions {
   projectRoot: string;
@@ -11,28 +9,21 @@ export interface InsertOptions {
   codeToInsert: string;
 }
 
-export const insertAfterLastImport = (
-  node: any,
-  codeToInsert: string,
-): string | undefined => {
+export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
+  const { codeToInsert } = opts;
   const lastImportStmt = findLastImport(node);
   if (!lastImportStmt) return;
   const lastImportIndex = lastImportStmt.getEnd();
   return insertCode(node, lastImportIndex, codeToInsert);
 };
 
-export function appendAfterImports(
-  tree: Tree,
-  { projectRoot, relTargetFilePath, codeToInsert }: InsertOptions,
+export function appendAfterImportsInFile(
+  filePath: string,
+  opts: InsertOptions,
 ) {
-  const targetFilePath = path.join(projectRoot, relTargetFilePath);
-  const targetFile = readFileIfExisting(targetFilePath);
+  modifyFile(filePath, 'ImportDeclaration', insertAfterLastImport, opts);
+}
 
-  if (targetFile !== '') {
-    const ast = tsquery.ast(targetFile);
-    const newContents = insertAfterLastImport(ast, codeToInsert);
-    if (newContents !== targetFile && newContents) {
-      tree.write(targetFilePath, newContents);
-    }
-  }
+export function appendAfterImportsInTree(tree: Tree, opts: InsertOptions) {
+  modifyTree(tree, 'ImportDeclaration', insertAfterLastImport, opts);
 }

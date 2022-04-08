@@ -1,8 +1,13 @@
-export const insertCode = (vsNode: any, insertPosition: number, codeToInsert: string): string => {
-    const previousTxt = vsNode.getFullText();
-    const prefix = previousTxt.substring(0, insertPosition);
-    const suffix = previousTxt.substring(insertPosition);
-    const newTxt = `${prefix}${codeToInsert}${suffix}`;
-    return newTxt
-  }
-  
+export type InsertPosition = 'start' | 'end';
+
+export const insertCode = (
+  vsNode: any,
+  insertPosition: number,
+  codeToInsert: string,
+): string => {
+  const previousTxt = vsNode.getFullText();
+  const prefix = previousTxt.substring(0, insertPosition);
+  const suffix = previousTxt.substring(insertPosition);
+  const newTxt = `${prefix}${codeToInsert}${suffix}`;
+  return newTxt;
+};

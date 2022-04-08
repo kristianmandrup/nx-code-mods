@@ -2,7 +2,7 @@ import { Node } from 'typescript';
 import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findMethodDeclaration } from './find';
-import { modifyFile, AnyOpts } from './modify-file';
+import { modifyFile, AnyOpts, modifyTree } from './modify-file';
 
 export interface ClassMethodDecInsertOptions {
   projectRoot: string;
@@ -24,9 +24,16 @@ export const insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node) => {
   return insertCode(node, methodDeclIndex, codeToInsert);
 };
 
-export function insertClassMethodDecorator(
+export function insertClassMethodDecoratorInFile(
+  filePath: string,
+  opts: ClassMethodDecInsertOptions,
+) {
+  modifyFile(filePath, 'ClassDeclaration', insertBeforeMatchingMethod, opts);
+}
+
+export function insertClassMethodDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecInsertOptions,
 ) {
-  modifyFile(tree, 'ClassDeclaration', insertBeforeMatchingMethod, opts);
+  modifyTree(tree, 'ClassDeclaration', insertBeforeMatchingMethod, opts);
 }

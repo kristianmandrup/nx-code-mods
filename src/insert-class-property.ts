@@ -1,10 +1,7 @@
 import { insertCode } from './insert-code';
-import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
-import * as path from 'path';
 import { Tree } from '@nrwl/devkit';
-import { tsquery } from '@phenomnomnominal/tsquery';
 import { findBlock, findClassDeclaration } from './find';
-import { modifyFile, AnyOpts } from './modify-file';
+import { modifyFile, AnyOpts, modifyTree } from './modify-file';
 import { Node } from 'typescript';
 
 export interface ClassPropInsertOptions {
@@ -12,19 +9,33 @@ export interface ClassPropInsertOptions {
   relTargetFilePath: string;
   className: string;
   codeToInsert: string;
+  insertPos?: InsertPosition;
   indexAdj?: number;
 }
 
-const insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node) => {
-  const { className, codeToInsert, indexAdj } = opts;
+const insertInClassScope = (opts: AnyOpts) => (node: Node) => {
+  const { className, codeToInsert, insertPos, indexAdj } = opts;
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const block = findBlock(classDecl);
   if (!block) return;
-  const blockIndex = block.getStart() + (indexAdj || 0);
+  let blockIndex = block.getStart() + (indexAdj || 0);
+  if (insertPos === 'end') {
+    blockIndex = block.getEnd() + (indexAdj || 0);
+  }
   return insertCode(node, blockIndex, codeToInsert);
 };
 
-export function insertClassProperty(tree: Tree, opts: ClassPropInsertOptions) {
-  modifyFile(tree, 'ClassDeclaration', insertAtTopOfClassScope, opts);
+export function insertClassPropertyInFile(
+  filePath: string,
+  opts: ClassPropInsertOptions,
+) {
+  modifyFile(filePath, 'ClassDeclaration', insertInClassScope, opts);
+}
+
+export function insertClassPropertyInTree(
+  tree: Tree,
+  opts: ClassPropInsertOptions,
+) {
+  modifyTree(tree, 'ClassDeclaration', insertInClassScope, opts);
 }

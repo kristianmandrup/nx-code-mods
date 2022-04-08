@@ -1,10 +1,10 @@
 import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findMethodDeclaration } from './find';
-import { modifyFile, AnyOpts } from './modify-file';
+import { modifyFile, AnyOpts, modifyTree } from './modify-file';
 import { Node } from 'typescript';
 
-export interface ClassMethodDecArgInsertOptions {
+export interface ClassMethodDecParamInsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
   className: string;
@@ -23,9 +23,16 @@ export const insertParamInMatchingMethod = (opts: AnyOpts) => (node: Node) => {
   return insertCode(node, parametersIndex, codeToInsert);
 };
 
-export function insertClassMethodParamDecorator(
-  tree: Tree,
-  opts: ClassMethodDecArgInsertOptions,
+export function insertClassMethodParamDecoratorInFile(
+  filePath: string,
+  opts: ClassMethodDecParamInsertOptions,
 ) {
-  modifyFile(tree, 'ClassDeclaration', insertParamInMatchingMethod, opts);
+  modifyFile(filePath, 'ClassDeclaration', insertParamInMatchingMethod, opts);
+}
+
+export function insertClassMethodParamDecoratorInTree(
+  tree: Tree,
+  opts: ClassMethodDecParamInsertOptions,
+) {
+  modifyTree(tree, 'ClassDeclaration', insertParamInMatchingMethod, opts);
 }

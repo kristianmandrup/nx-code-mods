@@ -1,12 +1,10 @@
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { AnyOpts, modifyFile, ModifyFn } from './modify-file';
+import { AnyOpts, modifyFile, modifyTree } from './modify-file';
 import { insertCode } from './insert-code';
 import { findDeclarationIdentifier } from './find';
 import { Tree } from '@nrwl/devkit';
-import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
-import { tsquery } from '@phenomnomnominal/tsquery';
+
 import { ArrayLiteralExpression, Node, VariableStatement } from 'typescript';
-import * as path from 'path';
 
 export interface InsertArrayOptions {
   projectRoot: string;
@@ -62,6 +60,16 @@ export const insertInArray =
     return newTxt;
   };
 
-export function insertIntoNamedArray(tree: Tree, opts: InsertArrayOptions) {
-  modifyFile(tree, 'VariableStatement', insertInArray, opts);
+export function insertIntoNamedArrayInFile(
+  filePath: string,
+  opts: InsertArrayOptions,
+) {
+  return modifyFile(filePath, 'VariableStatement', insertInArray, opts);
+}
+
+export function insertIntoNamedArrayInTree(
+  tree: Tree,
+  opts: InsertArrayOptions,
+) {
+  modifyTree(tree, 'VariableStatement', insertInArray, opts);
 }

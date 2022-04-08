@@ -18,7 +18,28 @@ export type AnyOpts = {
 
 export type ModifyFn = (opts: AnyOpts) => TSQueryStringTransformer;
 
+export function modifyFileContents(
+  targetFile: string,
+  selector: string,
+  modifyFn: ModifyFn,
+  opts: ModifyFileOptions,
+) {
+  if (targetFile == '') return;
+  const replaceFn = modifyFn({ ...opts });
+  return tsquery.replace(targetFile, selector, replaceFn);
+}
+
 export function modifyFile(
+  targetFilePath: string,
+  selector: string,
+  modifyFn: ModifyFn,
+  opts: ModifyFileOptions,
+) {
+  const targetFile = readFileIfExisting(targetFilePath);
+  return modifyFileContents(targetFile, selector, modifyFn, opts);
+}
+
+export function modifyTree(
   tree: Tree,
   selector: string,
   modifyFn: ModifyFn,
@@ -27,13 +48,8 @@ export function modifyFile(
   const { projectRoot, relTargetFilePath } = opts;
   const targetFilePath = path.join(projectRoot, relTargetFilePath);
   const targetFile = readFileIfExisting(targetFilePath);
-
-  if (targetFile !== '') {
-    const replaceFn = modifyFn({ ...opts });
-    const newContents = tsquery.replace(targetFile, selector, replaceFn);
-
-    if (newContents !== targetFile && newContents) {
-      tree.write(targetFilePath, newContents);
-    }
+  const newContents = modifyFile(targetFilePath, selector, modifyFn, opts);
+  if (newContents !== targetFile && newContents) {
+    tree.write(targetFilePath, newContents);
   }
 }

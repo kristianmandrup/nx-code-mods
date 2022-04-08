@@ -3,14 +3,12 @@ import { insertCode } from './insert-code';
 import { findDeclarationIdentifier } from './find';
 import { Tree } from '@nrwl/devkit';
 import { Node } from 'typescript';
-
 import {
   ObjectLiteralElementLike,
   ObjectLiteralExpression,
   VariableStatement,
 } from 'typescript';
-import * as path from 'path';
-import { AnyOpts, modifyFile } from './modify-file';
+import { AnyOpts, modifyFile, modifyTree } from './modify-file';
 
 export interface InsertObjectOptions {
   projectRoot: string;
@@ -88,6 +86,16 @@ export const insertInObject =
     return newTxt;
   };
 
-export function insertIntoNamedObject(tree: Tree, opts: InsertObjectOptions) {
-  modifyFile(tree, 'VariableStatement', insertInObject, opts);
+export function insertIntoNamedObjectInFile(
+  filePath: string,
+  opts: InsertObjectOptions,
+) {
+  modifyFile(filePath, 'VariableStatement', insertInObject, opts);
+}
+
+export function insertIntoNamedObjectInTree(
+  tree: Tree,
+  opts: InsertObjectOptions,
+) {
+  modifyTree(tree, 'VariableStatement', insertInObject, opts);
 }

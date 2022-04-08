@@ -28,7 +28,7 @@ Generic utility functions
 Appends an import statement to the end of import declarations.
 
 ```ts
-appendAfterImports = (
+appendAfterImportsInTree = (
   tree: Tree,
   { projectRoot, relTargetFilePath, codeToInsert }: AppendImportOptions,
 );
@@ -43,7 +43,7 @@ insertAfterLastImport = (node: any, codeToInsert: string): string | undefined
 ```ts
   const codeToInsert = `import { x } from 'x';
   `;
-  appendAfterImports(tree,
+  appendAfterImportsInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
@@ -62,7 +62,7 @@ insertBeforeFirstMethod = (opts: AnyOpts) => (node: Node)
 ```
 
 ```ts
-insertClassMethod(tree: Tree, opts: ClassMethodInsertOptions)
+insertClassMethodInTree(tree: Tree, opts: ClassMethodInsertOptions)
 ```
 
 ## Insert before Class Declaration
@@ -74,7 +74,7 @@ insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node)
 ```
 
 ```ts
-insertClassProperty(tree: Tree, opts: ClassPropInsertOptions)
+insertClassPropertyInTree(tree: Tree, opts: ClassPropInsertOptions)
 ```
 
 ## Insert before Class Declaration
@@ -86,7 +86,7 @@ insertBeforeClassDecl = (opts: AnyOpts) => (node: Node)
 ```
 
 ```ts
-insertClassDecorator(tree: Tree, opts: ClassDecInsertOptions)
+insertClassDecoratorInTree(tree: Tree, opts: ClassDecInsertOptions)
 ```
 
 ## Insert Class Method Parameter Decorator
@@ -98,7 +98,7 @@ insertParamInMatchingMethod = (opts: AnyOpts) => (node: Node)
 ```
 
 ```ts
-insertClassMethodParamDecorator(
+insertClassMethodParamDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecArgInsertOptions,
 )
@@ -113,7 +113,7 @@ insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node)
 ```
 
 ```ts
-insertClassMethodDecorator(
+insertClassMethodDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecInsertOptions,
 )
@@ -154,7 +154,7 @@ It takes the `codeToInsert` string and inserts it into a non-empty object with a
     x: 2
   },
   `;
-  insertIntoNamedObject(tree,
+  insertIntoNamedObjectInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
@@ -172,7 +172,7 @@ It takes the `codeToInsert` string and inserts it into a non-empty object with a
 The function takes the following arguments
 
 ```ts
-insertIntoNamedArray = (
+insertIntoNamedArrayInTree = (
   tree: Tree,
   {
     projectRoot,
@@ -202,7 +202,7 @@ It takes the `codeToInsert` string and inserts it to a non-empty array with an I
     x: 2
   },
   `;
-  insertIntoNamedArray(tree,
+  insertIntoNamedArrayInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
@@ -335,7 +335,7 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
     x: 2
   },
   `;
-  insertIntoNamedArray(tree,
+  insertIntoNamedArrayInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
