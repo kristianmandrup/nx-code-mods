@@ -28,17 +28,15 @@ export function insertClassMethodDecoratorInFile(
   filePath: string,
   opts: ClassMethodDecInsertOptions,
 ) {
-  return replaceInFile(
-    filePath,
-    'ClassDeclaration',
-    insertBeforeMatchingMethod,
-    opts,
-  );
+  return replaceInFile(filePath, {
+    modifyFn: insertBeforeMatchingMethod,
+    ...opts,
+  });
 }
 
 export function insertClassMethodDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecInsertOptions,
 ) {
-  return modifyTree(tree, 'ClassDeclaration', insertBeforeMatchingMethod, opts);
+  return modifyTree(tree, opts);
 }

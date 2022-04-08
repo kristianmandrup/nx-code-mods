@@ -29,9 +29,8 @@ export function insertClassMethodParamDecoratorInFile(
 ) {
   return replaceInFile(
     filePath,
-    'ClassDeclaration',
-    insertParamInMatchingMethod,
-    opts,
+
+    { modifyFn: insertParamInMatchingMethod, ...opts },
   );
 }
 
@@ -39,10 +38,5 @@ export function insertClassMethodParamDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecParamInsertOptions,
 ) {
-  return modifyTree(
-    tree,
-    'ClassDeclaration',
-    insertParamInMatchingMethod,
-    opts,
-  );
+  return modifyTree(tree, opts);
 }

@@ -1,10 +1,10 @@
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 import { insertCode } from './insert-code';
-import { findDeclarationIdentifier } from './find';
+import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
 
-import { ArrayLiteralExpression, Node, VariableStatement } from 'typescript';
+import { ArrayLiteralExpression, Node, SourceFile } from 'typescript';
 
 export interface InsertArrayOptions {
   id: string;
@@ -21,41 +21,44 @@ export interface InsertArrayTreeOptions extends InsertArrayOptions {
 type ArrayPosition = 'start' | 'end' | number;
 
 export const insertIntoArray = (
-  node: any,
+  srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
   const { arrLiteral, codeToInsert, insertPos, indexAdj } = opts;
   const arrLength = arrLiteral.elements.length;
-  if (arrLiteral.elements.length == 0) return;
-  const nodeArray = arrLiteral.elements;
-  let insertPosition = nodeArray[0].getStart();
-  if (Number.isInteger(insertPos)) {
-    const insertPosNum = parseInt('' + insertPos);
-    if (insertPosNum <= 0 || insertPosNum >= arrLength) {
-      throw new Error(
-        `insertIntoArray: Invalid insertPos ${insertPos} argument`,
-      );
+  let insertPosition;
+  if (arrLiteral.elements.length == 0) {
+    insertPosition = arrLiteral.getStart() + 1;
+  } else {
+    const nodeArray = arrLiteral.elements;
+    insertPosition = nodeArray[0].getStart();
+    if (Number.isInteger(insertPos)) {
+      const insertPosNum = parseInt('' + insertPos);
+      if (insertPosNum <= 0 || insertPosNum >= arrLength) {
+        throw new Error(
+          `insertIntoArray: Invalid insertPos ${insertPos} argument`,
+        );
+      }
+      insertPosition = nodeArray[insertPosNum].getStart() + (indexAdj || 0);
     }
-    insertPosition = nodeArray[insertPosNum].getStart() + (indexAdj || 0);
+    if (insertPos === 'end') {
+      const lastIndex = arrLiteral.elements.length - 1;
+      insertPosition = nodeArray[lastIndex].getEnd();
+    }
   }
-
-  if (insertPos === 'end') {
-    const lastIndex = arrLiteral.elements.length - 1;
-    insertPosition = nodeArray[lastIndex].getEnd();
-  }
-  return insertCode(node, insertPosition, codeToInsert);
+  return insertCode(srcNode, insertPosition, codeToInsert);
 };
 
 export const insertInArray =
   (opts: AnyOpts): TSQueryStringTransformer =>
-  (node: Node): string | null | undefined => {
+  (srcNode: any): string | null | undefined => {
     const { id, codeToInsert, insertPos } = opts;
-    const vsNode = node as VariableStatement;
-    const declaration = findDeclarationIdentifier(vsNode, id);
-    if (!declaration) return;
+    const declaration = findVariableDeclaration(srcNode, id);
+    if (!declaration) {
+      return;
+    }
     const arrLiteral = declaration.initializer as ArrayLiteralExpression;
-
-    const newTxt = insertIntoArray(vsNode, {
+    const newTxt = insertIntoArray(srcNode, {
       arrLiteral,
       codeToInsert,
       insertPos,
@@ -67,12 +70,18 @@ export function insertIntoNamedArrayInFile(
   filePath: string,
   opts: InsertArrayOptions,
 ) {
-  return replaceInFile(filePath, 'VariableStatement', insertInArray, opts);
+  const findNodeFn = (node: SourceFile) =>
+    findVariableDeclaration(node, opts.id);
+  return replaceInFile(filePath, {
+    ...opts,
+    findNodeFn,
+    modifyFn: insertInArray,
+  });
 }
 
 export function insertIntoNamedArrayInTree(
   tree: Tree,
   opts: InsertArrayTreeOptions,
 ) {
-  return modifyTree(tree, 'VariableStatement', insertInArray, opts);
+  return modifyTree(tree, opts);
 }

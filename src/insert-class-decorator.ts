@@ -24,17 +24,12 @@ export function insertClassDecoratorInFile(
   filePath: string,
   opts: ClassDecInsertOptions,
 ) {
-  return replaceInFile(
-    filePath,
-    'ClassDeclaration',
-    insertBeforeClassDecl,
-    opts,
-  );
+  return replaceInFile(filePath, { ...opts, modifyFn: insertBeforeClassDecl });
 }
 
 export function insertClassDecoratorInTree(
   tree: Tree,
   opts: ClassDecInsertOptions,
 ) {
-  return modifyTree(tree, 'ClassDeclaration', insertBeforeClassDecl, opts);
+  return modifyTree(tree, opts);
 }

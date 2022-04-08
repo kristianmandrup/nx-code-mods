@@ -2,10 +2,12 @@ import {
   Block,
   ClassDeclaration,
   FunctionDeclaration,
+  Identifier,
   ImportDeclaration,
   MethodDeclaration,
   Node,
   PropertyDeclaration,
+  SortedArray,
   SourceFile,
   Statement,
   VariableDeclaration,
@@ -19,11 +21,13 @@ export const getFirstStatement = (ast: SourceFile) => ast.statements[0];
 export const getLastStatement = (ast: SourceFile) =>
   ast.statements[ast.statements.length - 1];
 
-export const findLastImport = (txtNode: any): ImportDeclaration | undefined => {
+export const findLastImport = (
+  srcNode: SourceFile,
+): ImportDeclaration | undefined => {
   try {
-    const lastImport = tsquery(txtNode, 'ImportDeclaration:last-child');
-    if (!lastImport) return;
-    return lastImport[0] as ImportDeclaration;
+    const result = tsquery(srcNode, 'ImportDeclaration:last-child');
+    if (!result || result.length === 0) return;
+    return result[0] as ImportDeclaration;
   } catch (e) {
     console.error(e);
     return;
@@ -39,7 +43,7 @@ export const findClassDeclaration = (
     vsNode,
     `ClassDeclaration > Identifier[name='${targetIdName}']`,
   );
-  if (!result) return;
+  if (!result || result.length === 0) return;
   const found = result[0].parent as ClassDeclaration;
   if (!where) return found;
   if (where(found)) {
@@ -48,15 +52,15 @@ export const findClassDeclaration = (
 };
 
 export const findMethodDeclaration = (
-  vsNode: Node,
+  node: Node,
   targetIdName: string,
   where?: WhereFn,
 ): MethodDeclaration | undefined => {
   const result = tsquery(
-    vsNode,
+    node,
     `MethodDeclaration > Identifier[name='${targetIdName}']`,
   );
-  if (!result) return;
+  if (!result || result.length === 0) return;
   const found = result[0].parent as MethodDeclaration;
   if (!where) return found;
   if (where(found)) {
@@ -65,24 +69,24 @@ export const findMethodDeclaration = (
 };
 
 export const findFirstMethodDeclaration = (
-  vsNode: Node,
+  node: any,
 ): MethodDeclaration | undefined => {
-  const result = tsquery(vsNode, `MethodDeclaration:first-child']`);
-  if (!result) return;
+  const result = tsquery(node, `MethodDeclaration:first-child']`);
+  if (!result || result.length === 0) return;
   const found = result[0].parent as MethodDeclaration;
   return found;
 };
 
 export const findClassPropertyDeclaration = (
-  vsNode: Node,
+  node: SourceFile,
   targetIdName: string,
   where?: WhereFn,
 ): PropertyDeclaration | undefined => {
   const result = tsquery(
-    vsNode,
+    node,
     `ClassDeclaration > PropertyDeclaration > Identifier[name='${targetIdName}']`,
   );
-  if (!result) return;
+  if (!result || result.length === 0) return;
   const found = result[0].parent as PropertyDeclaration;
   if (!where) return found;
   if (where(found)) {
@@ -90,17 +94,17 @@ export const findClassPropertyDeclaration = (
   }
 };
 
-export const findDeclarationIdentifier = (
-  vsNode: VariableStatement,
-  targetIdName: string,
+export const findVariableDeclaration = (
+  node: any,
+  id: string,
   where?: WhereFn,
 ): VariableDeclaration | undefined => {
-  const result = tsquery(
-    vsNode,
-    `VariableDeclaration > Identifier[name='${targetIdName}']`,
-  );
-  if (!result) return;
-  const found = result[0].parent as VariableDeclaration;
+  const selector = `VariableDeclaration > Identifier[name='${id}']`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  const found = (result[0] as Identifier).parent as VariableDeclaration;
   if (!where) return found;
   if (where(found)) {
     return found;
@@ -108,14 +112,14 @@ export const findDeclarationIdentifier = (
 };
 
 export const findFunctionDeclaration = (
-  vsNode: Statement,
+  node: SourceFile,
   targetIdName: string,
 ): FunctionDeclaration | undefined => {
   const result = tsquery(
-    vsNode,
+    node,
     `FunctionDeclaration > Identifier[name='${targetIdName}']`,
   );
-  if (!result) return;
+  if (!result || result.length === 0) return;
   return result[0].parent as FunctionDeclaration;
 };
 
@@ -142,11 +146,11 @@ type FindFunReturn = {
 };
 
 export const findFunction = (
-  vsNode: Node,
+  node: SourceFile,
   targetIdName: string,
 ): FindFunReturn | undefined => {
-  const declFun = findDeclarationIdentifier(
-    vsNode as VariableStatement,
+  const declFun = findVariableDeclaration(
+    node,
     targetIdName,
     whereHasArrowFunction,
   );
@@ -157,7 +161,7 @@ export const findFunction = (
       arrow: false,
     };
 
-  const fun = findFunctionDeclaration(vsNode as Statement, targetIdName);
+  const fun = findFunctionDeclaration(node, targetIdName);
   if (fun)
     return {
       node: fun,
@@ -167,10 +171,10 @@ export const findFunction = (
 };
 
 export const findFunctionBlock = (
-  vsNode: Node,
+  node: any,
   targetIdName: string,
 ): Block | undefined => {
-  const fun = findFunction(vsNode, targetIdName);
+  const fun = findFunction(node, targetIdName);
   if (!fun) return;
   let result;
   if (fun.arrow) {
@@ -185,7 +189,7 @@ export const findFunctionBlock = (
 
 export const findBlock = (vsNode: Node) => {
   const result = tsquery(vsNode, `Block`);
-  if (!result) return;
+  if (!result || result.length === 0) return;
   return result[0].parent as Block;
 };
 

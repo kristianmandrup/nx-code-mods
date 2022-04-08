@@ -6,21 +6,22 @@ import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsq
 import { replaceOne } from './replace';
 import { Node, SourceFile } from 'typescript';
 
-export interface ModifyTreeOptions {
-  projectRoot: string;
-  relTargetFilePath: string;
-  codeToInsert: string;
-  [key: string]: any;
-}
-
 export type GetDefaultNodeFn = (node: SourceFile) => Node;
+export type FindNodeFn = (node: SourceFile) => Node | undefined;
 export type CheckFn = (node: SourceFile) => boolean;
 
 export interface ModifyFileOptions {
   codeToInsert: string;
+  selector?: string;
   checkFn?: CheckFn;
+  findNodeFn?: FindNodeFn;
   getDefaultNodeFn?: GetDefaultNodeFn;
   [key: string]: any;
+}
+
+export interface ModifyTreeOptions extends ModifyFileOptions {
+  projectRoot: string;
+  relTargetFilePath: string;
 }
 
 export type AnyOpts = {
@@ -31,24 +32,24 @@ export type ModifyFn = (opts: AnyOpts) => TSQueryStringTransformer;
 
 export function replaceFileContents(
   targetFile: string,
-  selector: string,
-  modifyFn: ModifyFn,
   opts: ModifyFileOptions,
 ) {
+  const { modifyFn, selector } = opts;
   if (targetFile == '') {
     console.log('targetFile is empty', { targetFile });
     return;
   }
   const replaceFn = modifyFn({ ...opts });
+  if (!selector) return targetFile;
   return tsquery.replace(targetFile, selector, replaceFn);
 }
 
 export function replaceNodeContents(
   targetFile: string,
   node: Node,
-  modifyFn: ModifyFn,
   opts: ModifyFileOptions,
 ) {
+  const { modifyFn } = opts;
   if (targetFile == '') {
     console.log('targetFile is empty', { targetFile });
     return;
@@ -57,41 +58,57 @@ export function replaceNodeContents(
   return replaceOne(targetFile, node, replaceFn);
 }
 
-export function replaceInFile(
-  targetFilePath: string,
-  selector: string,
-  modifyFn: ModifyFn,
+export function replaceContentInSrc(
+  targetFile: string,
+  ast: SourceFile,
   opts: ModifyFileOptions,
 ) {
+  const { selector, findNodeFn } = opts;
+  if (findNodeFn) {
+    const node = findNodeFn(ast);
+    if (!node) {
+      // console.log('no matching node');
+      return targetFile;
+    }
+    return replaceNodeContents(targetFile, ast, opts);
+  }
+  if (!selector) {
+    // console.log('no selector');
+    return targetFile;
+  }
+  return replaceFileContents(targetFile, opts);
+}
+
+export function replaceInFile(targetFilePath: string, opts: ModifyFileOptions) {
   const targetFile = readFileIfExisting(targetFilePath);
+  if (!targetFile || targetFile === '') {
+    console.log('no such file', targetFilePath);
+    return;
+  }
   const ast = tsquery.ast(targetFile);
   const { checkFn, getDefaultNodeFn } = opts;
   if (checkFn) {
+    // console.log('check');
     const checkResult = checkFn(ast);
+    // console.log({ checkResult });
     if (checkResult) {
-      return replaceFileContents(targetFile, selector, modifyFn, opts);
+      return replaceContentInSrc(targetFile, ast, opts);
     } else {
+      // console.log('default');
       if (getDefaultNodeFn) {
         const node = getDefaultNodeFn(ast);
-        return replaceNodeContents(targetFile, node, modifyFn, opts);
+        return replaceNodeContents(targetFile, node, opts);
       }
     }
   }
-
-  return replaceFileContents(targetFile, selector, modifyFn, opts);
+  return replaceContentInSrc(targetFile, ast, opts);
 }
 
-export function modifyTree(
-  tree: Tree,
-  selector: string,
-  modifyFn: ModifyFn,
-  opts: ModifyTreeOptions,
-) {
+export function modifyTree(tree: Tree, opts: ModifyTreeOptions) {
   const { projectRoot, relTargetFilePath } = opts;
   const targetFilePath = path.join(projectRoot, relTargetFilePath);
   const targetFile = readFileIfExisting(targetFilePath);
-
-  const newContents = replaceInFile(targetFilePath, selector, modifyFn, opts);
+  const newContents = replaceInFile(targetFilePath, opts);
   if (newContents !== targetFile && newContents) {
     tree.write(targetFilePath, newContents);
   }

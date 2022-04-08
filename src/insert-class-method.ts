@@ -32,12 +32,12 @@ export function insertClassMethodInFile(
   filePath: string,
   opts: ClassMethodInsertOptions,
 ) {
-  replaceInFile(filePath, 'ClassDeclaration', insertInMethodBlock, opts);
+  replaceInFile(filePath, { modifyFn: insertInMethodBlock, ...opts });
 }
 
 export function insertClassMethodInTree(
   tree: Tree,
   opts: ClassMethodInsertOptions,
 ) {
-  modifyTree(tree, 'ClassDeclaration', insertInMethodBlock, opts);
+  modifyTree(tree, opts);
 }

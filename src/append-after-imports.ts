@@ -32,19 +32,16 @@ export function appendAfterImportsInFile(
 ) {
   const allOpts = {
     checkFn: hasAnyImportDecl,
+    findNodeFn: findLastImport,
+    modifyFn: insertAfterLastImport,
     getDefaultNodeFn: getFirstStatement,
     ...opts,
   };
-  return replaceInFile(
-    filePath,
-    'ImportDeclaration',
-    insertAfterLastImport,
-    allOpts,
-  );
+  return replaceInFile(filePath, allOpts);
 }
 
 const hasAnyImportDecl = (node: SourceFile) => Boolean(findLastImport(node));
 
 export function appendAfterImportsInTree(tree: Tree, opts: InsertTreeOptions) {
-  return modifyTree(tree, 'ImportDeclaration', insertAfterLastImport, opts);
+  return modifyTree(tree, opts);
 }

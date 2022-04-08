@@ -30,12 +30,12 @@ export function insertClassPropertyInFile(
   filePath: string,
   opts: ClassPropInsertOptions,
 ) {
-  return replaceInFile(filePath, 'ClassDeclaration', insertInClassScope, opts);
+  return replaceInFile(filePath, { modifyFn: insertInClassScope, ...opts });
 }
 
 export function insertClassPropertyInTree(
   tree: Tree,
   opts: ClassPropInsertOptions,
 ) {
-  return modifyTree(tree, 'ClassDeclaration', insertInClassScope, opts);
+  return modifyTree(tree, opts);
 }

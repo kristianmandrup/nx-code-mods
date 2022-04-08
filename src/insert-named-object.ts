@@ -1,13 +1,9 @@
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { insertCode } from './insert-code';
-import { findDeclarationIdentifier } from './find';
+import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
 import { Node } from 'typescript';
-import {
-  ObjectLiteralElementLike,
-  ObjectLiteralExpression,
-  VariableStatement,
-} from 'typescript';
+import { ObjectLiteralElementLike, ObjectLiteralExpression } from 'typescript';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 
 export interface InsertObjectOptions {
@@ -73,16 +69,10 @@ export const insertInObject =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (node: Node): string | null | undefined => {
     const { id, codeToInsert, insertPos } = opts;
-    const vsNode = node as VariableStatement;
-    const declaration = findDeclarationIdentifier(vsNode, id);
+    const declaration = findVariableDeclaration(node, id);
     if (!declaration) return;
     const objLiteral = declaration.initializer as ObjectLiteralExpression;
-    const newTxt = insertIntoObject(
-      vsNode,
-      objLiteral,
-      codeToInsert,
-      insertPos,
-    );
+    const newTxt = insertIntoObject(node, objLiteral, codeToInsert, insertPos);
     return newTxt;
   };
 
@@ -90,12 +80,12 @@ export function insertIntoNamedObjectInFile(
   filePath: string,
   opts: InsertObjectOptions,
 ) {
-  return replaceInFile(filePath, 'VariableStatement', insertInObject, opts);
+  return replaceInFile(filePath, { modifyFn: insertInObject, ...opts });
 }
 
 export function insertIntoNamedObjectInTree(
   tree: Tree,
   opts: InsertObjectOptions,
 ) {
-  return modifyTree(tree, 'VariableStatement', insertInObject, opts);
+  return modifyTree(tree, opts);
 }
