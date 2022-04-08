@@ -1,9 +1,6 @@
-import { AnyOpts, modifyFile, modifyTree } from './modify-file';
+import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 import { insertCode } from './insert-code';
-import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
-import * as path from 'path';
 import { Tree } from '@nrwl/devkit';
-import { tsquery } from '@phenomnomnominal/tsquery';
 import { findClassDeclaration, findFirstMethodDeclaration } from './find';
 import { Node } from 'typescript';
 
@@ -35,7 +32,7 @@ export function insertClassMethodInFile(
   filePath: string,
   opts: ClassMethodInsertOptions,
 ) {
-  modifyFile(filePath, 'ClassDeclaration', insertInMethodBlock, opts);
+  replaceInFile(filePath, 'ClassDeclaration', insertInMethodBlock, opts);
 }
 
 export function insertClassMethodInTree(

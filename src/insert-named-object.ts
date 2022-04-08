@@ -8,7 +8,7 @@ import {
   ObjectLiteralExpression,
   VariableStatement,
 } from 'typescript';
-import { AnyOpts, modifyFile, modifyTree } from './modify-file';
+import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 
 export interface InsertObjectOptions {
   projectRoot: string;
@@ -90,12 +90,12 @@ export function insertIntoNamedObjectInFile(
   filePath: string,
   opts: InsertObjectOptions,
 ) {
-  modifyFile(filePath, 'VariableStatement', insertInObject, opts);
+  return replaceInFile(filePath, 'VariableStatement', insertInObject, opts);
 }
 
 export function insertIntoNamedObjectInTree(
   tree: Tree,
   opts: InsertObjectOptions,
 ) {
-  modifyTree(tree, 'VariableStatement', insertInObject, opts);
+  return modifyTree(tree, 'VariableStatement', insertInObject, opts);
 }

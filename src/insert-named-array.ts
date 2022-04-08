@@ -1,5 +1,5 @@
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { AnyOpts, modifyFile, modifyTree } from './modify-file';
+import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 import { insertCode } from './insert-code';
 import { findDeclarationIdentifier } from './find';
 import { Tree } from '@nrwl/devkit';
@@ -64,12 +64,12 @@ export function insertIntoNamedArrayInFile(
   filePath: string,
   opts: InsertArrayOptions,
 ) {
-  return modifyFile(filePath, 'VariableStatement', insertInArray, opts);
+  return replaceInFile(filePath, 'VariableStatement', insertInArray, opts);
 }
 
 export function insertIntoNamedArrayInTree(
   tree: Tree,
   opts: InsertArrayOptions,
 ) {
-  modifyTree(tree, 'VariableStatement', insertInArray, opts);
+  return modifyTree(tree, 'VariableStatement', insertInArray, opts);
 }

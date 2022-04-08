@@ -1,29 +1,47 @@
+import { SourceFile } from 'typescript';
 import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
-import { findLastImport } from './find';
-import { modifyTree, AnyOpts, modifyFile } from './modify-file';
+import { getFirstStatement, findLastImport } from './find';
+import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
 
 export interface InsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
   codeToInsert: string;
+  indexAdj?: number;
 }
 
 export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
-  const { codeToInsert } = opts;
+  const { codeToInsert, indexAdj } = opts;
   const lastImportStmt = findLastImport(node);
-  if (!lastImportStmt) return;
-  const lastImportIndex = lastImportStmt.getEnd();
-  return insertCode(node, lastImportIndex, codeToInsert);
+  let importIndex = 0;
+  if (!lastImportStmt) {
+    importIndex = node.getStart() + (indexAdj || 0);
+  } else {
+    importIndex = lastImportStmt.getEnd() + (indexAdj || 0);
+  }
+  return insertCode(node, importIndex, codeToInsert);
 };
 
 export function appendAfterImportsInFile(
   filePath: string,
-  opts: InsertOptions,
+  opts: { codeToInsert: string; indexAdj?: number },
 ) {
-  modifyFile(filePath, 'ImportDeclaration', insertAfterLastImport, opts);
+  const allOpts = {
+    checkFn: hasAnyImportDecl,
+    getDefaultNodeFn: getFirstStatement,
+    ...opts,
+  };
+  return replaceInFile(
+    filePath,
+    'ImportDeclaration',
+    insertAfterLastImport,
+    allOpts,
+  );
 }
 
+const hasAnyImportDecl = (node: SourceFile) => Boolean(findLastImport(node));
+
 export function appendAfterImportsInTree(tree: Tree, opts: InsertOptions) {
-  modifyTree(tree, 'ImportDeclaration', insertAfterLastImport, opts);
+  return modifyTree(tree, 'ImportDeclaration', insertAfterLastImport, opts);
 }

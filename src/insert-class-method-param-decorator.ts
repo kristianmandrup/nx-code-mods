@@ -1,7 +1,7 @@
 import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findMethodDeclaration } from './find';
-import { modifyFile, AnyOpts, modifyTree } from './modify-file';
+import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
 import { Node } from 'typescript';
 
 export interface ClassMethodDecParamInsertOptions {
@@ -27,12 +27,22 @@ export function insertClassMethodParamDecoratorInFile(
   filePath: string,
   opts: ClassMethodDecParamInsertOptions,
 ) {
-  modifyFile(filePath, 'ClassDeclaration', insertParamInMatchingMethod, opts);
+  return replaceInFile(
+    filePath,
+    'ClassDeclaration',
+    insertParamInMatchingMethod,
+    opts,
+  );
 }
 
 export function insertClassMethodParamDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecParamInsertOptions,
 ) {
-  modifyTree(tree, 'ClassDeclaration', insertParamInMatchingMethod, opts);
+  return modifyTree(
+    tree,
+    'ClassDeclaration',
+    insertParamInMatchingMethod,
+    opts,
+  );
 }

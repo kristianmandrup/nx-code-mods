@@ -1,7 +1,7 @@
 import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
 import { findBlock, findClassDeclaration } from './find';
-import { modifyFile, AnyOpts, modifyTree } from './modify-file';
+import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
 import { Node } from 'typescript';
 
 export interface ClassPropInsertOptions {
@@ -30,12 +30,12 @@ export function insertClassPropertyInFile(
   filePath: string,
   opts: ClassPropInsertOptions,
 ) {
-  modifyFile(filePath, 'ClassDeclaration', insertInClassScope, opts);
+  return replaceInFile(filePath, 'ClassDeclaration', insertInClassScope, opts);
 }
 
 export function insertClassPropertyInTree(
   tree: Tree,
   opts: ClassPropInsertOptions,
 ) {
-  modifyTree(tree, 'ClassDeclaration', insertInClassScope, opts);
+  return modifyTree(tree, 'ClassDeclaration', insertInClassScope, opts);
 }

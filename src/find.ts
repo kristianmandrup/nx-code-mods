@@ -6,6 +6,7 @@ import {
   MethodDeclaration,
   Node,
   PropertyDeclaration,
+  SourceFile,
   Statement,
   VariableDeclaration,
   VariableStatement,
@@ -14,10 +15,19 @@ import { tsquery } from '@phenomnomnominal/tsquery';
 
 type WhereFn = (stmt: Node) => boolean;
 
+export const getFirstStatement = (ast: SourceFile) => ast.statements[0];
+export const getLastStatement = (ast: SourceFile) =>
+  ast.statements[ast.statements.length - 1];
+
 export const findLastImport = (txtNode: any): ImportDeclaration | undefined => {
-  const lastImport = tsquery(txtNode, 'ImportDeclaration:last-child');
-  if (!lastImport) return;
-  return lastImport[0] as ImportDeclaration;
+  try {
+    const lastImport = tsquery(txtNode, 'ImportDeclaration:last-child');
+    if (!lastImport) return;
+    return lastImport[0] as ImportDeclaration;
+  } catch (e) {
+    console.error(e);
+    return;
+  }
 };
 
 export const findClassDeclaration = (
