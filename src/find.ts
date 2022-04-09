@@ -10,6 +10,8 @@ import {
   SortedArray,
   SourceFile,
   Statement,
+  StringLiteral,
+  StringLiteralLike,
   VariableDeclaration,
   VariableStatement,
 } from 'typescript';
@@ -92,6 +94,18 @@ export const findClassPropertyDeclaration = (
   if (where(found)) {
     return found;
   }
+};
+
+export const findStringLiteral = (
+  node: any,
+  id: string,
+): StringLiteralLike | undefined => {
+  const selector = `StringLiteral[value='${id}']`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[0] as StringLiteralLike;
 };
 
 export const findVariableDeclaration = (

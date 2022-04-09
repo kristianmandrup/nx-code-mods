@@ -1,24 +1,50 @@
-export type InsertPosParam = string | number | undefined;
+import { Node } from 'typescript';
 
-export const getInsertPosNum = (insertPos: string, arrLength: number) => {
-  insertPos = insertPos || 'start';
-  if (Number.isInteger(insertPos)) {
-    let insertPosNum = parseInt('' + insertPos);
-    if (insertPosNum <= 0 || insertPosNum >= arrLength) {
-      throw new Error(
-        `insertIntoArray: Invalid insertPos ${insertPos} argument`,
-      );
+export type InsertPosNumParams = {
+  literalExpr: Node;
+  elements: any[];
+  insert: CollectionInsert;
+  count: number;
+};
+
+export const getInsertPosNum = ({
+  literalExpr,
+  elements,
+  insert,
+  count,
+}: InsertPosNumParams) => {
+  let { findElement, index } = insert;
+  if (findElement) {
+    const node = findElement(literalExpr);
+    return elements.indexOf(node);
+  }
+  index = index || 'start';
+  if (Number.isInteger(index)) {
+    let insertPosNum = parseInt('' + index);
+    if (insertPosNum <= 0 || insertPosNum >= count) {
+      throw new Error(`insertIntoArray: Invalid insertPos ${index} argument`);
     }
     return insertPosNum;
   }
-  if (insertPos === 'start') {
+  if (index === 'start') {
     return 0;
   }
-  if (insertPos === 'end') {
-    return arrLength;
+  if (index === 'end') {
+    return count;
   }
   return;
 };
+
+export type CollectionIndex = 'start' | 'end' | number;
+export type FindChildNode = (node: Node) => Node | undefined;
+
+export type CollectionInsert = {
+  index?: CollectionIndex;
+  findElement?: FindChildNode;
+  relative?: BeforeOrAfter;
+};
+
+export type BeforeOrAfter = 'before' | 'after';
 
 export const afterLastElementPos = (literals: any[]) =>
   literals[literals.length - 1].getEnd();

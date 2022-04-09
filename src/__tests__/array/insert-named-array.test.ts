@@ -1,5 +1,7 @@
 import { insertIntoNamedArrayInFile } from '../..';
 import * as path from 'path';
+import { findStringLiteral } from '../../find';
+import { Node } from 'typescript';
 
 const context = describe;
 
@@ -59,7 +61,7 @@ describe('insert array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-two-elements.txt',
+          'has-matching-array-with-elements.txt',
         );
         const codeToInsert = `'c'`;
         const inserted = insertIntoNamedArrayInFile(filePath, {
@@ -76,13 +78,15 @@ describe('insert array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-two-elements.txt',
+          'has-matching-array-with-elements.txt',
         );
         const codeToInsert = `'c'`;
         const inserted = insertIntoNamedArrayInFile(filePath, {
           codeToInsert,
           id: 'myNamedList',
-          insertPos: 1,
+          insert: {
+            index: 1,
+          },
         });
         const insertedTxt = inserted ? inserted : '';
         console.log({ insertedTxt });
@@ -95,17 +99,41 @@ describe('insert array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-two-elements.txt',
+          'has-matching-array-with-elements.txt',
         );
         const codeToInsert = `'c'`;
         const inserted = insertIntoNamedArrayInFile(filePath, {
           codeToInsert,
           id: 'myNamedList',
-          insertPos: 'end',
+          insert: {
+            index: 'end',
+          },
         });
         const insertedTxt = inserted ? inserted : '';
         console.log({ insertedTxt });
         expect(insertedTxt.includes(`'b','c'`)).toBeTruthy();
+      });
+    });
+
+    context('after b string literal', () => {
+      it.only('inserts after b string literal', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-array-with-elements.txt',
+        );
+
+        const codeToInsert = `'c'`;
+        const inserted = insertIntoNamedArrayInFile(filePath, {
+          codeToInsert,
+          id: 'myNamedObj',
+          insert: {
+            relative: 'before',
+            findElement: (node: Node) => findStringLiteral(node, 'b'),
+          },
+        });
+        const insertedTxt = inserted ? inserted : '';
+        expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
   });

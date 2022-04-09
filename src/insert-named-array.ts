@@ -1,6 +1,7 @@
 import {
   afterLastElementPos,
   beforeElementPos,
+  CollectionInsert,
   ensurePrefixComma,
   ensureSuffixComma,
   getInsertPosNum,
@@ -12,13 +13,10 @@ import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
 
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
-
-type ArrayPosition = 'start' | 'end' | number;
-
 export interface InsertArrayOptions {
   id: string;
   codeToInsert: string;
-  insertPos?: ArrayPosition;
+  insert?: CollectionInsert;
   indexAdj?: number;
 }
 
@@ -27,14 +25,21 @@ export interface InsertArrayTreeOptions extends InsertArrayOptions {
   relTargetFilePath: string;
 }
 
+// TODO: support BeforeOrAfter insertPos
 export const insertIntoArray = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { literalExpr, codeToInsert, insertPos, indexAdj } = opts;
+  let { literalExpr, codeToInsert, insert, indexAdj } = opts;
   const literals = literalExpr.elements;
   const litCount = literals.length;
-  let insertPosNum = getInsertPosNum(insertPos, litCount) || 0;
+  let insertPosNum =
+    getInsertPosNum({
+      literalExpr,
+      elements: literals,
+      insert,
+      count: litCount,
+    }) || 0;
 
   if (litCount === 0) {
     const insertPosition = literalExpr.getStart() + 1;

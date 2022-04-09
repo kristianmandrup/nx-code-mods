@@ -1,6 +1,7 @@
 import {
   afterLastElementPos,
   beforeElementPos,
+  CollectionInsert,
   ensurePrefixComma,
   ensureSuffixComma,
   getInsertPosNum,
@@ -13,11 +14,10 @@ import { SourceFile } from 'typescript';
 import { ObjectLiteralExpression } from 'typescript';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 
-type ObjectPosition = 'start' | 'end' | string | number;
 export interface InsertObjectOptions {
   id: string;
   codeToInsert: string;
-  insertPos?: ObjectPosition;
+  insert?: CollectionInsert;
   indexAdj?: number;
 }
 
@@ -26,14 +26,21 @@ export interface InsertObjectTreeOptions extends InsertObjectOptions {
   relTargetFilePath: string;
 }
 
+// TODO: support BeforeOrAfter insertPos
 export const insertIntoObject = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { literalExpr, codeToInsert, insertPos, indexAdj } = opts;
+  let { literalExpr, codeToInsert, insert, indexAdj } = opts;
   const props = literalExpr.properties;
   const propCount = props.length;
-  let insertPosNum = getInsertPosNum(insertPos, propCount) || 0;
+  let insertPosNum =
+    getInsertPosNum({
+      literalExpr,
+      elements: props,
+      insert,
+      count: propCount,
+    }) || 0;
   if (propCount === 0) {
     const insertPosition = literalExpr.getStart() + 1;
     return insertCode(srcNode, insertPosition, codeToInsert);
@@ -53,14 +60,14 @@ export const insertIntoObject = (
 export type InsertInObjectFn = {
   id: string;
   codeToInsert: string;
-  insertPos: ObjectPosition;
+  insert: CollectionInsert;
   indexAdj?: number;
 };
 
 export const insertInObject =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id, codeToInsert, insertPos } = opts;
+    const { id, codeToInsert, insert } = opts;
     const declaration = findVariableDeclaration(srcNode, id);
     if (!declaration) {
       return;
@@ -69,7 +76,7 @@ export const insertInObject =
     const newTxt = insertIntoObject(srcNode, {
       literalExpr,
       codeToInsert,
-      insertPos,
+      insert,
     });
     return newTxt;
   };

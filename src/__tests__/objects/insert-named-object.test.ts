@@ -1,5 +1,7 @@
+import { findStringLiteral } from './../../find';
 import { insertIntoNamedObjectInFile } from '../..';
 import * as path from 'path';
+import { Node } from 'typescript';
 
 const context = describe;
 
@@ -82,7 +84,9 @@ describe('insert object', () => {
         const inserted = insertIntoNamedObjectInFile(filePath, {
           codeToInsert,
           id: 'myNamedObj',
-          insertPos: 1,
+          insert: {
+            index: 1,
+          },
         });
         const insertedTxt = inserted ? inserted : '';
         expect(insertedTxt.includes(`c: 3,b: 2`)).toBeTruthy();
@@ -100,7 +104,31 @@ describe('insert object', () => {
         const inserted = insertIntoNamedObjectInFile(filePath, {
           codeToInsert,
           id: 'myNamedObj',
-          insertPos: 'end',
+          insert: {
+            index: 'end',
+          },
+        });
+        const insertedTxt = inserted ? inserted : '';
+        expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+      });
+    });
+
+    context('after b string literal', () => {
+      it('inserts after b string literal', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-props.txt',
+        );
+
+        const codeToInsert = `c: 3`;
+        const inserted = insertIntoNamedObjectInFile(filePath, {
+          codeToInsert,
+          id: 'myNamedObj',
+          insert: {
+            relative: 'before',
+            findElement: (node: Node) => findStringLiteral(node, 'b'),
+          },
         });
         const insertedTxt = inserted ? inserted : '';
         expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
