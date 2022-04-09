@@ -1,13 +1,22 @@
+import { findStringLiteral, findIdentifier } from './find';
 import { Identifier, Node, PropertyAssignment } from 'typescript';
 
 export type InsertPosNumParams = {
+  type: 'array' | 'object';
   literalExpr: Node;
   elements: any[];
   insert: CollectionInsert;
   count: number;
 };
 
+export const createFindStrLit = (id: string) => (node: Node) =>
+  findStringLiteral(node, id);
+
+export const createFindId = (id: string) => (node: Node) =>
+  findIdentifier(node, id);
+
 export const getInsertPosNum = ({
+  // type,
   literalExpr,
   elements,
   insert,
@@ -15,6 +24,9 @@ export const getInsertPosNum = ({
 }: InsertPosNumParams) => {
   let { findElement, index } = insert;
   if (findElement) {
+    if (typeof findElement === 'string') {
+      findElement = createFindId(findElement);
+    }
     const node = findElement(literalExpr);
     if (!node) {
       console.log('no matching element found');
@@ -62,7 +74,7 @@ export type CheckUnderNode = (node: Node) => boolean | undefined;
 
 export type CollectionInsert = {
   index?: CollectionIndex;
-  findElement?: FindChildNode;
+  findElement?: FindChildNode | string;
   abortIfFound?: CheckUnderNode;
   relative?: BeforeOrAfter;
 };

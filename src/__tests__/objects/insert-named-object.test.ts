@@ -1,4 +1,4 @@
-import { findIdentifier, findStringLiteral } from './../../find';
+import { findIdentifier } from './../../find';
 import { insertIntoNamedObjectInFile } from '../..';
 import * as path from 'path';
 import { Node } from 'typescript';
@@ -17,6 +17,7 @@ describe('insert object', () => {
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
       expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -35,6 +36,7 @@ describe('insert object', () => {
       const insertedTxt = inserted ? inserted : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
       expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -113,8 +115,8 @@ describe('insert object', () => {
       });
     });
 
-    context('after b string literal', () => {
-      it('inserts after b string literal', () => {
+    context(`findElement function`, () => {
+      it('inserts after b identifier', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -128,6 +130,29 @@ describe('insert object', () => {
           insert: {
             relative: 'after',
             findElement: (node: Node) => findIdentifier(node, 'b'),
+          },
+        });
+        const insertedTxt = inserted ? inserted : '';
+        console.log({ insertedTxt });
+        expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+      });
+    });
+
+    context(`findElement 'b'`, () => {
+      it('inserts after b identifier', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-props.txt',
+        );
+
+        const codeToInsert = `c: 3`;
+        const inserted = insertIntoNamedObjectInFile(filePath, {
+          codeToInsert,
+          id: 'myNamedObj',
+          insert: {
+            relative: 'after',
+            findElement: 'b',
           },
         });
         const insertedTxt = inserted ? inserted : '';

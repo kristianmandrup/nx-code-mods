@@ -17,6 +17,7 @@ describe('insert array', () => {
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
       expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -35,6 +36,7 @@ describe('insert array', () => {
       const insertedTxt = inserted ? inserted : '';
       const origCode = `const anotherList = ['a','b']`;
       expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 

@@ -40,6 +40,7 @@ export const insertIntoObject = (
   const propCount = props.length;
   let insertPosNum =
     getInsertPosNum({
+      type: 'object',
       literalExpr,
       elements: props,
       insert,

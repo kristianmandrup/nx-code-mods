@@ -40,6 +40,7 @@ export const insertIntoArray = (
 
   let insertPosNum =
     getInsertPosNum({
+      type: 'array',
       literalExpr,
       elements: literals,
       insert,

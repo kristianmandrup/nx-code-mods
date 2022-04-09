@@ -5,16 +5,19 @@ import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
 import { Node } from 'typescript';
 
 export interface ClassDecInsertOptions {
-  projectRoot: string;
-  relTargetFilePath: string;
-  className: string;
+  id: string;
   codeToInsert: string;
   indexAdj?: number;
 }
 
+export interface ClassDecInsertTreeOptions extends ClassDecInsertOptions {
+  projectRoot: string;
+  relTargetFilePath: string;
+}
+
 export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
-  const { className, codeToInsert, indexAdj } = opts;
-  const classDecl = findClassDeclaration(node, className);
+  const { id, codeToInsert, indexAdj } = opts;
+  const classDecl = findClassDeclaration(node, id);
   if (!classDecl) return;
   const classDeclIndex = classDecl.getStart() + (indexAdj || 0);
   return insertCode(node, classDeclIndex, codeToInsert);
@@ -29,7 +32,7 @@ export function insertClassDecoratorInFile(
 
 export function insertClassDecoratorInTree(
   tree: Tree,
-  opts: ClassDecInsertOptions,
+  opts: ClassDecInsertTreeOptions,
 ) {
   return modifyTree(tree, opts);
 }
