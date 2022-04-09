@@ -89,7 +89,6 @@ describe('insert array', () => {
           },
         });
         const insertedTxt = inserted ? inserted : '';
-        console.log({ insertedTxt });
         expect(insertedTxt.includes(`'c','b'`)).toBeTruthy();
       });
     });
@@ -110,13 +109,12 @@ describe('insert array', () => {
           },
         });
         const insertedTxt = inserted ? inserted : '';
-        console.log({ insertedTxt });
         expect(insertedTxt.includes(`'b','c'`)).toBeTruthy();
       });
     });
 
     context('after b string literal', () => {
-      it.only('inserts after b string literal', () => {
+      it('inserts after b string literal', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -126,14 +124,14 @@ describe('insert array', () => {
         const codeToInsert = `'c'`;
         const inserted = insertIntoNamedArrayInFile(filePath, {
           codeToInsert,
-          id: 'myNamedObj',
+          id: 'myNamedList',
           insert: {
-            relative: 'before',
+            relative: 'after',
             findElement: (node: Node) => findStringLiteral(node, 'b'),
           },
         });
         const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+        expect(insertedTxt.includes(`'b','c'`)).toBeTruthy();
       });
     });
   });

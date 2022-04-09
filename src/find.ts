@@ -108,6 +108,19 @@ export const findStringLiteral = (
   return result[0] as StringLiteralLike;
 };
 
+export const findIdentifier = (
+  node: any,
+  id: string,
+): Identifier | undefined => {
+  const selector = `Identifier[name='${id}']`;
+  const result = tsquery(node, selector);
+  console.log({ selector, result });
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[0] as Identifier;
+};
+
 export const findVariableDeclaration = (
   node: any,
   id: string,

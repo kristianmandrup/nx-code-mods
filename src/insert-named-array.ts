@@ -1,6 +1,6 @@
 import {
   afterLastElementPos,
-  beforeElementPos,
+  aroundElementPos,
   CollectionInsert,
   ensurePrefixComma,
   ensureSuffixComma,
@@ -25,14 +25,19 @@ export interface InsertArrayTreeOptions extends InsertArrayOptions {
   relTargetFilePath: string;
 }
 
-// TODO: support BeforeOrAfter insertPos
 export const insertIntoArray = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
   let { literalExpr, codeToInsert, insert, indexAdj } = opts;
+  insert = insert || {};
+  const { abortIfFound } = insert;
+  if (abortIfFound && abortIfFound(literalExpr)) {
+    return;
+  }
   const literals = literalExpr.elements;
   const litCount = literals.length;
+
   let insertPosNum =
     getInsertPosNum({
       literalExpr,
@@ -40,20 +45,22 @@ export const insertIntoArray = (
       insert,
       count: litCount,
     }) || 0;
-
   if (litCount === 0) {
     const insertPosition = literalExpr.getStart() + 1;
     return insertCode(srcNode, insertPosition, codeToInsert);
   }
-  const code =
-    insertPosNum === litCount
-      ? ensurePrefixComma(codeToInsert)
-      : ensureSuffixComma(codeToInsert);
 
   let insertPosition =
     insertPosNum >= litCount
       ? afterLastElementPos(literals)
-      : beforeElementPos(literals, insertPosNum);
+      : aroundElementPos(literals, insertPosNum, insert.relative);
+
+  const shouldInsertAfter =
+    insertPosNum === litCount || insert.relative === 'after';
+  const code = shouldInsertAfter
+    ? ensurePrefixComma(codeToInsert)
+    : ensureSuffixComma(codeToInsert);
+
   insertPosition += indexAdj || 0;
   return insertCode(srcNode, insertPosition, code);
 };
@@ -61,7 +68,7 @@ export const insertIntoArray = (
 export const insertInArray =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id, codeToInsert, insertPos } = opts;
+    const { id, codeToInsert, insert } = opts;
     const declaration = findVariableDeclaration(srcNode, id);
     if (!declaration) {
       return;
@@ -70,7 +77,7 @@ export const insertInArray =
     const newTxt = insertIntoArray(srcNode, {
       literalExpr,
       codeToInsert,
-      insertPos,
+      insert,
     });
     return newTxt;
   };

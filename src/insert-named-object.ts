@@ -1,6 +1,6 @@
 import {
   afterLastElementPos,
-  beforeElementPos,
+  aroundElementPos,
   CollectionInsert,
   ensurePrefixComma,
   ensureSuffixComma,
@@ -26,12 +26,16 @@ export interface InsertObjectTreeOptions extends InsertObjectOptions {
   relTargetFilePath: string;
 }
 
-// TODO: support BeforeOrAfter insertPos
 export const insertIntoObject = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
   let { literalExpr, codeToInsert, insert, indexAdj } = opts;
+  insert = insert || {};
+  const { abortIfFound } = insert;
+  if (abortIfFound && abortIfFound(literalExpr)) {
+    return;
+  }
   const props = literalExpr.properties;
   const propCount = props.length;
   let insertPosNum =
@@ -45,14 +49,18 @@ export const insertIntoObject = (
     const insertPosition = literalExpr.getStart() + 1;
     return insertCode(srcNode, insertPosition, codeToInsert);
   }
-  const code =
-    insertPosNum === propCount
-      ? ensurePrefixComma(codeToInsert)
-      : ensureSuffixComma(codeToInsert);
   let insertPosition =
     insertPosNum >= propCount
       ? afterLastElementPos(props)
-      : beforeElementPos(props, insertPosNum);
+      : aroundElementPos(props, insertPosNum, insert.relative);
+
+  console.log({ insertPosNum, insertPosition, insert });
+
+  const shouldInsertAfter =
+    insertPosNum === propCount || insert.relative === 'after';
+  const code = shouldInsertAfter
+    ? ensurePrefixComma(codeToInsert)
+    : ensureSuffixComma(codeToInsert);
   insertPosition += indexAdj || 0;
   return insertCode(srcNode, insertPosition, code);
 };

@@ -1,4 +1,4 @@
-import { findStringLiteral } from './../../find';
+import { findIdentifier, findStringLiteral } from './../../find';
 import { insertIntoNamedObjectInFile } from '../..';
 import * as path from 'path';
 import { Node } from 'typescript';
@@ -126,11 +126,12 @@ describe('insert object', () => {
           codeToInsert,
           id: 'myNamedObj',
           insert: {
-            relative: 'before',
-            findElement: (node: Node) => findStringLiteral(node, 'b'),
+            relative: 'after',
+            findElement: (node: Node) => findIdentifier(node, 'b'),
           },
         });
         const insertedTxt = inserted ? inserted : '';
+        console.log({ insertedTxt });
         expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
