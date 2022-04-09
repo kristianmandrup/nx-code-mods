@@ -24,9 +24,11 @@ export const insertIntoArray = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  const { arrLiteral, codeToInsert, insertPos, indexAdj } = opts;
+  let { arrLiteral, codeToInsert, insertPos, indexAdj } = opts;
+  insertPos = insertPos || 'start';
   const arrLength = arrLiteral.elements.length;
   let insertPosition;
+  let code = codeToInsert;
   if (arrLiteral.elements.length == 0) {
     insertPosition = arrLiteral.getStart() + 1;
   } else {
@@ -40,13 +42,23 @@ export const insertIntoArray = (
         );
       }
       insertPosition = nodeArray[insertPosNum].getStart() + (indexAdj || 0);
+      if (insertPosNum > 0) {
+        code = codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;
+      } else {
+        code = codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
+      }
     }
     if (insertPos === 'end') {
       const lastIndex = arrLiteral.elements.length - 1;
       insertPosition = nodeArray[lastIndex].getEnd();
+
+      code = codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;
+    }
+    if (insertPos === 'start') {
+      code = codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
     }
   }
-  return insertCode(srcNode, insertPosition, codeToInsert);
+  return insertCode(srcNode, insertPosition, code);
 };
 
 export const insertInArray =
