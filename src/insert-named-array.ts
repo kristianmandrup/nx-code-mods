@@ -1,10 +1,19 @@
+import {
+  afterLastElementPos,
+  beforeElementPos,
+  ensurePrefixComma,
+  ensureSuffixComma,
+  getInsertPosNum,
+} from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 import { insertCode } from './insert-code';
 import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
 
-import { ArrayLiteralExpression, Node, SourceFile } from 'typescript';
+import { ArrayLiteralExpression, SourceFile } from 'typescript';
+
+type ArrayPosition = 'start' | 'end' | number;
 
 export interface InsertArrayOptions {
   id: string;
@@ -18,46 +27,29 @@ export interface InsertArrayTreeOptions extends InsertArrayOptions {
   relTargetFilePath: string;
 }
 
-type ArrayPosition = 'start' | 'end' | number;
-
 export const insertIntoArray = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { arrLiteral, codeToInsert, insertPos, indexAdj } = opts;
-  insertPos = insertPos || 'start';
-  const arrLength = arrLiteral.elements.length;
-  let insertPosition;
-  let code = codeToInsert;
-  if (arrLiteral.elements.length == 0) {
-    insertPosition = arrLiteral.getStart() + 1;
-  } else {
-    const nodeArray = arrLiteral.elements;
-    insertPosition = nodeArray[0].getStart();
-    if (Number.isInteger(insertPos)) {
-      const insertPosNum = parseInt('' + insertPos);
-      if (insertPosNum <= 0 || insertPosNum >= arrLength) {
-        throw new Error(
-          `insertIntoArray: Invalid insertPos ${insertPos} argument`,
-        );
-      }
-      insertPosition = nodeArray[insertPosNum].getStart() + (indexAdj || 0);
-      if (insertPosNum > 0) {
-        code = codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;
-      } else {
-        code = codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
-      }
-    }
-    if (insertPos === 'end') {
-      const lastIndex = arrLiteral.elements.length - 1;
-      insertPosition = nodeArray[lastIndex].getEnd();
+  let { literalExpr, codeToInsert, insertPos, indexAdj } = opts;
+  const literals = literalExpr.elements;
+  const litCount = literals.length;
+  let insertPosNum = getInsertPosNum(insertPos, litCount) || 0;
 
-      code = codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;
-    }
-    if (insertPos === 'start') {
-      code = codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
-    }
+  if (litCount === 0) {
+    const insertPosition = literalExpr.getStart() + 1;
+    return insertCode(srcNode, insertPosition, codeToInsert);
   }
+  const code =
+    insertPosNum === litCount
+      ? ensurePrefixComma(codeToInsert)
+      : ensureSuffixComma(codeToInsert);
+
+  let insertPosition =
+    insertPosNum >= litCount
+      ? afterLastElementPos(literals)
+      : beforeElementPos(literals, insertPosNum);
+  insertPosition += indexAdj || 0;
   return insertCode(srcNode, insertPosition, code);
 };
 
@@ -69,9 +61,9 @@ export const insertInArray =
     if (!declaration) {
       return;
     }
-    const arrLiteral = declaration.initializer as ArrayLiteralExpression;
+    const literalExpr = declaration.initializer as ArrayLiteralExpression;
     const newTxt = insertIntoArray(srcNode, {
-      arrLiteral,
+      literalExpr,
       codeToInsert,
       insertPos,
     });

@@ -1,61 +1,53 @@
+import {
+  afterLastElementPos,
+  beforeElementPos,
+  ensurePrefixComma,
+  ensureSuffixComma,
+  getInsertPosNum,
+} from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { insertCode } from './insert-code';
 import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
-import { Node } from 'typescript';
-import { ObjectLiteralElementLike, ObjectLiteralExpression } from 'typescript';
+import { SourceFile } from 'typescript';
+import { ObjectLiteralExpression } from 'typescript';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 
+type ObjectPosition = 'start' | 'end' | string | number;
 export interface InsertObjectOptions {
-  projectRoot: string;
-  relTargetFilePath: string;
   id: string;
   codeToInsert: string;
-  insertPos: ObjectPosition;
+  insertPos?: ObjectPosition;
   indexAdj?: number;
 }
 
-type ObjectPosition = 'start' | 'end' | string | number;
+export interface InsertObjectTreeOptions extends InsertObjectOptions {
+  projectRoot: string;
+  relTargetFilePath: string;
+}
 
-const insertIntoObject = (
-  vsNode: any,
-  objLiteral: ObjectLiteralExpression,
-  codeToInsert: string,
-  insertPos: ObjectPosition,
-  indexAdj?: number,
-): string | null => {
-  const objSize = objLiteral.properties.length;
-  if (objLiteral.properties.length == 0) return null;
-  const props = objLiteral.properties; // ObjectLiteralElementLike;
-  let insertPosition;
-  if (insertPos === 'start') {
-    insertPosition = props[0].getStart();
+export const insertIntoObject = (
+  srcNode: SourceFile,
+  opts: AnyOpts,
+): string | undefined => {
+  let { literalExpr, codeToInsert, insertPos, indexAdj } = opts;
+  const props = literalExpr.properties;
+  const propCount = props.length;
+  let insertPosNum = getInsertPosNum(insertPos, propCount) || 0;
+  if (propCount === 0) {
+    const insertPosition = literalExpr.getStart() + 1;
+    return insertCode(srcNode, insertPosition, codeToInsert);
   }
-
-  if (Number.isInteger(insertPos)) {
-    const insertPosNum = parseInt('' + insertPos);
-    if (insertPosNum <= 0 || insertPosNum >= objSize) {
-      throw new Error(
-        `insertIntoObject: Invalid insertPos ${insertPos} argument`,
-      );
-    }
-    insertPosition = props[insertPosNum].getStart();
-  }
-
-  if (insertPos === 'end') {
-    const lastIndex = objLiteral.properties.length - 1;
-    insertPosition = props[lastIndex].getEnd();
-  }
-  if (!insertPosition) {
-    const matchingProp = objLiteral.properties.find(
-      (prop: ObjectLiteralElementLike) =>
-        prop.name?.getText() === '' + insertPos,
-    );
-    insertPosition = matchingProp?.getStart();
-  }
-  if (!insertPosition) return null;
-  insertPosition = insertPosition + (indexAdj || 0);
-  return insertCode(vsNode, insertPosition, codeToInsert);
+  const code =
+    insertPosNum === propCount
+      ? ensurePrefixComma(codeToInsert)
+      : ensureSuffixComma(codeToInsert);
+  let insertPosition =
+    insertPosNum >= propCount
+      ? afterLastElementPos(props)
+      : beforeElementPos(props, insertPosNum);
+  insertPosition += indexAdj || 0;
+  return insertCode(srcNode, insertPosition, code);
 };
 
 export type InsertInObjectFn = {
@@ -67,12 +59,18 @@ export type InsertInObjectFn = {
 
 export const insertInObject =
   (opts: AnyOpts): TSQueryStringTransformer =>
-  (node: Node): string | null | undefined => {
+  (srcNode: any): string | null | undefined => {
     const { id, codeToInsert, insertPos } = opts;
-    const declaration = findVariableDeclaration(node, id);
-    if (!declaration) return;
-    const objLiteral = declaration.initializer as ObjectLiteralExpression;
-    const newTxt = insertIntoObject(node, objLiteral, codeToInsert, insertPos);
+    const declaration = findVariableDeclaration(srcNode, id);
+    if (!declaration) {
+      return;
+    }
+    const literalExpr = declaration.initializer as ObjectLiteralExpression;
+    const newTxt = insertIntoObject(srcNode, {
+      literalExpr,
+      codeToInsert,
+      insertPos,
+    });
     return newTxt;
   };
 
@@ -80,12 +78,18 @@ export function insertIntoNamedObjectInFile(
   filePath: string,
   opts: InsertObjectOptions,
 ) {
-  return replaceInFile(filePath, { modifyFn: insertInObject, ...opts });
+  const findNodeFn = (node: SourceFile) =>
+    findVariableDeclaration(node, opts.id);
+  return replaceInFile(filePath, {
+    findNodeFn,
+    modifyFn: insertInObject,
+    ...opts,
+  });
 }
 
 export function insertIntoNamedObjectInTree(
   tree: Tree,
-  opts: InsertObjectOptions,
+  opts: InsertObjectTreeOptions,
 ) {
   return modifyTree(tree, opts);
 }

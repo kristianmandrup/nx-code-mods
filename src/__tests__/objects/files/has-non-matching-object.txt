@@ -1,0 +1,2 @@
+const x = 2;
+const anotherObj = {a: 1,b: 2}

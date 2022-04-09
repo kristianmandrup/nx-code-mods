@@ -71,8 +71,27 @@ describe('insert array', () => {
       });
     });
 
+    context('numeric pos 1', () => {
+      it('inserts at middle of array', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-array-with-two-elements.txt',
+        );
+        const codeToInsert = `'c'`;
+        const inserted = insertIntoNamedArrayInFile(filePath, {
+          codeToInsert,
+          id: 'myNamedList',
+          insertPos: 1,
+        });
+        const insertedTxt = inserted ? inserted : '';
+        console.log({ insertedTxt });
+        expect(insertedTxt.includes(`'c','b'`)).toBeTruthy();
+      });
+    });
+
     context('end pos', () => {
-      it('inserts at start of array', () => {
+      it('inserts at end of array', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -85,6 +104,7 @@ describe('insert array', () => {
           insertPos: 'end',
         });
         const insertedTxt = inserted ? inserted : '';
+        console.log({ insertedTxt });
         expect(insertedTxt.includes(`'b','c'`)).toBeTruthy();
       });
     });
