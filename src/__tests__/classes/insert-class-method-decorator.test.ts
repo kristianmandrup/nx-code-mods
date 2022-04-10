@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { Node } from 'typescript';
 import { insertClassMethodDecoratorInFile } from '../../insert-class-method-decorator';
+import { escapeRegExp } from '../test-utils';
 
 const context = describe;
 
@@ -61,14 +62,13 @@ describe('insert class decorator', () => {
   });
 
   context('file has matching class and method', () => {
-    it('insert decorator before class', () => {
+    it('insert decorator before matching method', () => {
       const filePath = path.join(
         __dirname,
         'files',
         'has-matching-class-and-method.txt',
       );
-      const codeToInsert = `@Post();
-  `;
+      const codeToInsert = `@Post()`;
       const inserted = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
         className: 'myClass',
@@ -76,6 +76,9 @@ describe('insert class decorator', () => {
       });
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
+      const str = `${escapeRegExp(codeToInsert)}\\s*\\nmyMethod`;
+      const regExp = new RegExp(str);
+      expect(insertedTxt.match(regExp)).toBeTruthy();
       expect(insertedTxt.includes(codeToInsert)).toBeTruthy();
       expect(insertedTxt.includes(origCode)).toBeTruthy();
     });

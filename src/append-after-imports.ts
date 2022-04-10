@@ -28,7 +28,7 @@ export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
 
 export function appendAfterImportsInFile(
   filePath: string,
-  opts: { codeToInsert: string; indexAdj?: number },
+  opts: InsertOptions,
 ) {
   const allOpts = {
     checkFn: hasAnyImportDecl,

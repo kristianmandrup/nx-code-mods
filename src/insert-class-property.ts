@@ -9,6 +9,7 @@ import {
 } from './find';
 import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
 import { Node, SourceFile } from 'typescript';
+import { ensureStmtClosing } from './positional';
 
 export interface ClassPropInsertOptions {
   className: string;
@@ -57,7 +58,8 @@ const insertInClassScope = (opts: AnyOpts) => (node: Node) => {
       insertIndex = firstPropDecl.getStart();
     }
   }
-  return insertCode(node, insertIndex, codeToInsert);
+  const code = ensureStmtClosing(codeToInsert);
+  return insertCode(node, insertIndex, code);
 };
 
 export function insertClassPropertyInFile(

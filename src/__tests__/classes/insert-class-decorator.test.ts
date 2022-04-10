@@ -3,6 +3,7 @@ import { insertIntoNamedObjectInFile } from '../..';
 import * as path from 'path';
 import { Node } from 'typescript';
 import { insertClassDecoratorInFile } from '../../insert-class-decorator';
+import { escapeRegExp } from '../test-utils';
 
 const context = describe;
 
@@ -48,15 +49,17 @@ describe('insert class decorator', () => {
         'files',
         'has-matching-empty-class.txt',
       );
-      const codeToInsert = `@Model()
-      `;
+      const codeToInsert = `@Model()`;
       const inserted = insertClassDecoratorInFile(filePath, {
         codeToInsert,
         id: 'myClass',
       });
-      const insertedTxt = inserted ? inserted : '';
+      let insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(codeToInsert)).toBeTruthy();
+      expect(insertedTxt.includes(origCode)).toBeTruthy();
+      const str = `${escapeRegExp(codeToInsert)}\\s*\\nclass myClass`;
+      const regExp = new RegExp(str);
+      expect(insertedTxt.match(regExp)).toBeTruthy();
       expect(insertedTxt.includes(origCode)).toBeTruthy();
     });
   });

@@ -75,7 +75,7 @@ export const findFirstMethodDeclaration = (
 ): MethodDeclaration | undefined => {
   const result = tsquery(node, `MethodDeclaration:first-child`);
   if (!result || result.length === 0) return;
-  const found = result[0].parent as MethodDeclaration;
+  const found = result[0] as MethodDeclaration;
   return found;
 };
 

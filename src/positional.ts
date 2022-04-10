@@ -114,3 +114,9 @@ export const ensurePrefixComma = (codeToInsert: string) =>
 
 export const ensureSuffixComma = (codeToInsert: string) =>
   codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
+
+export const ensureStmtClosing = (codeToInsert: string) =>
+  codeToInsert.match(/;$/) ? codeToInsert : codeToInsert + ';\n';
+
+export const ensureNewlineClosing = (codeToInsert: string) =>
+  codeToInsert.match(/\n$/) ? codeToInsert : codeToInsert + '\n';

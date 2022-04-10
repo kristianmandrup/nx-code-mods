@@ -3,6 +3,7 @@ import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration } from './find';
 import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
 import { Node, SourceFile } from 'typescript';
+import { ensureNewlineClosing } from './positional';
 
 export interface ClassDecInsertOptions {
   id: string;
@@ -22,7 +23,8 @@ export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
     return;
   }
   const classDeclIndex = classDecl.getStart() + (indexAdj || 0);
-  return insertCode(node, classDeclIndex, codeToInsert);
+  const code = ensureNewlineClosing(codeToInsert);
+  return insertCode(node, classDeclIndex, code);
 };
 
 export function insertClassDecoratorInFile(

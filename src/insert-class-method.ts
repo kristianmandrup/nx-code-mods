@@ -1,3 +1,4 @@
+import { ensureStmtClosing } from './positional';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
@@ -62,7 +63,8 @@ const insertInMethodBlock = (opts: AnyOpts) => (node: any) => {
     }
   }
   insertIndex += indexAdj || 0;
-  return insertCode(node, insertIndex, codeToInsert);
+  const code = ensureStmtClosing(codeToInsert);
+  return insertCode(node, insertIndex, code);
 };
 
 export function insertClassMethodInFile(

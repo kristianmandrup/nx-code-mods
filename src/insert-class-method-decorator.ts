@@ -3,6 +3,7 @@ import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findMethodDeclaration } from './find';
 import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
+import { ensureNewlineClosing } from './positional';
 
 export interface ClassMethodDecInsertOptions {
   className: string;
@@ -25,7 +26,8 @@ export const insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node) => {
   const methodDecl = findMethodDeclaration(classDecl, methodId);
   if (!methodDecl) return;
   const methodDeclIndex = methodDecl.getStart() + (indexAdj || 0);
-  return insertCode(node, methodDeclIndex, codeToInsert);
+  const code = ensureNewlineClosing(codeToInsert);
+  return insertCode(node, methodDeclIndex, code);
 };
 
 export function insertClassMethodDecoratorInFile(

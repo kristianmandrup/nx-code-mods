@@ -6,26 +6,18 @@ This library is intended to contain Code mods for use in Nx generators.
 - `insertIntoNamedObject`
 - `insertIntoNamedArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
 
-Generic utility functions
-
-- `insertCode`
-- `findDeclarationIdentifier`
-- `findFunctionDeclaration`
-- `findFunction`
-- `findFunctionBlock`
-- `findBlockStatementByIndex`
-- `findClassDeclaration`
-- `findMethodDeclaration`
-- `findClassPropertyDeclaration`
-- `insertClassProperty`
-- `insertClassMethod`
-- `insertClassDecorator`
-- `insertClassMethodDecorator`
-- `insertClassMethodParamDecorator`
-
 ## Append after last import
 
 Appends an import statement to the end of import declarations.
+
+```ts
+appendAfterImportsInFile(
+  filePath: string,
+  opts: InsertOptions,
+)
+```
+
+In file tree
 
 ```ts
 appendAfterImportsInTree = (
@@ -34,79 +26,313 @@ appendAfterImportsInTree = (
 );
 ```
 
+### Sample usage
+
 ```ts
-insertAfterLastImport = (node: any, codeToInsert: string): string | undefined
+const codeToInsert = `import { x } from 'x';
+`;
+appendAfterImportsInTree(
+  tree,
+  {
+      normalizedOptions.projectRoot,
+      relTargetFilePath: '/src/app/app-routing.module.ts',
+      codeToInsert
+  }
+);
+await formatFiles(tree);
 ```
+
+## Insert into named Object
+
+Insert code into a named array
+
+```ts
+type CollectionInsert = {
+  index?: CollectionIndex;
+  findElement?: FindElementFn;
+  abortIfFound?: CheckUnderNode;
+  relative?: BeforeOrAfter;
+};
+
+interface InsertObjectOptions {
+  id: string;
+  codeToInsert: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+}
+```
+
+Insert into src loaded from file
+
+```ts
+insertIntoNamedObjectInFile(
+  filePath: string,
+  opts: InsertObjectOptions,
+)
+```
+
+In file tree
+
+```ts
+insertIntoNamedObjectInTree(
+  tree: Tree,
+  opts: InsertObjectTreeOptions,
+)
+```
+
+The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
+
+It takes the `codeToInsert` string and inserts it into a non-empty object with an `Identifier` matching the `targetIdName`. The `insertPos` argument can be either `start`, `end`, an index in the object or a name of a property of the object.
 
 ### Sample usage
 
 ```ts
-  const codeToInsert = `import { x } from 'x';
+  const codeToInsert = `{
+    x: 2
+  },
   `;
-  appendAfterImportsInTree(tree,
+  insertIntoNamedObjectInTree(tree,
     {
         normalizedOptions.projectRoot,
-        relTargetFilePath: '/src/app/app-routing.module.ts',
-        codeToInsert
+        relTargetFilePath: '/src/app/route-map.module.ts',
+        id: 'RouteMap',
+        codeToInsert,
+        // insert code after this property assignment in the object
+        insert: {
+          relative: 'after',
+          findElement: 'rootRoute'
+        }
     }
   );
   await formatFiles(tree);
 ```
 
-## Insert before Class Declaration
+#### insert
 
-Can f.ex be used to add class methods to a class
+Insert at start or end of object properties list
 
 ```ts
-insertBeforeFirstMethod = (opts: AnyOpts) => (node: Node)
+insert: {
+  index: 'start'; // or 'end'
+}
 ```
 
+Insert `before` numeric position
+
 ```ts
-insertClassMethodInTree(tree: Tree, opts: ClassMethodInsertOptions)
+insert: {
+  relative: 'before',
+  index: 1;
+}
 ```
 
-## Insert before Class Declaration
-
-Can be used to add class properties to a class
+Insert `after` specific element
 
 ```ts
-insertAtTopOfClassScope = (opts: AnyOpts) => (node: Node)
+insert: {
+  relative: 'after', // 'before' or 'after' node found via findElement
+  findElement: (node: Node) => {
+    // find specific property assignment node
+  }
+}
 ```
 
+## Insert into named Array
+
+Insert code into a named array
+
 ```ts
-insertClassPropertyInTree(tree: Tree, opts: ClassPropInsertOptions)
+type CollectionInsert = {
+  index?: CollectionIndex;
+  findElement?: FindElementFn;
+  abortIfFound?: CheckUnderNode;
+  relative?: BeforeOrAfter;
+};
+
+interface InsertArrayOptions {
+  id: string;
+  codeToInsert: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+}
 ```
 
-## Insert before Class Declaration
-
-Can f.ex be used to add decorators to a class
+Insert into src loaded from file
 
 ```ts
-insertBeforeClassDecl = (opts: AnyOpts) => (node: Node)
-```
-
-```ts
-insertClassDecoratorInTree(tree: Tree, opts: ClassDecInsertOptions)
-```
-
-## Insert Class Method Parameter Decorator
-
-Can be used to add special decorators for dependency injection etc, such as with NestJS
-
-```ts
-insertParamInMatchingMethod = (opts: AnyOpts) => (node: Node)
-```
-
-```ts
-insertClassMethodParamDecoratorInTree(
-  tree: Tree,
-  opts: ClassMethodDecArgInsertOptions,
+insertIntoNamedArrayInFile(
+  filePath: string,
+  opts: InsertArrayOptions,
 )
 ```
 
-## Insert Class Method Decorator
+In file tree
 
-Can be used to add method decorators such as for NestJS
+```ts
+insertIntoNamedArrayInTree(
+  tree: Tree,
+  opts: InsertArrayTreeOptions,
+)
+```
+
+The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
+
+It takes the `codeToInsert` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
+
+### Sample usage
+
+```ts
+  const codeToInsert = `{
+    x: 2
+  }`;
+  insertIntoNamedArrayInTree(tree,
+    {
+        normalizedOptions.projectRoot,
+        relTargetFilePath: '/src/app/app-routing.module.ts',
+        id: 'Routes',
+        codeToInsert,
+        insert: {
+          index: 'end'
+        }
+    }
+  );
+  await formatFiles(tree);
+```
+
+#### insert
+
+Insert at `start` or `end` of array elements list
+
+```ts
+insert: {
+  index: 'start'; // or 'end'
+}
+```
+
+Insert after numeric position
+
+```ts
+insert: {
+  relative: 'after',
+  index: 1;
+}
+```
+
+Insert `before` specific element
+
+```ts
+insert: {
+  relative: 'after', // 'before' or 'after' node found via findElement
+  findElement: (node: Node) => {
+    // find specific array element
+  }
+}
+```
+
+Insert `before` named identifier
+
+```ts
+insert: {
+  relative: 'before',
+  findElement: 'rootRoute'
+}
+```
+
+## Insert class method
+
+Add a class method to a class
+
+```ts
+insertClassMethodInTree(
+  tree: Tree,
+  opts: ClassMethodInsertTreeOptions
+)
+```
+
+In file tree
+
+```ts
+insertClassMethodInFile(
+  filePath: string,
+  opts: ClassMethodInsertOptions
+)
+```
+
+### Sample usage
+
+```ts
+const codeToInsert = `myMethod() {}`;
+const inserted = insertClassMethodInFile(filePath, {
+  codeToInsert,
+  className: 'myClass',
+  methodId: 'myMethod',
+});
+```
+
+## Insert class property
+
+Add class property to a class
+
+```ts
+insertClassPropertyInFile(
+  filePath: string,
+  opts: ClassPropInsertOptions,
+)
+```
+
+In file tree
+
+```ts
+insertClassPropertyInTree(
+  tree: Tree,
+  opts: ClassPropInsertOptions
+)
+```
+
+### Sample usage
+
+```ts
+const codeToInsert = `myProp: User`;
+const inserted = insertClassPropertyInFile(filePath, {
+  codeToInsert,
+  className: 'myClass',
+  propId: 'myProp',
+});
+```
+
+## Insert class decorator
+
+Add decorator to a class
+
+```ts
+insertClassDecoratorInFile(
+  filePath: string,
+  opts: ClassDecInsertOptions,
+)
+```
+
+In file tree
+
+```ts
+insertClassDecoratorInTree(
+  tree: Tree,
+  opts: ClassDecInsertTreeOptions,
+)
+```
+
+### Sample usage
+
+```ts
+const codeToInsert = `@Model()`;
+const inserted = insertClassDecoratorInFile(filePath, {
+  codeToInsert,
+  id: 'myClass',
+});
+```
+
+## Insert class method decorator
+
+Add class method decorator (such as for NestJS)
 
 ```ts
 insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node)
@@ -119,161 +345,46 @@ insertClassMethodDecoratorInTree(
 )
 ```
 
-## Insert into named Object
-
-The function takes the following arguments
+### Sample usage
 
 ```ts
-insertIntoNamedObject = (
-  tree: Tree,
-  {
-    projectRoot,
-    relTargetFilePath,
-    id,
-    codeToInsert,
-    insertPos,
-  }: InsertObjectOptions,
-);
+const codeToInsert = `@Post()`;
+const inserted = insertClassMethodDecoratorInFile(filePath, {
+  codeToInsert,
+  className: 'myClass',
+  methodId: 'myMethod',
+});
 ```
 
+## Insert class method parameter decorator
+
+Add parameter decorator to a class method
+
 ```ts
-insertInObject = (
-  id: string,
-  codeToInsert: string,
-  insertPos: ObjectPosition,
+insertClassMethodParamDecoratorInFile(
+  filePath: string,
+  opts: ClassMethodDecParamInsertOptions,
 )
 ```
 
-The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
-It takes the `codeToInsert` string and inserts it into a non-empty object with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end`, an index in the object or a name of a property of the object.
+In file tree
+
+```ts
+insertClassMethodParamDecoratorInTree(
+  tree: Tree,
+  opts: ClassMethodDecParamInsertTreeOptions,
+)
+```
 
 ### Sample usage
 
 ```ts
-  const codeToInsert = `{
-    x: 2
-  },
-  `;
-  insertIntoNamedObjectInTree(tree,
-    {
-        normalizedOptions.projectRoot,
-        relTargetFilePath: '/src/app/app-routing.module.ts',
-        id: 'Routes',
-        codeToInsert,
-        // insert code before this property assignment in the object
-        insertPos: 'name'
-    }
-  );
-  await formatFiles(tree);
-```
-
-## Insert into named Array
-
-The function takes the following arguments
-
-```ts
-insertIntoNamedArrayInTree = (
-  tree: Tree,
-  {
-    projectRoot,
-    relTargetFilePath,
-    id,
-    codeToInsert,
-    insertPos,
-  }: InsertArrayOptions,
-);
-```
-
-```ts
-insertInArray = (
-  id: string,
-  codeToInsert: string,
-  insertPos: ArrayPosition,
-)
-```
-
-The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
-It takes the `codeToInsert` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
-
-### Sample usage
-
-```ts
-  const codeToInsert = `{
-    x: 2
-  },
-  `;
-  insertIntoNamedArrayInTree(tree,
-    {
-        normalizedOptions.projectRoot,
-        relTargetFilePath: '/src/app/app-routing.module.ts',
-        id: 'Routes',
-        codeToInsert,
-        insertPos: 'end'
-    }
-  );
-  await formatFiles(tree);
-```
-
-## Insert code
-
-Insert code at a specific position relative to a node
-
-```ts
-export const insertCode = (vsNode: any, insertPosition: number, codeToInsert: string): string
-```
-
-## Where
-
-```ts
-export const whereHasArrowFunction = (node: Node) =>
-```
-
-```ts
-export const whereHasDecorator = (node: Node, id?: string)
-```
-
-## Finders
-
-```ts
-findLastImport = (txtNode: any): ImportDeclaration | undefined
-```
-
-```ts
-findClassDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): ClassDeclaration | undefined
-```
-
-```ts
-findMethodDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): MethodDeclaration | undefined =>
-```
-
-```ts
- findFirstMethodDeclaration = (
-  vsNode: Node,
-): MethodDeclaration | undefined
-```
-
-```ts
-findClassPropertyDeclaration = (vsNode: Node, targetIdName: string, where?: WhereFn): PropertyDeclaration | undefined
-```
-
-```ts
-findDeclarationIdentifier = (vsNode: VariableStatement, targetIdName: string, where?: WhereFn): VariableDeclaration | undefined
-```
-
-```ts
-findFunctionDeclaration = (vsNode: Statement, targetIdName: string): FunctionDeclaration | undefined
-```
-
-```ts
-findFunction = (vsNode: VariableStatement, targetIdName: string): FindFunReturn | undefined
-```
-
-```ts
-findFunctionBlock = (vsNode: VariableStatement, targetIdName: string): : Block | undefined
-```
-
-```ts
-findBlockStatementByIndex = (block: Block, index: number): : Statement | undefined
+const codeToInsert = `@Body() body: string`;
+const inserted = insertClassMethodParamDecoratorInFile(filePath, {
+  codeToInsert,
+  className: 'myClass',
+  methodId: 'myMethod',
+});
 ```
 
 ## Full example
@@ -330,18 +441,22 @@ function addFiles(tree: Tree, options: NormalizedSchema) {
 
 export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
+  const { importPath, pageNames } = normalizedOptions
   // code to be pre-pended to array
   const codeToInsert = `{
-    x: 2
-  },
-  `;
+    path: '${pageNames.fileName}',
+    loadChildren: () =>
+      import('${importPath}').then((m) => m.${pageNames.className}PageModule),
+  }`;
   insertIntoNamedArrayInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
         id: 'Routes',
         codeToInsert,
-        insertPos: 'end'
+        insert: {
+          index: 'start'
+        }
     }
   );
   await formatFiles(tree);

@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { insertClassPropertyInFile } from '../../insert-class-property';
+import { escapeRegExp } from '../test-utils';
 
 const context = describe;
 
@@ -59,6 +60,28 @@ describe('insert class property', () => {
       console.log({ insertedTxt });
       expect(insertedTxt.includes(origCode)).toBeTruthy();
       expect(insertedTxt.includes(codeToInsert)).toBeTruthy();
+    });
+  });
+
+  context('file has matching class no matching property', () => {
+    it('inserts method', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-class-no-matching-property.txt',
+      );
+      const codeToInsert = `myProp: User`;
+      const inserted = insertClassPropertyInFile(filePath, {
+        codeToInsert,
+        className: 'myClass',
+        propId: 'myProp',
+      });
+      const insertedTxt = inserted ? inserted : '';
+      const origCode = 'const x = 2;';
+      expect(insertedTxt.includes(origCode)).toBeTruthy();
+      const str = `${escapeRegExp(codeToInsert)}\\s*;\\s*propA`;
+      const regExp = new RegExp(str);
+      expect(insertedTxt.match(regExp)).toBeTruthy();
     });
   });
 
