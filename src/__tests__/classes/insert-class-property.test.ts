@@ -7,7 +7,7 @@ describe('insert class property', () => {
   context('file has no class', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const codeToInsert = `user: User`;
+      const codeToInsert = `myProp: User`;
 
       const inserted = insertClassPropertyInFile(filePath, {
         codeToInsert,
@@ -28,7 +28,7 @@ describe('insert class property', () => {
         'files',
         'has-no-matching-class.txt',
       );
-      const codeToInsert = `user: User`;
+      const codeToInsert = `myProp: User`;
       const inserted = insertClassPropertyInFile(filePath, {
         codeToInsert,
         className: 'myClass',
@@ -48,7 +48,7 @@ describe('insert class property', () => {
         'files',
         'has-matching-empty-class.txt',
       );
-      const codeToInsert = `user: User`;
+      const codeToInsert = `myProp: User`;
       const inserted = insertClassPropertyInFile(filePath, {
         codeToInsert,
         className: 'myClass',

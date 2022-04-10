@@ -7,7 +7,7 @@ describe('insert class method', () => {
   context('file has no class', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const codeToInsert = `getUser(): User {}
+      const codeToInsert = `myProp() {}
       `;
 
       const inserted = insertClassMethodInFile(filePath, {
@@ -29,7 +29,7 @@ describe('insert class method', () => {
         'files',
         'has-no-matching-class.txt',
       );
-      const codeToInsert = `getUser(): User {}
+      const codeToInsert = `myProp() {}
   `;
 
       const inserted = insertClassMethodInFile(filePath, {
@@ -51,7 +51,7 @@ describe('insert class method', () => {
         'files',
         'has-matching-empty-class.txt',
       );
-      const codeToInsert = `getUser(): User {}
+      const codeToInsert = `myProp() {}
   `;
       const inserted = insertClassMethodInFile(filePath, {
         codeToInsert,
@@ -72,7 +72,7 @@ describe('insert class method', () => {
         'files',
         'has-matching-class-and-method.txt',
       );
-      const codeToInsert = `getUser(): User {}
+      const codeToInsert = `myProp() {}
   `;
       const inserted = insertClassMethodInFile(filePath, {
         codeToInsert,
