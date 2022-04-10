@@ -5,6 +5,7 @@ This library is intended to contain Code mods for use in Nx generators.
 - `appendAfterImports`
 - `insertIntoNamedObject`
 - `insertIntoNamedArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
+- `insertInsideFunctionBlock`
 - `insertClassMethod`
 - `insertClassProperty`
 - `insertClassDecorator`
@@ -244,6 +245,40 @@ insert: {
   findElement: 'rootRoute'
 }
 ```
+
+## Insert into function block
+
+Insert code into a function block (WIP)
+
+```ts
+insertInsideFunctionBlockInTree(
+  tree: Tree,
+  opts: InsertFunctionTreeOptions
+)
+```
+
+In file tree
+
+```ts
+insertInsideFunctionBlockInFile(
+  filePath: string,
+  opts: InsertFunctionOptions
+)
+```
+
+### Sample usage
+
+```ts
+const inserted = insertInsideFunctionBlockInFile(filePath, {
+  codeToInsert,
+  id: 'myFun',
+  insert: {
+    index: 'end',
+  },
+});
+```
+
+`insert` allows for the same positional options as for inserting inside an array.
 
 ## Insert class method
 

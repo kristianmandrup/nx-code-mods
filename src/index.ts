@@ -8,4 +8,5 @@ export * from './insert-class-method-decorator';
 export * from './insert-class-method';
 export * from './insert-class-property';
 export * from './insert-code';
+export * from './insert-in-function';
 export * from './modify-file';
