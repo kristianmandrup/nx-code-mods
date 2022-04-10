@@ -41,7 +41,6 @@ const findElementNode = ({
     if (el.kind === 294) {
       const pa = el as PropertyAssignment;
       const id = node as Identifier;
-      console.log({ pa, id });
       if (pa.name === id) {
         index = idx;
       }

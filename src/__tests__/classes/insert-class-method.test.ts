@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { insertClassMethodInFile } from '../../insert-class-method';
-import { escapeRegExp } from '../test-utils';
+import { escapeRegExp } from '../../utils';
 
 const context = describe;
 
@@ -59,7 +59,7 @@ describe('insert class method', () => {
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
       expect(insertedTxt.includes(origCode)).toBeTruthy();
-      const str = `${escapeRegExp(codeToInsert)}\s*}`;
+      const str = `${escapeRegExp(codeToInsert + ';')}\\s*}`;
       const regExp = new RegExp(str);
       expect(insertedTxt.includes(origCode)).toBeTruthy();
       expect(insertedTxt.match(regExp)).toBeTruthy();

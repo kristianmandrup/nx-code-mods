@@ -133,7 +133,6 @@ describe('insert object', () => {
           },
         });
         const insertedTxt = inserted ? inserted : '';
-        console.log({ insertedTxt });
         expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
@@ -156,7 +155,6 @@ describe('insert object', () => {
           },
         });
         const insertedTxt = inserted ? inserted : '';
-        console.log({ insertedTxt });
         expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });

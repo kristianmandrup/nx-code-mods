@@ -132,7 +132,6 @@ export const findIdentifier = (
 ): Identifier | undefined => {
   const selector = `Identifier[name='${id}']`;
   const result = tsquery(node, selector);
-  console.log({ selector, result });
   if (!result || result.length === 0) {
     return;
   }

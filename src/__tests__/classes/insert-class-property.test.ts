@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { insertClassPropertyInFile } from '../../insert-class-property';
-import { escapeRegExp } from '../test-utils';
+import { escapeRegExp } from '../../utils';
 
 const context = describe;
 
@@ -57,7 +57,6 @@ describe('insert class property', () => {
       });
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
-      console.log({ insertedTxt });
       expect(insertedTxt.includes(origCode)).toBeTruthy();
       expect(insertedTxt.includes(codeToInsert)).toBeTruthy();
     });

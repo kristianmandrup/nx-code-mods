@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { Node } from 'typescript';
 import { insertClassMethodParamDecoratorInFile } from '../../insert-class-method-param-decorator';
-import { escapeRegExp } from '../test-utils';
+import { escapeRegExp } from '../../utils';
 
 const context = describe;
 
@@ -62,7 +62,7 @@ describe('insert class method param decorator', () => {
   });
 
   context('file has matching class and method', () => {
-    it.only('insert decorator before class', () => {
+    it('insert decorator before class', () => {
       const filePath = path.join(
         __dirname,
         'files',

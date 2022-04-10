@@ -1,7 +1,7 @@
 {
   "name": "nx-code-mods",
   "version": "1.0.0",
-  "description": "Nx generator code mods using tsquery",
+  "description": "Nx generator code modifier toolkit for typescript code using tsquery",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "homepage": "https://github.com/kristianmandrup/nx-code-mods#readme",
@@ -27,12 +27,14 @@
     "utils",
     "typescript",
     "code",
-    "modifications"
+    "modifications",
+    "toolkit",
+    "tsquery"
   ],
   "files": [
     "lib/**/*"
   ],
-  "author": "",
+  "author": "Kristian Mandrup <kmandrup@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^27.4.1",

@@ -55,8 +55,6 @@ export const insertIntoObject = (
       ? afterLastElementPos(props)
       : aroundElementPos(props, insertPosNum, insert.relative);
 
-  console.log({ insertPosNum, insertPosition, insert });
-
   const shouldInsertAfter =
     insertPosNum === propCount || insert.relative === 'after';
   const code = shouldInsertAfter

@@ -1,9 +1,6 @@
-import { findIdentifier } from './../../find';
-import { insertIntoNamedObjectInFile } from '../..';
 import * as path from 'path';
-import { Node } from 'typescript';
 import { insertClassDecoratorInFile } from '../../insert-class-decorator';
-import { escapeRegExp } from '../test-utils';
+import { escapeRegExp } from '../../utils';
 
 const context = describe;
 

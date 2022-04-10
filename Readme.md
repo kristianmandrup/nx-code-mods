@@ -5,6 +5,13 @@ This library is intended to contain Code mods for use in Nx generators.
 - `appendAfterImports`
 - `insertIntoNamedObject`
 - `insertIntoNamedArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
+- `insertClassMethod`
+- `insertClassProperty`
+- `insertClassDecorator`
+- `insertClassMethodDecorator`
+- `insertClassMethodParamDecorator`
+
+The library in addition contains a number of utility methods which should make it easy to create your own Code Mods.
 
 ## Append after last import
 
