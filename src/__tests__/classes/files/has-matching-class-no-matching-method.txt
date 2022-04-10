@@ -1,0 +1,11 @@
+const x = 2;
+
+class myClass {
+    methodA(): string {
+        console.log('hello)
+    }
+
+    methodB(): string {
+        console.log('hello)
+    }
+}

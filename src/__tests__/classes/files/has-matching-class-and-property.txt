@@ -1,0 +1,5 @@
+const x = 2;
+
+class myClass {
+    myProp: string
+}

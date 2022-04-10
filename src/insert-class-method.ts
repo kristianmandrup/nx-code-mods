@@ -1,30 +1,67 @@
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration, findFirstMethodDeclaration } from './find';
-import { Node } from 'typescript';
+import {
+  findBlock,
+  findClassDeclaration,
+  findFirstMethodDeclaration,
+  findLastPropertyDeclaration,
+  findMethodDeclaration,
+} from './find';
+import { Node, SourceFile } from 'typescript';
 
 export interface ClassMethodInsertOptions {
-  projectRoot: string;
-  relTargetFilePath: string;
   className: string;
+  methodId: string;
   codeToInsert: string;
   insertPos?: InsertPosition;
   indexAdj?: number;
 }
 
-const insertInMethodBlock = (opts: AnyOpts) => (node: Node) => {
+export interface ClassMethodInsertTreeOptions extends ClassMethodInsertOptions {
+  projectRoot: string;
+  relTargetFilePath: string;
+}
+
+const insertInMethodBlock = (opts: AnyOpts) => (node: any) => {
   const { className, codeToInsert, insertPos, indexAdj } = opts;
+  const abortIfFound = (node: Node) =>
+    findMethodDeclaration(node, opts.methodId);
+
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
-  let insertIndex;
-  if (insertPos === 'end') {
-    insertIndex = classDecl.getEnd() + (indexAdj || 0);
-  } else {
-    const methodDecl = findFirstMethodDeclaration(classDecl);
-    if (!methodDecl) return;
-    insertIndex = methodDecl.getStart() + (indexAdj || 0);
+
+  // abort insert of method if method already declared in class
+  if (abortIfFound) {
+    const found = abortIfFound(classDecl);
+    if (found) {
+      return;
+    }
   }
+
+  let insertIndex;
+
+  if (insertPos === 'end') {
+    insertIndex = classDecl.getEnd() - 1;
+  } else {
+    const firstMethodDecl = findFirstMethodDeclaration(classDecl);
+    if (!firstMethodDecl) {
+      const { members } = classDecl;
+      if (members.length === 0) {
+        insertIndex = classDecl.getEnd() - 1;
+      } else {
+        const lastPropDecl = findLastPropertyDeclaration(classDecl);
+        if (!lastPropDecl) {
+          insertIndex = classDecl.getEnd() - 1;
+          return;
+        }
+        insertIndex = lastPropDecl.getEnd();
+      }
+    } else {
+      insertIndex = firstMethodDecl.getStart();
+    }
+  }
+  insertIndex += indexAdj || 0;
   return insertCode(node, insertIndex, codeToInsert);
 };
 
@@ -32,12 +69,18 @@ export function insertClassMethodInFile(
   filePath: string,
   opts: ClassMethodInsertOptions,
 ) {
-  replaceInFile(filePath, { modifyFn: insertInMethodBlock, ...opts });
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.className);
+  return replaceInFile(filePath, {
+    findNodeFn,
+    modifyFn: insertInMethodBlock,
+    ...opts,
+  });
 }
 
 export function insertClassMethodInTree(
   tree: Tree,
-  opts: ClassMethodInsertOptions,
+  opts: ClassMethodInsertTreeOptions,
 ) {
   modifyTree(tree, opts);
 }

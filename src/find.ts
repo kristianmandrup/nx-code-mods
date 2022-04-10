@@ -71,16 +71,34 @@ export const findMethodDeclaration = (
 };
 
 export const findFirstMethodDeclaration = (
-  node: any,
+  node: Node,
 ): MethodDeclaration | undefined => {
-  const result = tsquery(node, `MethodDeclaration:first-child']`);
+  const result = tsquery(node, `MethodDeclaration:first-child`);
   if (!result || result.length === 0) return;
   const found = result[0].parent as MethodDeclaration;
   return found;
 };
 
+export const findFirstPropertyDeclaration = (
+  node: Node,
+): PropertyDeclaration | undefined => {
+  const result = tsquery(node, `PropertyDeclaration:first-child`);
+  if (!result || result.length === 0) return;
+  const found = result[0] as PropertyDeclaration;
+  return found;
+};
+
+export const findLastPropertyDeclaration = (
+  node: Node,
+): PropertyDeclaration | undefined => {
+  const result = tsquery(node, `PropertyDeclaration:first-child`);
+  if (!result || result.length === 0) return;
+  const found = result[0] as PropertyDeclaration;
+  return found;
+};
+
 export const findClassPropertyDeclaration = (
-  node: SourceFile,
+  node: Node,
   targetIdName: string,
   where?: WhereFn,
 ): PropertyDeclaration | undefined => {
@@ -97,7 +115,7 @@ export const findClassPropertyDeclaration = (
 };
 
 export const findStringLiteral = (
-  node: any,
+  node: Node,
   id: string,
 ): StringLiteralLike | undefined => {
   const selector = `StringLiteral[value='${id}']`;
@@ -109,7 +127,7 @@ export const findStringLiteral = (
 };
 
 export const findIdentifier = (
-  node: any,
+  node: Node,
   id: string,
 ): Identifier | undefined => {
   const selector = `Identifier[name='${id}']`;
@@ -122,7 +140,7 @@ export const findIdentifier = (
 };
 
 export const findVariableDeclaration = (
-  node: any,
+  node: Node,
   id: string,
   where?: WhereFn,
 ): VariableDeclaration | undefined => {
@@ -139,7 +157,7 @@ export const findVariableDeclaration = (
 };
 
 export const findFunctionDeclaration = (
-  node: SourceFile,
+  node: Node,
   targetIdName: string,
 ): FunctionDeclaration | undefined => {
   const result = tsquery(
@@ -173,7 +191,7 @@ type FindFunReturn = {
 };
 
 export const findFunction = (
-  node: SourceFile,
+  node: Node,
   targetIdName: string,
 ): FindFunReturn | undefined => {
   const declFun = findVariableDeclaration(
@@ -198,7 +216,7 @@ export const findFunction = (
 };
 
 export const findFunctionBlock = (
-  node: any,
+  node: Node,
   targetIdName: string,
 ): Block | undefined => {
   const fun = findFunction(node, targetIdName);
@@ -214,10 +232,10 @@ export const findFunctionBlock = (
   }
 };
 
-export const findBlock = (vsNode: Node) => {
-  const result = tsquery(vsNode, `Block`);
+export const findBlock = (node: Node) => {
+  const result = tsquery(node, `Block`);
   if (!result || result.length === 0) return;
-  return result[0].parent as Block;
+  return result[0] as Block;
 };
 
 export const findBlockStatementByIndex = (

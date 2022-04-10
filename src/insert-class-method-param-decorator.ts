@@ -2,15 +2,19 @@ import { insertCode } from './insert-code';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findMethodDeclaration } from './find';
 import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
-import { Node } from 'typescript';
+import { Node, SourceFile } from 'typescript';
 
 export interface ClassMethodDecParamInsertOptions {
-  projectRoot: string;
-  relTargetFilePath: string;
   className: string;
   methodId: string;
   codeToInsert: string;
   indexAdj?: number;
+}
+
+export interface ClassMethodDecParamInsertTreeOptions
+  extends ClassMethodDecParamInsertOptions {
+  projectRoot: string;
+  relTargetFilePath: string;
 }
 
 export const insertParamInMatchingMethod = (opts: AnyOpts) => (node: Node) => {
@@ -27,16 +31,18 @@ export function insertClassMethodParamDecoratorInFile(
   filePath: string,
   opts: ClassMethodDecParamInsertOptions,
 ) {
-  return replaceInFile(
-    filePath,
-
-    { modifyFn: insertParamInMatchingMethod, ...opts },
-  );
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.className);
+  return replaceInFile(filePath, {
+    findNodeFn,
+    modifyFn: insertParamInMatchingMethod,
+    ...opts,
+  });
 }
 
 export function insertClassMethodParamDecoratorInTree(
   tree: Tree,
-  opts: ClassMethodDecParamInsertOptions,
+  opts: ClassMethodDecParamInsertTreeOptions,
 ) {
   return modifyTree(tree, opts);
 }
