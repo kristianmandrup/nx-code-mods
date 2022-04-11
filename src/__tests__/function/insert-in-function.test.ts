@@ -58,7 +58,6 @@ describe('insert function', () => {
       const insertedTxt = inserted ? inserted : '';
       const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
       const regExp = new RegExp(str);
-      console.log({ insertedTxt });
       expect(insertedTxt.includes(origCode)).toBeTruthy();
       expect(insertedTxt.match(regExp)).toBeTruthy();
     });

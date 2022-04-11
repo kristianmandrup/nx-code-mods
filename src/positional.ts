@@ -25,45 +25,60 @@ export const createFindStrLit = (id: string) => (node: Node) =>
 export const createFindId = (id: string) => (node: Node) =>
   findIdentifier(node, id);
 
+export type MatchPositionalElementFn = ({
+  el,
+  idx,
+  kind,
+}: any) => number | undefined;
+
 type FindElementNodeParams = {
   node: any;
   elements: ElementsType;
   findElement: FindElementFn;
   kind?: number;
+  matchPositionalElement?: MatchPositionalElementFn;
 };
 
 const matchKind = ({ kind, el }: { kind: number; el: any }) =>
   !kind || kind === el.kind;
 
-const createGetIndexIfMatch =
-  (foundElem: any, id: any, { kind }: any) =>
-  (el: any, idx: number) => {
-    let index;
-    if (el.kind === 236 && matchKind({ el, kind })) {
-      const vd = el as VariableStatement;
-      vd.declarationList.declarations.find((dec: VariableDeclaration) => {
-        if (dec.name.pos === id.pos) {
-          index = idx;
-        }
-      });
-    } else if (el.kind === 294 && matchKind({ el, kind })) {
-      const pa = el as PropertyAssignment;
-      if (pa.name === id) {
+const matchVariableStatement = ({ el, id, idx, kind }: any) => {
+  let index;
+  if (el.kind === 236 && matchKind({ el, kind })) {
+    const vd = el as VariableStatement;
+    vd.declarationList.declarations.find((dec: VariableDeclaration) => {
+      if (dec?.name.pos === id?.pos) {
         index = idx;
       }
-    } else {
-      if (el === foundElem) {
-        index = idx;
-      }
-    }
+    });
     return index;
-  };
+  }
+};
+
+const matchPropertyAssignment = ({ el, id, idx, kind }: any) => {
+  let index;
+  if (el.kind === 294 && matchKind({ el, kind })) {
+    const pa = el as PropertyAssignment;
+    if (pa?.name === id) {
+      index = idx;
+    }
+  }
+  return index;
+};
+
+const matchElement = ({ foundElem, el, idx }: any) =>
+  el === foundElem ? idx : undefined;
+
+const createMatchElem = (findElement: FindChildNode) => (el: any) => {
+  return findElement(el);
+};
 
 const findElementNode = ({
   node,
   elements,
   findElement,
   kind,
+  matchPositionalElement,
 }: FindElementNodeParams) => {
   if (typeof findElement === 'string') {
     findElement = createFindId(findElement);
@@ -73,12 +88,12 @@ const findElementNode = ({
     return;
   }
   const id = foundElem as Identifier;
-  const getIndexIfMatch = createGetIndexIfMatch(foundElem, id, { kind });
+  const matchElem = createMatchElem(findElement);
   let index = -1;
   elements.find((el: any, idx: number) => {
-    const $index = getIndexIfMatch(el, idx);
-    if ($index) {
-      index = $index;
+    const found = matchElem(el);
+    if (found) {
+      index = idx;
     }
   });
   return index;
