@@ -29,19 +29,24 @@ type FindElementNodeParams = {
   node: any;
   elements: ElementsType;
   findElement: FindElementFn;
+  kind?: number;
 };
 
+const matchKind = ({ kind, el }: { kind: number; el: any }) =>
+  !kind || (kind && kind === el.kind);
+
 const createGetIndexIfMatch =
-  (foundElem: any, id: any) => (el: any, idx: number) => {
+  (foundElem: any, id: any, { kind }: any) =>
+  (el: any, idx: number) => {
     let index;
-    if (el.kind === 236) {
+    if (el.kind === 236 && matchKind({ el, kind })) {
       const vd = el as VariableStatement;
       vd.declarationList.declarations.find((dec: VariableDeclaration) => {
         if (dec.name.pos === id.pos) {
           index = idx;
         }
       });
-    } else if (el.kind === 294) {
+    } else if (el.kind === 294 && matchKind({ el, kind })) {
       const pa = el as PropertyAssignment;
       if (pa.name === id) {
         index = idx;
@@ -58,6 +63,7 @@ const findElementNode = ({
   node,
   elements,
   findElement,
+  kind,
 }: FindElementNodeParams) => {
   if (typeof findElement === 'string') {
     findElement = createFindId(findElement);
@@ -67,7 +73,7 @@ const findElementNode = ({
     return;
   }
   const id = foundElem as Identifier;
-  const getIndexIfMatch = createGetIndexIfMatch(foundElem, id);
+  const getIndexIfMatch = createGetIndexIfMatch(foundElem, id, { kind });
   let index = -1;
   elements.find((el: any, idx: number) => {
     const $index = getIndexIfMatch(el, idx);
@@ -85,9 +91,9 @@ export const getInsertPosNum = ({
   insert,
   count,
 }: InsertPosNumParams) => {
-  let { findElement, index } = insert;
+  let { findElement, index, kind } = insert;
   if (findElement) {
-    return findElementNode({ node, elements, findElement });
+    return findElementNode({ node, elements, findElement, kind });
   }
   index = index || 'start';
   if (Number.isInteger(index)) {
@@ -118,6 +124,7 @@ export type CollectionInsert = {
   findElement?: FindElementFn;
   abortIfFound?: CheckUnderNode;
   relative?: BeforeOrAfter;
+  kind?: number;
 };
 
 export type BeforeOrAfter = 'before' | 'after' | 'replace';
