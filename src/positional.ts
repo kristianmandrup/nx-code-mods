@@ -1,13 +1,6 @@
 import { FindNodeFn } from './modify-file';
 import { findStringLiteral, findIdentifier } from './find';
-import {
-  Identifier,
-  Node,
-  NodeArray,
-  PropertyAssignment,
-  VariableDeclaration,
-  VariableStatement,
-} from 'typescript';
+import { Identifier, Node, NodeArray } from 'typescript';
 
 type ElementsType = any[] | NodeArray<any>;
 
@@ -25,49 +18,11 @@ export const createFindStrLit = (id: string) => (node: Node) =>
 export const createFindId = (id: string) => (node: Node) =>
   findIdentifier(node, id);
 
-export type MatchPositionalElementFn = ({
-  el,
-  idx,
-  kind,
-}: any) => number | undefined;
-
 type FindElementNodeParams = {
   node: any;
   elements: ElementsType;
   findElement: FindElementFn;
-  kind?: number;
-  matchPositionalElement?: MatchPositionalElementFn;
 };
-
-const matchKind = ({ kind, el }: { kind: number; el: any }) =>
-  !kind || kind === el.kind;
-
-const matchVariableStatement = ({ el, id, idx, kind }: any) => {
-  let index;
-  if (el.kind === 236 && matchKind({ el, kind })) {
-    const vd = el as VariableStatement;
-    vd.declarationList.declarations.find((dec: VariableDeclaration) => {
-      if (dec?.name.pos === id?.pos) {
-        index = idx;
-      }
-    });
-    return index;
-  }
-};
-
-const matchPropertyAssignment = ({ el, id, idx, kind }: any) => {
-  let index;
-  if (el.kind === 294 && matchKind({ el, kind })) {
-    const pa = el as PropertyAssignment;
-    if (pa?.name === id) {
-      index = idx;
-    }
-  }
-  return index;
-};
-
-const matchElement = ({ foundElem, el, idx }: any) =>
-  el === foundElem ? idx : undefined;
 
 const createMatchElem = (findElement: FindChildNode) => (el: any) => {
   return findElement(el);
@@ -77,8 +32,6 @@ const findElementNode = ({
   node,
   elements,
   findElement,
-  kind,
-  matchPositionalElement,
 }: FindElementNodeParams) => {
   if (typeof findElement === 'string') {
     findElement = createFindId(findElement);
@@ -106,9 +59,9 @@ export const getInsertPosNum = ({
   insert,
   count,
 }: InsertPosNumParams) => {
-  let { findElement, index, kind } = insert;
+  let { findElement, index } = insert;
   if (findElement) {
-    return findElementNode({ node, elements, findElement, kind });
+    return findElementNode({ node, elements, findElement });
   }
   index = index || 'start';
   if (Number.isInteger(index)) {
