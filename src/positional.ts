@@ -32,7 +32,6 @@ const findElementNode = ({
   }
   const node = findElement(literalExpr);
   if (!node) {
-    console.log('no matching element found');
     return;
   }
 
@@ -114,8 +113,10 @@ export const ensurePrefixComma = (codeToInsert: string) =>
 export const ensureSuffixComma = (codeToInsert: string) =>
   codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
 
-export const ensureStmtClosing = (codeToInsert: string) =>
-  codeToInsert.match(/;$/) ? codeToInsert : codeToInsert + ';\n';
+export const ensureStmtClosing = (codeToInsert: string) => {
+  codeToInsert = codeToInsert.match(/;$/) ? codeToInsert : codeToInsert + ';';
+  return ensureNewlineClosing(codeToInsert);
+};
 
 export const ensureNewlineClosing = (codeToInsert: string) =>
   codeToInsert.match(/\n$/) ? codeToInsert : codeToInsert + '\n';

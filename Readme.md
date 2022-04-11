@@ -1,20 +1,28 @@
 # Nx Generator code mods
 
-This library is intended to contain Code mods for use in Nx generators.
+This library is intended to contain Code Mods for use in generators (such as Nx monorepo generators, Ng (Angular) generators or any other generator).
 
-- `appendAfterImports`
-- `insertIntoNamedObject`
-- `insertIntoNamedArray` (from [nextend](https://github.com/nxtend-team/nxtend/blob/main/packages/ionic-angular/src/generators/page/lib/update-routing-file.ts))
-- `insertInsideFunctionBlock`
-- `insertClassMethod`
-- `insertClassProperty`
-- `insertClassDecorator`
-- `insertClassMethodDecorator`
-- `insertClassMethodParamDecorator`
+The library includes a number of utility functions which should greatly simplify the creation of your own Code Mods.
 
-The library in addition contains a number of utility methods which should make it easy to create your own Code Mods.
+<!-- vscode-markdown-toc -->
 
-## Append after last import
+- [Append after last import](#Appendafterlastimport)
+- [Insert into named Object](#InsertintonamedObject)
+- [Insert into named Array](#InsertintonamedArray)
+- [Insert into function block](#Insertintofunctionblock)
+- [Insert class method](#Insertclassmethod)
+- [Insert class property](#Insertclassproperty)
+- [Insert class decorator](#Insertclassdecorator)
+- [Insert class method decorator](#Insertclassmethoddecorator)
+- [Insert class method parameter decorator](#Insertclassmethodparameterdecorator)
+- [Full example](#Fullexample)
+
+<!-- vscode-markdown-toc-config
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
+## <a name='Appendafterlastimport'></a>Append after last import
 
 Appends an import statement to the end of import declarations.
 
@@ -34,7 +42,7 @@ appendAfterImportsInTree = (
 );
 ```
 
-### Sample usage
+### <a name='Sampleusage'></a>Sample usage
 
 ```ts
 const codeToInsert = `import { x } from 'x';
@@ -50,7 +58,7 @@ appendAfterImportsInTree(
 await formatFiles(tree);
 ```
 
-## Insert into named Object
+## <a name='InsertintonamedObject'></a>Insert into named Object
 
 Insert code into a named array
 
@@ -92,7 +100,7 @@ The function finds the file located at `relTargetFilePath` relative to the `proj
 
 It takes the `codeToInsert` string and inserts it into a non-empty object with an `Identifier` matching the `targetIdName`. The `insertPos` argument can be either `start`, `end`, an index in the object or a name of a property of the object.
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
   const codeToInsert = `{
@@ -115,7 +123,7 @@ It takes the `codeToInsert` string and inserts it into a non-empty object with a
   await formatFiles(tree);
 ```
 
-#### insert
+#### <a name='insert'></a>insert
 
 Insert at start or end of object properties list
 
@@ -145,7 +153,7 @@ insert: {
 }
 ```
 
-## Insert into named Array
+## <a name='InsertintonamedArray'></a>Insert into named Array
 
 Insert code into a named array
 
@@ -187,7 +195,7 @@ The function finds the file located at `relTargetFilePath` relative to the `proj
 
 It takes the `codeToInsert` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
   const codeToInsert = `{
@@ -207,7 +215,7 @@ It takes the `codeToInsert` string and inserts it to a non-empty array with an I
   await formatFiles(tree);
 ```
 
-#### insert
+#### <a name='insert-1'></a>insert
 
 Insert at `start` or `end` of array elements list
 
@@ -246,7 +254,7 @@ insert: {
 }
 ```
 
-## Insert into function block
+## <a name='Insertintofunctionblock'></a>Insert into function block
 
 Insert code into a function block (WIP)
 
@@ -266,7 +274,7 @@ insertInsideFunctionBlockInFile(
 )
 ```
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
 const inserted = insertInsideFunctionBlockInFile(filePath, {
@@ -280,7 +288,7 @@ const inserted = insertInsideFunctionBlockInFile(filePath, {
 
 `insert` allows for the same positional options as for inserting inside an array.
 
-## Insert class method
+## <a name='Insertclassmethod'></a>Insert class method
 
 Add a class method to a class
 
@@ -300,7 +308,7 @@ insertClassMethodInFile(
 )
 ```
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
 const codeToInsert = `myMethod() {}`;
@@ -311,7 +319,7 @@ const inserted = insertClassMethodInFile(filePath, {
 });
 ```
 
-## Insert class property
+## <a name='Insertclassproperty'></a>Insert class property
 
 Add class property to a class
 
@@ -331,7 +339,7 @@ insertClassPropertyInTree(
 )
 ```
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
 const codeToInsert = `myProp: User`;
@@ -342,7 +350,7 @@ const inserted = insertClassPropertyInFile(filePath, {
 });
 ```
 
-## Insert class decorator
+## <a name='Insertclassdecorator'></a>Insert class decorator
 
 Add decorator to a class
 
@@ -362,7 +370,7 @@ insertClassDecoratorInTree(
 )
 ```
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
 const codeToInsert = `@Model()`;
@@ -372,7 +380,7 @@ const inserted = insertClassDecoratorInFile(filePath, {
 });
 ```
 
-## Insert class method decorator
+## <a name='Insertclassmethoddecorator'></a>Insert class method decorator
 
 Add class method decorator (such as for NestJS)
 
@@ -387,7 +395,7 @@ insertClassMethodDecoratorInTree(
 )
 ```
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
 const codeToInsert = `@Post()`;
@@ -398,7 +406,7 @@ const inserted = insertClassMethodDecoratorInFile(filePath, {
 });
 ```
 
-## Insert class method parameter decorator
+## <a name='Insertclassmethodparameterdecorator'></a>Insert class method parameter decorator
 
 Add parameter decorator to a class method
 
@@ -418,7 +426,7 @@ insertClassMethodParamDecoratorInTree(
 )
 ```
 
-### Sample usage
+### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
 const codeToInsert = `@Body() body: string`;
@@ -429,7 +437,7 @@ const inserted = insertClassMethodParamDecoratorInFile(filePath, {
 });
 ```
 
-## Full example
+## <a name='Fullexample'></a>Full example
 
 ```ts
 import {

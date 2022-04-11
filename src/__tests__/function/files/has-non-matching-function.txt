@@ -3,4 +3,4 @@ const x = 2;
 const anotherFun = (a: string) => {
     console.log('hello', a);
     return a
-]
+}

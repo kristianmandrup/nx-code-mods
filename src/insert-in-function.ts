@@ -1,9 +1,9 @@
-import { SourceFile } from 'typescript';
+import { FunctionDeclaration, SourceFile } from 'typescript';
 import { insertCode, InsertPosition } from './insert-code';
 import { Tree } from '@nrwl/devkit';
-import { getFirstStatement, findFunctionBlock } from './find';
+import { getFirstStatement, findFunctionBlock, findFunction } from './find';
 import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
-import { CollectionInsert } from './positional';
+import { CollectionInsert, ensureStmtClosing } from './positional';
 
 export interface InsertFunctionOptions {
   codeToInsert: string;
@@ -24,10 +24,12 @@ export const insertInFunctionBlock = (opts: AnyOpts) => (node: any) => {
     return;
   }
   let insertIndex = 0;
-  const { index } = insert;
-  insertIndex = index === 'end' ? funBlock.getStart() : funBlock.getEnd();
+  const { index } = insert || {};
+  insertIndex =
+    index === 'end' ? funBlock.getEnd() - 1 : funBlock.getStart() + 1;
   insertIndex += indexAdj || 0;
-  return insertCode(node, insertIndex, codeToInsert);
+  const code = ensureStmtClosing(codeToInsert);
+  return insertCode(node, insertIndex, code);
 };
 
 export function insertInsideFunctionBlockInFile(

@@ -36,7 +36,6 @@ export function replaceFileContents(
 ) {
   const { modifyFn, selector } = opts;
   if (targetFile == '') {
-    console.log('targetFile is empty', { targetFile });
     return;
   }
   const replaceFn = modifyFn({ ...opts });
@@ -51,7 +50,6 @@ export function replaceNodeContents(
 ) {
   const { modifyFn } = opts;
   if (targetFile == '') {
-    console.log('targetFile is empty', { targetFile });
     return;
   }
   const replaceFn = modifyFn({ ...opts });
@@ -67,13 +65,11 @@ export function replaceContentInSrc(
   if (findNodeFn) {
     const node = findNodeFn(ast);
     if (!node) {
-      // console.log('no matching node');
       return targetFile;
     }
     return replaceNodeContents(targetFile, ast, opts);
   }
   if (!selector) {
-    // console.log('no selector');
     return targetFile;
   }
   return replaceFileContents(targetFile, opts);
@@ -88,13 +84,10 @@ export function replaceInFile(targetFilePath: string, opts: ModifyFileOptions) {
   const ast = tsquery.ast(targetFile);
   const { checkFn, getDefaultNodeFn } = opts;
   if (checkFn) {
-    // console.log('check');
     const checkResult = checkFn(ast);
-    // console.log({ checkResult });
     if (checkResult) {
       return replaceContentInSrc(targetFile, ast, opts);
     } else {
-      // console.log('default');
       if (getDefaultNodeFn) {
         const node = getDefaultNodeFn(ast);
         return replaceNodeContents(targetFile, node, opts);

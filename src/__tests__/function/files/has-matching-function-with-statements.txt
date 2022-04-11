@@ -4,4 +4,4 @@ const myFun = (a: string) => {
     console.log('hello', a);
     let b = 5;
     return a + b;
-]
+}

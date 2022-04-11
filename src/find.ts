@@ -224,9 +224,9 @@ export const findFunctionBlock = (
   if (fun.arrow) {
     result = tsquery(fun.node, `ArrowFunction > Block`);
     if (!result) return;
-    return result[0].parent as Block;
+    return result[0] as Block;
   }
-  if (fun?.declaration) {
+  if (fun.declaration) {
     return findBlock(fun.node);
   }
 };
