@@ -41,14 +41,20 @@ export const insertIntoArray = (
   let insertPosNum =
     getInsertPosNum({
       type: 'array',
-      literalExpr,
+      node: literalExpr,
       elements: literals,
       insert,
       count: litCount,
     }) || 0;
   if (litCount === 0) {
-    const insertPosition = literalExpr.getStart() + 1;
-    return insertCode(srcNode, insertPosition, codeToInsert);
+    let insertPosition = literalExpr.getStart() + 1;
+    insertPosition += indexAdj || 0;
+    const code = ensureSuffixComma(codeToInsert);
+    return insertCode(srcNode, insertPosition, code);
+  }
+  if (insertPosNum === -1) {
+    insertPosNum = 0;
+    insert.relative = 'before';
   }
 
   let insertPosition =

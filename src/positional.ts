@@ -1,11 +1,20 @@
 import { FindNodeFn } from './modify-file';
 import { findStringLiteral, findIdentifier } from './find';
-import { Identifier, Node, PropertyAssignment } from 'typescript';
+import {
+  Identifier,
+  Node,
+  NodeArray,
+  PropertyAssignment,
+  VariableDeclaration,
+  VariableStatement,
+} from 'typescript';
+
+type ElementsType = any[] | NodeArray<any>;
 
 export type InsertPosNumParams = {
   type: 'array' | 'object';
-  literalExpr: Node;
-  elements: any[];
+  node: Node;
+  elements: ElementsType;
   insert: CollectionInsert;
   count: number;
 };
@@ -17,51 +26,68 @@ export const createFindId = (id: string) => (node: Node) =>
   findIdentifier(node, id);
 
 type FindElementNodeParams = {
-  literalExpr: any;
-  elements: any[];
+  node: any;
+  elements: ElementsType;
   findElement: FindElementFn;
 };
 
+const createGetIndexIfMatch =
+  (foundElem: any, id: any) => (el: any, idx: number) => {
+    let index;
+    if (el.kind === 236) {
+      const vd = el as VariableStatement;
+      vd.declarationList.declarations.find((dec: VariableDeclaration) => {
+        if (dec.name.pos === id.pos) {
+          index = idx;
+        }
+      });
+    } else if (el.kind === 294) {
+      const pa = el as PropertyAssignment;
+      if (pa.name === id) {
+        index = idx;
+      }
+    } else {
+      if (el === foundElem) {
+        index = idx;
+      }
+    }
+    return index;
+  };
+
 const findElementNode = ({
-  literalExpr,
+  node,
   elements,
   findElement,
 }: FindElementNodeParams) => {
   if (typeof findElement === 'string') {
     findElement = createFindId(findElement);
   }
-  const node = findElement(literalExpr);
-  if (!node) {
+  const foundElem = findElement(node);
+  if (!foundElem) {
     return;
   }
-
+  const id = foundElem as Identifier;
+  const getIndexIfMatch = createGetIndexIfMatch(foundElem, id);
   let index = -1;
   elements.find((el: any, idx: number) => {
-    if (el.kind === 294) {
-      const pa = el as PropertyAssignment;
-      const id = node as Identifier;
-      if (pa.name === id) {
-        index = idx;
-      }
-    } else {
-      if (el === node) {
-        index = idx;
-      }
+    const $index = getIndexIfMatch(el, idx);
+    if ($index) {
+      index = $index;
     }
   });
-  return index >= 0 ? index : undefined;
+  return index;
 };
 
 export const getInsertPosNum = ({
   // type,
-  literalExpr,
+  node,
   elements,
   insert,
   count,
 }: InsertPosNumParams) => {
   let { findElement, index } = insert;
   if (findElement) {
-    return findElementNode({ literalExpr, elements, findElement });
+    return findElementNode({ node, elements, findElement });
   }
   index = index || 'start';
   if (Number.isInteger(index)) {
@@ -96,16 +122,20 @@ export type CollectionInsert = {
 
 export type BeforeOrAfter = 'before' | 'after' | 'replace';
 
-export const afterLastElementPos = (literals: any[]) =>
-  literals[literals.length - 1].getEnd();
+export const afterLastElementPos = (elements: ElementsType) =>
+  elements[elements.length - 1].getEnd();
 
 // TODO: add support for 'replace'
 export const aroundElementPos = (
-  literals: any[],
+  elements: ElementsType,
   pos: number,
   relativePos: BeforeOrAfter,
-) =>
-  relativePos === 'after' ? literals[pos].getEnd() : literals[pos].getStart();
+) => {
+  const element = elements[pos];
+  return relativePos === 'after'
+    ? elements[pos].getEnd()
+    : elements[pos].getStart();
+};
 
 export const ensurePrefixComma = (codeToInsert: string) =>
   codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;

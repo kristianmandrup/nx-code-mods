@@ -3,7 +3,13 @@ import { insertCode, InsertPosition } from './insert-code';
 import { Tree } from '@nrwl/devkit';
 import { getFirstStatement, findFunctionBlock, findFunction } from './find';
 import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
-import { CollectionInsert, ensureStmtClosing } from './positional';
+import {
+  afterLastElementPos,
+  aroundElementPos,
+  CollectionInsert,
+  ensureStmtClosing,
+  getInsertPosNum,
+} from './positional';
 
 export interface InsertFunctionOptions {
   codeToInsert: string;
@@ -18,18 +24,42 @@ export interface InsertFunctionTreeOptions extends InsertFunctionOptions {
 }
 
 export const insertInFunctionBlock = (opts: AnyOpts) => (node: any) => {
-  const { codeToInsert, id, insert, indexAdj } = opts;
+  let { codeToInsert, id, insert, indexAdj } = opts;
+  insert = insert || {};
   const funBlock = findFunctionBlock(node, id);
   if (!funBlock) {
     return;
   }
   let insertIndex = 0;
-  const { index } = insert || {};
-  insertIndex =
-    index === 'end' ? funBlock.getEnd() - 1 : funBlock.getStart() + 1;
-  insertIndex += indexAdj || 0;
+  const elements = funBlock.statements;
+  const count = elements.length;
+
+  let insertPosNum =
+    getInsertPosNum({
+      type: 'array',
+      node: funBlock,
+      elements,
+      insert,
+      count,
+    }) || 0;
+  if (count === 0) {
+    const code = ensureStmtClosing(codeToInsert);
+    const insertPosition = funBlock.getStart() + 1;
+    return insertCode(node, insertPosition, code);
+  }
+  if (insertPosNum === -1) {
+    insertPosNum = 0;
+    insert.relative = 'before';
+  }
+
+  let insertPosition =
+    insertPosNum >= count
+      ? afterLastElementPos(elements)
+      : aroundElementPos(elements, insertPosNum, insert.relative);
+
+  insertPosition += indexAdj || 0;
   const code = ensureStmtClosing(codeToInsert);
-  return insertCode(node, insertIndex, code);
+  return insertCode(node, insertPosition, code);
 };
 
 export function insertInsideFunctionBlockInFile(

@@ -256,7 +256,7 @@ insert: {
 
 ## <a name='Insertintofunctionblock'></a>Insert into function block
 
-Insert code into a function block (WIP)
+Insert code into a function block
 
 ```ts
 insertInsideFunctionBlockInTree(

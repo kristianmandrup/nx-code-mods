@@ -41,15 +41,22 @@ export const insertIntoObject = (
   let insertPosNum =
     getInsertPosNum({
       type: 'object',
-      literalExpr,
+      node: literalExpr,
       elements: props,
       insert,
       count: propCount,
     }) || 0;
   if (propCount === 0) {
-    const insertPosition = literalExpr.getStart() + 1;
+    let insertPosition = literalExpr.getStart() + 1;
+    insertPosition += indexAdj || 0;
+    const code = ensureSuffixComma(codeToInsert);
     return insertCode(srcNode, insertPosition, codeToInsert);
   }
+  if (insertPosNum === -1) {
+    insertPosNum = 0;
+    insert.relative = 'before';
+  }
+
   let insertPosition =
     insertPosNum >= propCount
       ? afterLastElementPos(props)

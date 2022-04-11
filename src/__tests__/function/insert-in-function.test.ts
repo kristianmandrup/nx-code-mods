@@ -43,7 +43,7 @@ describe('insert function', () => {
   });
 
   context('file with named empty function', () => {
-    it('inserts in function', () => {
+    it('inserts in start of function', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -56,8 +56,9 @@ describe('insert function', () => {
       });
       const origCode = `const x = 2;`;
       const insertedTxt = inserted ? inserted : '';
-      const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*}`;
+      const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
       const regExp = new RegExp(str);
+      console.log({ insertedTxt });
       expect(insertedTxt.includes(origCode)).toBeTruthy();
       expect(insertedTxt.match(regExp)).toBeTruthy();
     });
@@ -86,7 +87,7 @@ describe('insert function', () => {
     });
 
     context('numeric pos 1', () => {
-      it.skip('inserts at statement position in function', () => {
+      it('inserts at statement position in function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -97,12 +98,12 @@ describe('insert function', () => {
           codeToInsert,
           id: 'myFun',
           insert: {
-            index: 'start',
+            index: 1,
           },
         });
         const origCode = `const x = 2;`;
         const insertedTxt = inserted ? inserted : '';
-        const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
+        const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*let b = 5;`;
         const regExp = new RegExp(str);
         expect(insertedTxt.includes(origCode)).toBeTruthy();
         expect(insertedTxt.match(regExp)).toBeTruthy();
@@ -134,7 +135,7 @@ describe('insert function', () => {
     });
 
     context('find specific statement for insertion', () => {
-      it.skip('inserts after specific statement', () => {
+      it('inserts after specific statement', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -152,7 +153,7 @@ describe('insert function', () => {
         });
         const origCode = `const x = 2;`;
         const insertedTxt = inserted ? inserted : '';
-        const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
+        const str = `let b = 5;\\s*${escapeRegExp(codeToInsert + ';')}`;
         const regExp = new RegExp(str);
         expect(insertedTxt.includes(origCode)).toBeTruthy();
         expect(insertedTxt.match(regExp)).toBeTruthy();
