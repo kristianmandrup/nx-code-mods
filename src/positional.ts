@@ -33,7 +33,7 @@ type FindElementNodeParams = {
 };
 
 const matchKind = ({ kind, el }: { kind: number; el: any }) =>
-  !kind || (kind && kind === el.kind);
+  !kind || kind === el.kind;
 
 const createGetIndexIfMatch =
   (foundElem: any, id: any, { kind }: any) =>
