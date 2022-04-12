@@ -1,5 +1,5 @@
 import { FunctionDeclaration, SourceFile } from 'typescript';
-import { insertCode, InsertPosition } from './insert-code';
+import { insertCode, InsertPosition } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import { getFirstStatement, findFunctionBlock, findFunction } from './find';
 import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
@@ -30,7 +30,6 @@ export const insertInFunctionBlock = (opts: AnyOpts) => (node: any) => {
   if (!funBlock) {
     return;
   }
-  let insertIndex = 0;
   const elements = funBlock.statements;
   const count = elements.length;
 

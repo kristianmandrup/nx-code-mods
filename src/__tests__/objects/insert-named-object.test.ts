@@ -41,7 +41,7 @@ describe('insert object', () => {
   });
 
   context('file with named empty object', () => {
-    it('inserts in object', () => {
+    it.only('inserts in object', () => {
       const filePath = path.join(
         __dirname,
         'files',

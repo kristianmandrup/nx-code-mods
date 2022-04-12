@@ -1,13 +1,18 @@
 import { Node, SourceFile } from 'typescript';
-import { insertCode } from './insert-code';
+import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration, findMethodDeclaration } from './find';
+import {
+  findClassDeclaration,
+  findMethodDeclaration,
+  findDecorator,
+} from './find';
 import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
 import { ensureNewlineClosing } from './positional';
 
 export interface ClassMethodDecInsertOptions {
   className: string;
   methodId: string;
+  id: string; // decorator id
   codeToInsert: string;
   indexAdj?: number;
 }
@@ -19,12 +24,22 @@ export interface ClassMethodDecInsertTreeOptions
 }
 
 export const insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node) => {
-  const { className, methodId, codeToInsert, indexAdj } = opts;
+  const { className, methodId, id, codeToInsert, indexAdj } = opts;
 
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
   const methodDecl = findMethodDeclaration(classDecl, methodId);
   if (!methodDecl) return;
+  // abort if class decorator already present
+  const abortIfFound = (node: Node) => findDecorator(node, id);
+
+  if (abortIfFound) {
+    const found = abortIfFound(methodDecl);
+    if (found) {
+      return;
+    }
+  }
+
   const methodDeclIndex = methodDecl.getStart() + (indexAdj || 0);
   const code = ensureNewlineClosing(codeToInsert);
   return insertCode(node, methodDeclIndex, code);

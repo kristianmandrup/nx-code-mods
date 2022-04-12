@@ -1,19 +1,20 @@
 import {
   Block,
   ClassDeclaration,
+  Decorator,
   FunctionDeclaration,
   Identifier,
   ImportDeclaration,
+  ImportSpecifier,
   MethodDeclaration,
   Node,
+  ParameterDeclaration,
   PropertyDeclaration,
-  SortedArray,
   SourceFile,
   Statement,
-  StringLiteral,
   StringLiteralLike,
+  SyntaxKind,
   VariableDeclaration,
-  VariableStatement,
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
 
@@ -22,6 +23,56 @@ type WhereFn = (stmt: Node) => boolean;
 export const getFirstStatement = (ast: SourceFile) => ast.statements[0];
 export const getLastStatement = (ast: SourceFile) =>
   ast.statements[ast.statements.length - 1];
+
+export const hasAnyImportDecl = (node: SourceFile) =>
+  Boolean(findLastImport(node));
+
+export const findMatchingImportDeclarationsByFileRef = (
+  node: SourceFile,
+  importFileRef: string,
+): ImportDeclaration[] | undefined => {
+  const selector = `ImportDeclaration > StringLiteral[value='${importFileRef}']`;
+  const matches = tsquery(node, selector);
+  return matches.map((m) => m.parent) as ImportDeclaration[];
+};
+
+export const findImportSpecifier = (
+  node: any,
+  importId: string,
+): ImportSpecifier | undefined => {
+  const selector = `ImportSpecifier > Identifier[name='${importId}']`;
+  const ids = tsquery(node, selector);
+  const matches = ids.map((m) => m.parent) as ImportSpecifier[];
+  return matches[0];
+};
+
+export const findMatchingImportDecl = (
+  node: any,
+  { importId, importFileRef }: { importId: string; importFileRef: string },
+): ImportDeclaration | undefined => {
+  try {
+    const matchingImportFileNodes = findMatchingImportDeclarationsByFileRef(
+      node,
+      importFileRef,
+    );
+    if (!matchingImportFileNodes || matchingImportFileNodes.length === 0) {
+      // console.log('no import match');
+      return;
+    }
+    const importIdSelector = `ImportDeclaration Identifier[name='${importId}']`;
+    let found;
+    matchingImportFileNodes.find((importDeclNode) => {
+      const matchingId = tsquery(importDeclNode, importIdSelector);
+      if (matchingId) {
+        found = importDeclNode;
+      }
+    });
+    return found;
+  } catch (e) {
+    console.error(e);
+    return;
+  }
+};
 
 export const findLastImport = (
   srcNode: SourceFile,
@@ -136,6 +187,30 @@ export const findIdentifier = (
     return;
   }
   return result[0] as Identifier;
+};
+
+export const findDecorator = (
+  node: Node,
+  id: string,
+): Decorator | undefined => {
+  const selector = `Decorator[name='${id}']`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[0].parent as Decorator;
+};
+
+export const findParamWithDecorator = (
+  node: Node,
+  id: string,
+): ParameterDeclaration | undefined => {
+  const selector = `Parameter > Decorator[name='${id}']`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[0].parent as ParameterDeclaration;
 };
 
 export const findVariableDeclaration = (

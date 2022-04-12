@@ -1,4 +1,3 @@
-import { FindNodeFn } from './modify-file';
 import { findStringLiteral, findIdentifier } from './find';
 import { Identifier, Node, NodeArray } from 'typescript';
 

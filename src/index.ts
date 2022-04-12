@@ -1,3 +1,4 @@
+export * from './insert-import';
 export * from './append-after-imports';
 export * from './find';
 export * from './insert-named-array';
@@ -7,6 +8,6 @@ export * from './insert-class-method-param-decorator';
 export * from './insert-class-method-decorator';
 export * from './insert-class-method';
 export * from './insert-class-property';
-export * from './insert-code';
+export * from './modify-code';
 export * from './insert-in-function';
 export * from './modify-file';

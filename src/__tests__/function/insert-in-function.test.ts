@@ -1,7 +1,6 @@
 import { findVariableDeclaration } from './../../find';
 import { insertInsideFunctionBlockInFile } from '../..';
 import * as path from 'path';
-import { findStringLiteral } from '../../find';
 import { Node } from 'typescript';
 import { escapeRegExp } from '../../utils';
 

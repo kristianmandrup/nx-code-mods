@@ -8,7 +8,7 @@ import {
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
-import { insertCode } from './insert-code';
+import { insertCode } from './modify-code';
 import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
 

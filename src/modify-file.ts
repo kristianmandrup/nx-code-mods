@@ -7,11 +7,11 @@ import { replaceOne } from './replace';
 import { Node, SourceFile } from 'typescript';
 
 export type GetDefaultNodeFn = (node: SourceFile) => Node;
-export type FindNodeFn = (node: SourceFile) => Node | undefined;
+export type FindNodeFn = (node: SourceFile) => Node | Node[] | undefined;
 export type CheckFn = (node: SourceFile) => boolean;
 
 export interface ModifyFileOptions {
-  codeToInsert: string;
+  codeToInsert?: string;
   selector?: string;
   checkFn?: CheckFn;
   findNodeFn?: FindNodeFn;
@@ -64,7 +64,7 @@ export function replaceContentInSrc(
   const { selector, findNodeFn } = opts;
   if (findNodeFn) {
     const node = findNodeFn(ast);
-    if (!node) {
+    if (!node || (node as Node[]).length === 0) {
       return targetFile;
     }
     return replaceNodeContents(targetFile, ast, opts);

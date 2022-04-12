@@ -1,6 +1,6 @@
 import { ensureStmtClosing } from './positional';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
-import { insertCode } from './insert-code';
+import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
   findBlock,

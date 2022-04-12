@@ -1,4 +1,4 @@
-import { insertCode } from './insert-code';
+import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
   findBlock,

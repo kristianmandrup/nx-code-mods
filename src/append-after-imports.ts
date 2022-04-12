@@ -1,34 +1,35 @@
 import { SourceFile } from 'typescript';
-import { insertCode } from './insert-code';
+import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
-import { getFirstStatement, findLastImport } from './find';
+import { getFirstStatement, findLastImport, hasAnyImportDecl } from './find';
 import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
 
-export interface InsertOptions {
+export interface AppendAfterImportsOptions {
   codeToInsert: string;
   indexAdj?: number;
 }
 
-export interface InsertTreeOptions extends InsertOptions {
+export interface AppendAfterImportsTreeOptions
+  extends AppendAfterImportsOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
 
 export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
   const { codeToInsert, indexAdj } = opts;
-  const lastImportStmt = findLastImport(node);
+  const lastImportDecl = findLastImport(node);
   let importIndex = 0;
-  if (!lastImportStmt) {
+  if (!lastImportDecl) {
     importIndex = node.getStart() + (indexAdj || 0);
   } else {
-    importIndex = lastImportStmt.getEnd() + (indexAdj || 0);
+    importIndex = lastImportDecl.getEnd() + (indexAdj || 0);
   }
   return insertCode(node, importIndex, codeToInsert);
 };
 
 export function appendAfterImportsInFile(
   filePath: string,
-  opts: InsertOptions,
+  opts: AppendAfterImportsOptions,
 ) {
   const allOpts = {
     checkFn: hasAnyImportDecl,
@@ -40,8 +41,9 @@ export function appendAfterImportsInFile(
   return replaceInFile(filePath, allOpts);
 }
 
-const hasAnyImportDecl = (node: SourceFile) => Boolean(findLastImport(node));
-
-export function appendAfterImportsInTree(tree: Tree, opts: InsertTreeOptions) {
+export function appendAfterImportsInTree(
+  tree: Tree,
+  opts: AppendAfterImportsTreeOptions,
+) {
   return modifyTree(tree, opts);
 }

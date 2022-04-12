@@ -14,6 +14,7 @@ describe('insert class decorator', () => {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
+        id: 'Post',
       });
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
@@ -34,6 +35,7 @@ describe('insert class decorator', () => {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
+        id: 'Post',
       });
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
@@ -54,6 +56,7 @@ describe('insert class decorator', () => {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
+        id: 'Post',
       });
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';
@@ -73,6 +76,7 @@ describe('insert class decorator', () => {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
+        id: 'Post',
       });
       const insertedTxt = inserted ? inserted : '';
       const origCode = 'const x = 2;';

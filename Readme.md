@@ -7,6 +7,7 @@ The library includes a number of utility functions which should greatly simplify
 <!-- vscode-markdown-toc -->
 
 - [Append after last import](#Appendafterlastimport)
+- [Insert import](#InsertintoImport)
 - [Insert into named Object](#InsertintonamedObject)
 - [Insert into named Array](#InsertintonamedArray)
 - [Insert into function block](#Insertintofunctionblock)
@@ -29,7 +30,7 @@ Appends an import statement to the end of import declarations.
 ```ts
 appendAfterImportsInFile(
   filePath: string,
-  opts: InsertOptions,
+  opts: AppendAfterImportsOptions,
 )
 ```
 
@@ -38,15 +39,14 @@ In file tree
 ```ts
 appendAfterImportsInTree = (
   tree: Tree,
-  { projectRoot, relTargetFilePath, codeToInsert }: AppendImportOptions,
+  { projectRoot, relTargetFilePath, codeToInsert }: AppendAfterImportsTreeOptions,
 );
 ```
 
 ### <a name='Sampleusage'></a>Sample usage
 
 ```ts
-const codeToInsert = `import { x } from 'x';
-`;
+const codeToInsert = `import { x } from 'x'`;
 appendAfterImportsInTree(
   tree,
   {
@@ -56,6 +56,48 @@ appendAfterImportsInTree(
   }
 );
 await formatFiles(tree);
+```
+
+## <a name='InsertintoImport'></a>Insert into import
+
+Inserts an identifier to be imported into an existing import declaration
+
+```ts
+insertImportInFile(
+  filePath: string,
+  opts: InsertImportOptions,
+)
+```
+
+In file tree
+
+```ts
+insertImportInTree = (
+  tree: Tree,
+  { projectRoot, relTargetFilePath, codeToInsert }: InsertImportTreeOptions,
+);
+```
+
+### <a name='Sampleusage'></a>Sample usage
+
+Implicit import id
+
+```ts
+const inserted = insertImportInFile(filePath, {
+  importId: 'x',
+  importFileRef: './my-file',
+});
+```
+
+Explicit import code with import alias
+
+```ts
+const codeToInsert = `x as xman`;
+const inserted = insertImportInFile(filePath, {
+  codeToInsert,
+  importId: 'x',
+  importFileRef: './my-file',
+});
 ```
 
 ## <a name='InsertintonamedObject'></a>Insert into named Object
@@ -103,10 +145,7 @@ It takes the `codeToInsert` string and inserts it into a non-empty object with a
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-  const codeToInsert = `{
-    x: 2
-  },
-  `;
+  const codeToInsert = `x: 2`;
   insertIntoNamedObjectInTree(tree,
     {
         normalizedOptions.projectRoot,
@@ -200,7 +239,7 @@ It takes the `codeToInsert` string and inserts it to a non-empty array with an I
 ```ts
   const codeToInsert = `{
     x: 2
-  }`;
+  }`
   insertIntoNamedArrayInTree(tree,
     {
         normalizedOptions.projectRoot,

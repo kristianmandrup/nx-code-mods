@@ -7,7 +7,7 @@ import {
   getInsertPosNum,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { insertCode } from './insert-code';
+import { insertCode } from './modify-code';
 import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
 import { SourceFile } from 'typescript';
@@ -49,8 +49,8 @@ export const insertIntoObject = (
   if (propCount === 0) {
     let insertPosition = literalExpr.getStart() + 1;
     insertPosition += indexAdj || 0;
-    const code = ensureSuffixComma(codeToInsert);
-    return insertCode(srcNode, insertPosition, codeToInsert);
+    const code = codeToInsert; // ensureSuffixComma(codeToInsert);
+    return insertCode(srcNode, insertPosition, code);
   }
   if (insertPosNum === -1) {
     insertPosNum = 0;
