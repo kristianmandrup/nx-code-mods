@@ -5,6 +5,7 @@ import {
   CollectionRemove,
   getElementRemovePositions,
   getRemovePosNum,
+  normalizeRemoveIndexAdj,
   RemoveIndexAdj,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
@@ -30,21 +31,25 @@ export const removePropsFromObject = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { literalExpr, remove, indexAdj } = opts;
-  const elements = literalExpr.properties;
+  let { node, remove, indexAdj } = opts;
+  remove = remove || {};
+  indexAdj = normalizeRemoveIndexAdj(indexAdj);
+  const elements = node.properties;
   const count = elements.length;
   let removePosNum =
     getRemovePosNum({
       type: 'object',
-      node: literalExpr,
+      node,
       elements,
       remove,
       count,
     }) || 0;
   if (count === 0) {
-    const startPos = literalExpr.getStart() + indexAdj.start;
-    const endPos = literalExpr.getEnd() + indexAdj.end;
-    return removeCode(srcNode, { startPos, endPos });
+    const positions = {
+      startPos: node.getStart() + 1 + indexAdj.start,
+      endPos: node.getEnd() - 1 + indexAdj.end,
+    };
+    return removeCode(srcNode, positions);
   }
   if (removePosNum === -1) {
     removePosNum = 0;
@@ -57,14 +62,14 @@ export const removePropsFromObject = (
       : getElementRemovePositions(elements, removePosNum, remove.relative);
 
   if (!positions.startPos) {
-    positions.startPos = literalExpr.getStart();
+    positions.startPos = node.getStart();
   }
 
   if (!positions.endPos) {
-    positions.endPos = literalExpr.getEnd();
+    positions.endPos = node.getEnd();
   }
-  positions.startPos += indexAdj.start || 0;
-  positions.endPos += indexAdj.end || 0;
+  positions.startPos += indexAdj.start;
+  positions.endPos += indexAdj.end;
   return removeCode(srcNode, positions);
 };
 
@@ -83,9 +88,9 @@ export const removeFromObject =
     if (!declaration) {
       return;
     }
-    const literalExpr = declaration.initializer as ObjectLiteralExpression;
+    const node = declaration.initializer as ObjectLiteralExpression;
     const newTxt = removePropsFromObject(srcNode, {
-      literalExpr,
+      node,
       remove,
     });
     return newTxt;

@@ -11,14 +11,14 @@ describe('insert class property', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const codeToInsert = `myProp: User`;
 
-      const inserted = removeClassPropertyInFile(filePath, {
+      const code = removeClassPropertyInFile(filePath, {
         className: 'myClass',
         propId: 'myProp',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -30,15 +30,15 @@ describe('insert class property', () => {
         'has-no-matching-class.txt',
       );
       const codeToInsert = `myProp: User`;
-      const inserted = insertClassPropertyInFile(filePath, {
+      const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         propId: 'myProp',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -50,15 +50,15 @@ describe('insert class property', () => {
         'has-matching-empty-class.txt',
       );
       const codeToInsert = `myProp: User`;
-      const inserted = insertClassPropertyInFile(filePath, {
+      const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         propId: 'myProp',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeTruthy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeTruthy();
     });
   });
 
@@ -70,17 +70,17 @@ describe('insert class property', () => {
         'has-matching-class-no-matching-property.txt',
       );
       const codeToInsert = `myProp: User`;
-      const inserted = insertClassPropertyInFile(filePath, {
+      const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         propId: 'myProp',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
       const str = `${escapeRegExp(codeToInsert)}\\s*;\\s*propA`;
       const regExp = new RegExp(str);
-      expect(insertedTxt.match(regExp)).toBeTruthy();
+      expect(codeTxt.match(regExp)).toBeTruthy();
     });
   });
 
@@ -93,15 +93,15 @@ describe('insert class property', () => {
       );
       const codeToInsert = `getUser(): User {}
   `;
-      const inserted = insertClassPropertyInFile(filePath, {
+      const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         propId: 'myProp',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 });

@@ -10,16 +10,16 @@ describe('insert class decorator', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const codeToInsert = `@Post()`;
-      const inserted = insertClassMethodDecoratorInFile(filePath, {
+      const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -31,16 +31,16 @@ describe('insert class decorator', () => {
         'has-no-matching-class.txt',
       );
       const codeToInsert = `@Post()`;
-      const inserted = insertClassMethodDecoratorInFile(filePath, {
+      const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -52,15 +52,15 @@ describe('insert class decorator', () => {
         'has-matching-empty-class.txt',
       );
       const codeToInsert = `@Post()`;
-      const inserted = insertClassMethodDecoratorInFile(filePath, {
+      const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -72,19 +72,19 @@ describe('insert class decorator', () => {
         'has-matching-class-and-method.txt',
       );
       const codeToInsert = `@Post()`;
-      const inserted = insertClassMethodDecoratorInFile(filePath, {
+      const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
         className: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
       const str = `${escapeRegExp(codeToInsert)}\\s*\\nmyMethod`;
       const regExp = new RegExp(str);
-      expect(insertedTxt.match(regExp)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeTruthy();
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.match(regExp)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeTruthy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
     });
   });
 });

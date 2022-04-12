@@ -83,7 +83,7 @@ insertImportInTree = (
 Implicit import id
 
 ```ts
-const inserted = insertImportInFile(filePath, {
+const code = insertImportInFile(filePath, {
   importId: 'x',
   importFileRef: './my-file',
 });
@@ -93,7 +93,7 @@ Explicit import code with import alias
 
 ```ts
 const codeToInsert = `x as xman`;
-const inserted = insertImportInFile(filePath, {
+const code = insertImportInFile(filePath, {
   codeToInsert,
   importId: 'x',
   importFileRef: './my-file',
@@ -316,7 +316,7 @@ insertInsideFunctionBlockInFile(
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-const inserted = insertInsideFunctionBlockInFile(filePath, {
+const code = insertInsideFunctionBlockInFile(filePath, {
   codeToInsert,
   id: 'myFun',
   insert: {
@@ -351,7 +351,7 @@ insertClassMethodInFile(
 
 ```ts
 const codeToInsert = `myMethod() {}`;
-const inserted = insertClassMethodInFile(filePath, {
+const code = insertClassMethodInFile(filePath, {
   codeToInsert,
   className: 'myClass',
   methodId: 'myMethod',
@@ -382,7 +382,7 @@ insertClassPropertyInTree(
 
 ```ts
 const codeToInsert = `myProp: User`;
-const inserted = insertClassPropertyInFile(filePath, {
+const code = insertClassPropertyInFile(filePath, {
   codeToInsert,
   className: 'myClass',
   propId: 'myProp',
@@ -413,7 +413,7 @@ insertClassDecoratorInTree(
 
 ```ts
 const codeToInsert = `@Model()`;
-const inserted = insertClassDecoratorInFile(filePath, {
+const code = insertClassDecoratorInFile(filePath, {
   codeToInsert,
   id: 'myClass',
 });
@@ -438,7 +438,7 @@ insertClassMethodDecoratorInTree(
 
 ```ts
 const codeToInsert = `@Post()`;
-const inserted = insertClassMethodDecoratorInFile(filePath, {
+const code = insertClassMethodDecoratorInFile(filePath, {
   codeToInsert,
   className: 'myClass',
   methodId: 'myMethod',
@@ -469,7 +469,7 @@ insertClassMethodParamDecoratorInTree(
 
 ```ts
 const codeToInsert = `@Body() body: string`;
-const inserted = insertClassMethodParamDecoratorInFile(filePath, {
+const code = insertClassMethodParamDecoratorInFile(filePath, {
   codeToInsert,
   className: 'myClass',
   methodId: 'myMethod',

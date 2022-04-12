@@ -86,6 +86,13 @@ export const getInsertPosNum = ({
   return;
 };
 
+export const normalizeRemoveIndexAdj = (indexAdj: RemoveIndexAdj) => {
+  indexAdj = indexAdj || {};
+  indexAdj.start = indexAdj.start || 0;
+  indexAdj.end = indexAdj.end || 0;
+  return indexAdj;
+};
+
 export const getRemovePosNum = ({
   // type,
   node,
@@ -93,7 +100,7 @@ export const getRemovePosNum = ({
   remove,
   count,
 }: RemovePosNumParams) => {
-  let { findElement, index } = remove;
+  let { findElement, index } = remove || {};
   if (findElement) {
     return findElementNode({ node, elements, findElement });
   }

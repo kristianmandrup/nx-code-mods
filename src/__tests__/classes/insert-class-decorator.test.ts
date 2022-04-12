@@ -9,14 +9,14 @@ describe('insert class decorator', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const codeToInsert = `@Model()`;
-      const inserted = insertClassDecoratorInFile(filePath, {
+      const code = insertClassDecoratorInFile(filePath, {
         codeToInsert,
         id: 'myClass',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -28,14 +28,14 @@ describe('insert class decorator', () => {
         'has-no-matching-class.txt',
       );
       const codeToInsert = `@Model()`;
-      const inserted = insertClassDecoratorInFile(filePath, {
+      const code = insertClassDecoratorInFile(filePath, {
         codeToInsert,
         id: 'myClass',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -47,17 +47,17 @@ describe('insert class decorator', () => {
         'has-matching-empty-class.txt',
       );
       const codeToInsert = `@Model()`;
-      const inserted = insertClassDecoratorInFile(filePath, {
+      const code = insertClassDecoratorInFile(filePath, {
         codeToInsert,
         id: 'myClass',
       });
-      let insertedTxt = inserted ? inserted : '';
+      let codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
       const str = `${escapeRegExp(codeToInsert)}\\s*\\nclass myClass`;
       const regExp = new RegExp(str);
-      expect(insertedTxt.match(regExp)).toBeTruthy();
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.match(regExp)).toBeTruthy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
     });
   });
 });

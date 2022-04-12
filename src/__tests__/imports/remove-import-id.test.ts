@@ -8,14 +8,14 @@ describe('insertImport', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'has-imports.txt');
       const codeToInsert = `x`;
-      const inserted = removeImportIdInFile(filePath, {
+      const code = removeImportIdInFile(filePath, {
         importId: 'x',
         importFileRef: './my-file',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(insertedTxt.match(codeToInsert)).toBeFalsy();
-      expect(insertedTxt.match(origCode)).toBeTruthy();
+      expect(codeTxt.match(codeToInsert)).toBeFalsy();
+      expect(codeTxt.match(origCode)).toBeTruthy();
     });
   });
 });

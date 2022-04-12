@@ -10,14 +10,14 @@ describe('insert array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');
       const codeToInsert = `'c'`;
-      const inserted = insertIntoNamedArrayInFile(filePath, {
+      const code = insertIntoNamedArrayInFile(filePath, {
         codeToInsert,
         id: 'myNamedList',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -29,14 +29,14 @@ describe('insert array', () => {
         'has-non-matching-array.txt',
       );
       const codeToInsert = `'c'`;
-      const inserted = insertIntoNamedArrayInFile(filePath, {
+      const code = insertIntoNamedArrayInFile(filePath, {
         codeToInsert,
         id: 'myNamedList',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = `const anotherList = ['a','b']`;
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -48,12 +48,12 @@ describe('insert array', () => {
         'has-matching-empty-array.txt',
       );
       const codeToInsert = `'c'`;
-      const inserted = insertIntoNamedArrayInFile(filePath, {
+      const code = insertIntoNamedArrayInFile(filePath, {
         codeToInsert,
         id: 'myNamedList',
       });
-      const insertedTxt = inserted ? inserted : '';
-      expect(insertedTxt.includes(`const myNamedList = ['c'`)).toBeTruthy();
+      const codeTxt = code ? code : '';
+      expect(codeTxt.includes(`const myNamedList = ['c'`)).toBeTruthy();
     });
   });
 
@@ -66,12 +66,12 @@ describe('insert array', () => {
           'has-matching-array-with-elements.txt',
         );
         const codeToInsert = `'c'`;
-        const inserted = insertIntoNamedArrayInFile(filePath, {
+        const code = insertIntoNamedArrayInFile(filePath, {
           codeToInsert,
           id: 'myNamedList',
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`'c','a'`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`'c','a'`)).toBeTruthy();
       });
     });
 
@@ -83,15 +83,15 @@ describe('insert array', () => {
           'has-matching-array-with-elements.txt',
         );
         const codeToInsert = `'c'`;
-        const inserted = insertIntoNamedArrayInFile(filePath, {
+        const code = insertIntoNamedArrayInFile(filePath, {
           codeToInsert,
           id: 'myNamedList',
           insert: {
             index: 1,
           },
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`'c','b'`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`'c','b'`)).toBeTruthy();
       });
     });
 
@@ -103,15 +103,15 @@ describe('insert array', () => {
           'has-matching-array-with-elements.txt',
         );
         const codeToInsert = `'c'`;
-        const inserted = insertIntoNamedArrayInFile(filePath, {
+        const code = insertIntoNamedArrayInFile(filePath, {
           codeToInsert,
           id: 'myNamedList',
           insert: {
             index: 'end',
           },
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`'b','c'`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`'b','c'`)).toBeTruthy();
       });
     });
 
@@ -124,7 +124,7 @@ describe('insert array', () => {
         );
 
         const codeToInsert = `'c'`;
-        const inserted = insertIntoNamedArrayInFile(filePath, {
+        const code = insertIntoNamedArrayInFile(filePath, {
           codeToInsert,
           id: 'myNamedList',
           insert: {
@@ -132,8 +132,8 @@ describe('insert array', () => {
             findElement: (node: Node) => findStringLiteral(node, 'b'),
           },
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`'b','c'`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`'b','c'`)).toBeTruthy();
       });
     });
   });

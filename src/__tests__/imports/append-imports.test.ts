@@ -8,13 +8,13 @@ describe('appendAfterImports', () => {
     it('appends import after last import statement', () => {
       const filePath = path.join(__dirname, 'files', 'has-imports.txt');
       const codeToInsert = `import { x } from 'x';`;
-      const inserted = appendAfterImportsInFile(filePath, {
+      const code = appendAfterImportsInFile(filePath, {
         codeToInsert,
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(insertedTxt.match(codeToInsert)).toBeTruthy();
-      expect(insertedTxt.match(origCode)).toBeTruthy();
+      expect(codeTxt.match(codeToInsert)).toBeTruthy();
+      expect(codeTxt.match(origCode)).toBeTruthy();
     });
   });
 
@@ -22,13 +22,13 @@ describe('appendAfterImports', () => {
     it('appends import at top of file', () => {
       const filePath = path.join(__dirname, 'files', 'no-imports.txt');
       const codeToInsert = `import { x } from 'x';`;
-      const inserted = appendAfterImportsInFile(filePath, {
+      const code = appendAfterImportsInFile(filePath, {
         codeToInsert,
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.match(codeToInsert)).toBeTruthy();
-      expect(insertedTxt.match(origCode)).toBeTruthy();
+      expect(codeTxt.match(codeToInsert)).toBeTruthy();
+      expect(codeTxt.match(origCode)).toBeTruthy();
     });
   });
 });

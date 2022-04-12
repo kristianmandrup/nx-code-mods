@@ -6,7 +6,6 @@ import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
 import {
   afterLastElementRemovePos,
   CollectionRemove,
-  ensureStmtClosing,
   getElementRemovePositions,
   getRemovePosNum,
 } from './positional';
@@ -24,7 +23,7 @@ export interface RemoveFunctionTreeOptions extends RemoveFunctionOptions {
 }
 
 export const removeInFunctionBlock = (opts: AnyOpts) => (node: any) => {
-  let { codeToRemove, id, remove, indexAdj } = opts;
+  let { id, remove, indexAdj } = opts;
   remove = remove || {};
   const funBlock = findFunctionBlock(node, id);
   if (!funBlock) {

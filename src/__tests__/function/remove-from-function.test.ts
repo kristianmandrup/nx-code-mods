@@ -1,4 +1,4 @@
-import { findVariableDeclaration } from './../../find';
+import { findVariableDeclaration } from '../../find';
 import { insertInsideFunctionBlockInFile } from '../..';
 import * as path from 'path';
 import { Node } from 'typescript';
@@ -11,14 +11,14 @@ describe('insert function', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-function.txt');
       const codeToInsert = `let c = 2`;
-      const inserted = insertInsideFunctionBlockInFile(filePath, {
+      const code = insertInsideFunctionBlockInFile(filePath, {
         codeToInsert,
         id: 'myFun',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -30,14 +30,14 @@ describe('insert function', () => {
         'has-non-matching-function.txt',
       );
       const codeToInsert = `let c = 2`;
-      const inserted = insertInsideFunctionBlockInFile(filePath, {
+      const code = insertInsideFunctionBlockInFile(filePath, {
         codeToInsert,
         id: 'myFun',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = `const x = 2;`;
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -49,16 +49,16 @@ describe('insert function', () => {
         'has-matching-empty-function.txt',
       );
       const codeToInsert = `let c = 2`;
-      const inserted = insertInsideFunctionBlockInFile(filePath, {
+      const code = insertInsideFunctionBlockInFile(filePath, {
         codeToInsert,
         id: 'myFun',
       });
       const origCode = `const x = 2;`;
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
       const regExp = new RegExp(str);
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.match(regExp)).toBeTruthy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.match(regExp)).toBeTruthy();
     });
   });
 
@@ -71,16 +71,16 @@ describe('insert function', () => {
           'has-matching-function-with-statements.txt',
         );
         const codeToInsert = `let c = 2`;
-        const inserted = insertInsideFunctionBlockInFile(filePath, {
+        const code = insertInsideFunctionBlockInFile(filePath, {
           codeToInsert,
           id: 'myFun',
         });
         const origCode = `const x = 2;`;
-        const insertedTxt = inserted ? inserted : '';
+        const codeTxt = code ? code : '';
         const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
         const regExp = new RegExp(str);
-        expect(insertedTxt.includes(origCode)).toBeTruthy();
-        expect(insertedTxt.match(regExp)).toBeTruthy();
+        expect(codeTxt.includes(origCode)).toBeTruthy();
+        expect(codeTxt.match(regExp)).toBeTruthy();
       });
     });
 
@@ -92,7 +92,7 @@ describe('insert function', () => {
           'has-matching-function-with-statements.txt',
         );
         const codeToInsert = `let c = 2`;
-        const inserted = insertInsideFunctionBlockInFile(filePath, {
+        const code = insertInsideFunctionBlockInFile(filePath, {
           codeToInsert,
           id: 'myFun',
           insert: {
@@ -100,11 +100,11 @@ describe('insert function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const insertedTxt = inserted ? inserted : '';
+        const codeTxt = code ? code : '';
         const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*let b = 5;`;
         const regExp = new RegExp(str);
-        expect(insertedTxt.includes(origCode)).toBeTruthy();
-        expect(insertedTxt.match(regExp)).toBeTruthy();
+        expect(codeTxt.includes(origCode)).toBeTruthy();
+        expect(codeTxt.match(regExp)).toBeTruthy();
       });
     });
 
@@ -116,7 +116,7 @@ describe('insert function', () => {
           'has-matching-function-with-statements.txt',
         );
         const codeToInsert = `let c = 2`;
-        const inserted = insertInsideFunctionBlockInFile(filePath, {
+        const code = insertInsideFunctionBlockInFile(filePath, {
           codeToInsert,
           id: 'myFun',
           insert: {
@@ -124,11 +124,11 @@ describe('insert function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const insertedTxt = inserted ? inserted : '';
+        const codeTxt = code ? code : '';
         const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*}`;
         const regExp = new RegExp(str);
-        expect(insertedTxt.includes(origCode)).toBeTruthy();
-        expect(insertedTxt.match(regExp)).toBeTruthy();
+        expect(codeTxt.includes(origCode)).toBeTruthy();
+        expect(codeTxt.match(regExp)).toBeTruthy();
       });
     });
 
@@ -141,7 +141,7 @@ describe('insert function', () => {
         );
 
         const codeToInsert = `let c = 2`;
-        const inserted = insertInsideFunctionBlockInFile(filePath, {
+        const code = insertInsideFunctionBlockInFile(filePath, {
           codeToInsert,
           id: 'myFun',
           insert: {
@@ -150,11 +150,11 @@ describe('insert function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const insertedTxt = inserted ? inserted : '';
+        const codeTxt = code ? code : '';
         const str = `let b = 5;\\s*${escapeRegExp(codeToInsert + ';')}`;
         const regExp = new RegExp(str);
-        expect(insertedTxt.includes(origCode)).toBeTruthy();
-        expect(insertedTxt.match(regExp)).toBeTruthy();
+        expect(codeTxt.includes(origCode)).toBeTruthy();
+        expect(codeTxt.match(regExp)).toBeTruthy();
       });
     });
   });

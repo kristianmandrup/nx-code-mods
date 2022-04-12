@@ -9,14 +9,14 @@ describe('insert class method', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const codeToInsert = `myMethod() {}`;
 
-      const inserted = removeClassMethodInFile(filePath, {
+      const code = removeClassMethodInFile(filePath, {
         className: 'myClass',
         methodId: 'myMethod',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 });

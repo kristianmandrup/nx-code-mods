@@ -3,6 +3,7 @@ import {
   CollectionRemove,
   getElementRemovePositions,
   getRemovePosNum,
+  normalizeRemoveIndexAdj,
   RemoveIndexAdj,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
@@ -29,6 +30,7 @@ export const removeElementsFromArray = (
 ): string | undefined => {
   let { node, remove, indexAdj } = opts;
   remove = remove || {};
+  indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node.elements;
   const count = elements.length;
 
@@ -62,8 +64,8 @@ export const removeElementsFromArray = (
   if (!positions.endPos) {
     positions.endPos = node.getEnd();
   }
-  positions.startPos += indexAdj.start || 0;
-  positions.endPos += indexAdj.end || 0;
+  positions.startPos += indexAdj.start;
+  positions.endPos += indexAdj.end;
   return removeCode(srcNode, positions);
 };
 

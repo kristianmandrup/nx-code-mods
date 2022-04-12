@@ -1,4 +1,4 @@
-import { ImportClause, NamedImports, Node, SourceFile } from 'typescript';
+import { SourceFile } from 'typescript';
 import { removeCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {

@@ -10,13 +10,13 @@ describe('insert array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');
       const codeToInsert = `'c'`;
-      const inserted = removeFromNamedArrayInFile(filePath, {
+      const code = removeFromNamedArrayInFile(filePath, {
         id: 'myNamedList',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 });

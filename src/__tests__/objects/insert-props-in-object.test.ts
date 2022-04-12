@@ -10,14 +10,14 @@ describe('insert object', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-object.txt');
       const codeToInsert = `c: 3`;
-      const inserted = insertIntoNamedObjectInFile(filePath, {
+      const code = insertIntoNamedObjectInFile(filePath, {
         codeToInsert,
         id: 'myNamedObj',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -29,31 +29,31 @@ describe('insert object', () => {
         'has-non-matching-object.txt',
       );
       const codeToInsert = `c: 3`;
-      const inserted = insertIntoNamedObjectInFile(filePath, {
+      const code = insertIntoNamedObjectInFile(filePath, {
         codeToInsert,
         id: 'myNamedObj',
       });
-      const insertedTxt = inserted ? inserted : '';
+      const codeTxt = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
-      expect(insertedTxt.includes(origCode)).toBeTruthy();
-      expect(insertedTxt.includes(codeToInsert)).toBeFalsy();
+      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
   context('file with named empty object', () => {
-    it.only('inserts in object', () => {
+    it('inserts in object', () => {
       const filePath = path.join(
         __dirname,
         'files',
         'has-matching-empty-object.txt',
       );
       const codeToInsert = `c: 3`;
-      const inserted = insertIntoNamedObjectInFile(filePath, {
+      const code = insertIntoNamedObjectInFile(filePath, {
         codeToInsert,
         id: 'myNamedObj',
       });
-      const insertedTxt = inserted ? inserted : '';
-      expect(insertedTxt.includes(`const myNamedObj = {c: 3}`)).toBeTruthy();
+      const codeTxt = code ? code : '';
+      expect(codeTxt.includes(`const myNamedObj = {c: 3}`)).toBeTruthy();
     });
   });
 
@@ -66,12 +66,12 @@ describe('insert object', () => {
           'has-matching-object-with-props.txt',
         );
         const codeToInsert = `c: 3`;
-        const inserted = insertIntoNamedObjectInFile(filePath, {
+        const code = insertIntoNamedObjectInFile(filePath, {
           codeToInsert,
           id: 'myNamedObj',
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`c: 3,a: 1,`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`c: 3,a: 1,`)).toBeTruthy();
       });
     });
 
@@ -83,15 +83,15 @@ describe('insert object', () => {
           'has-matching-object-with-props.txt',
         );
         const codeToInsert = `c: 3`;
-        const inserted = insertIntoNamedObjectInFile(filePath, {
+        const code = insertIntoNamedObjectInFile(filePath, {
           codeToInsert,
           id: 'myNamedObj',
           insert: {
             index: 1,
           },
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`c: 3,b: 2`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`c: 3,b: 2`)).toBeTruthy();
       });
     });
 
@@ -103,15 +103,15 @@ describe('insert object', () => {
           'has-matching-object-with-props.txt',
         );
         const codeToInsert = `c: 3`;
-        const inserted = insertIntoNamedObjectInFile(filePath, {
+        const code = insertIntoNamedObjectInFile(filePath, {
           codeToInsert,
           id: 'myNamedObj',
           insert: {
             index: 'end',
           },
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
 
@@ -124,7 +124,7 @@ describe('insert object', () => {
         );
 
         const codeToInsert = `c: 3`;
-        const inserted = insertIntoNamedObjectInFile(filePath, {
+        const code = insertIntoNamedObjectInFile(filePath, {
           codeToInsert,
           id: 'myNamedObj',
           insert: {
@@ -132,8 +132,8 @@ describe('insert object', () => {
             findElement: (node: Node) => findIdentifier(node, 'b'),
           },
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
 
@@ -146,7 +146,7 @@ describe('insert object', () => {
         );
 
         const codeToInsert = `c: 3`;
-        const inserted = insertIntoNamedObjectInFile(filePath, {
+        const code = insertIntoNamedObjectInFile(filePath, {
           codeToInsert,
           id: 'myNamedObj',
           insert: {
@@ -154,8 +154,8 @@ describe('insert object', () => {
             findElement: 'b',
           },
         });
-        const insertedTxt = inserted ? inserted : '';
-        expect(insertedTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+        const codeTxt = code ? code : '';
+        expect(codeTxt.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
   });
