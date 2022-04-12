@@ -11,3 +11,8 @@ export * from './insert-class-property';
 export * from './modify-code';
 export * from './insert-in-function';
 export * from './modify-file';
+export * from './remove-array-elem';
+export * from './remove-import-id';
+export * from './remove-import';
+export * from './remove-class-method';
+export * from './remove-class-prop';

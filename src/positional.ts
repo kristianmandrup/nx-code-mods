@@ -11,6 +11,14 @@ export type InsertPosNumParams = {
   count: number;
 };
 
+export type RemovePosNumParams = {
+  type: 'array' | 'object';
+  node: Node;
+  elements: ElementsType;
+  remove: CollectionRemove;
+  count: number;
+};
+
 export const createFindStrLit = (id: string) => (node: Node) =>
   findStringLiteral(node, id);
 
@@ -39,7 +47,6 @@ const findElementNode = ({
   if (!foundElem) {
     return;
   }
-  const id = foundElem as Identifier;
   const matchElem = createMatchElem(findElement);
   let index = -1;
   elements.find((el: any, idx: number) => {
@@ -79,19 +86,54 @@ export const getInsertPosNum = ({
   return;
 };
 
-export type CollectionIndex = 'start' | 'end' | number;
+export const getRemovePosNum = ({
+  // type,
+  node,
+  elements,
+  remove,
+  count,
+}: RemovePosNumParams) => {
+  let { findElement, index } = remove;
+  if (findElement) {
+    return findElementNode({ node, elements, findElement });
+  }
+  index = index || 'first';
+  if (Number.isInteger(index)) {
+    let insertPosNum = parseInt('' + index);
+    if (insertPosNum <= 0 || insertPosNum >= count) {
+      throw new Error(`insertIntoArray: Invalid insertPos ${index} argument`);
+    }
+    return insertPosNum;
+  }
+  if (index === 'first') {
+    return 0;
+  }
+  if (index === 'last') {
+    return count;
+  }
+  return;
+};
+
+export type CollectionInsertIndex = 'start' | 'end' | number;
 export type FindChildNode = (node: Node) => Node | undefined;
 
 export type CheckUnderNode = (node: Node) => boolean | undefined;
 
 export type FindElementFn = FindChildNode | string;
 
+export type CollectionRemoveIndex = 'first' | 'last' | number;
+
 export type CollectionInsert = {
-  index?: CollectionIndex;
+  index?: CollectionInsertIndex;
   findElement?: FindElementFn;
   abortIfFound?: CheckUnderNode;
   relative?: BeforeOrAfter;
-  kind?: number;
+};
+
+export type CollectionRemove = {
+  index?: CollectionRemoveIndex;
+  findElement?: FindElementFn;
+  relative?: BeforeOrAfter;
 };
 
 export type BeforeOrAfter = 'before' | 'after' | 'replace';
@@ -106,9 +148,18 @@ export const aroundElementPos = (
   relativePos: BeforeOrAfter,
 ) => {
   const element = elements[pos];
+  return relativePos === 'after' ? element.getEnd() : element.getStart();
+};
+
+export const getElementRemovePositions = (
+  elements: ElementsType,
+  pos: number,
+  relativePos: BeforeOrAfter,
+) => {
+  const element = elements[pos];
   return relativePos === 'after'
-    ? elements[pos].getEnd()
-    : elements[pos].getStart();
+    ? { startPos: element.getEnd() }
+    : { endPos: element.getStart() };
 };
 
 export const ensurePrefixComma = (codeToInsert: string) =>

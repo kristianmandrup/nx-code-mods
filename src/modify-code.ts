@@ -12,10 +12,11 @@ export const insertCode = (
   return newTxt;
 };
 
+export type RemoveCodeOpts = { startPos?: number; endPos?: number };
+
 export const removeCode = (
   vsNode: any,
-  startPos?: number,
-  endPos?: number,
+  { startPos, endPos }: RemoveCodeOpts,
 ): string => {
   const previousTxt = vsNode.getFullText();
   if (!startPos && !endPos) {

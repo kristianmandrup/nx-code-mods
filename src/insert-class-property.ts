@@ -1,7 +1,6 @@
 import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
-  findBlock,
   findClassDeclaration,
   findClassPropertyDeclaration,
   findFirstMethodDeclaration,
@@ -25,10 +24,10 @@ export interface ClassPropInsertTreeOptions extends ClassPropInsertOptions {
 }
 
 const insertInClassScope = (opts: AnyOpts) => (node: Node) => {
-  const { className, codeToInsert, insertPos, indexAdj } = opts;
+  const { className, codeToInsert, insertPos, propId, indexAdj } = opts;
 
   const abortIfFound = (node: any) =>
-    findClassPropertyDeclaration(node, opts.propId);
+    findClassPropertyDeclaration(node, { classId: className, propId });
 
   const classDecl = findClassDeclaration(node, className);
   if (!classDecl) return;
@@ -58,6 +57,7 @@ const insertInClassScope = (opts: AnyOpts) => (node: Node) => {
       insertIndex = firstPropDecl.getStart();
     }
   }
+  insertIndex += indexAdj || 0;
   const code = ensureStmtClosing(codeToInsert);
   return insertCode(node, insertIndex, code);
 };

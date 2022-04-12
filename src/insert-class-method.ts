@@ -3,7 +3,6 @@ import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
-  findBlock,
   findClassDeclaration,
   findFirstMethodDeclaration,
   findLastPropertyDeclaration,

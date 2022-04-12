@@ -13,7 +13,6 @@ import {
   SourceFile,
   Statement,
   StringLiteralLike,
-  SyntaxKind,
   VariableDeclaration,
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
@@ -150,12 +149,14 @@ export const findLastPropertyDeclaration = (
 
 export const findClassPropertyDeclaration = (
   node: Node,
-  targetIdName: string,
+  { classId, propId }: { classId: string; propId: string },
   where?: WhereFn,
 ): PropertyDeclaration | undefined => {
+  const classDecl = findClassDeclaration(node, classId);
+  if (!classDecl) return;
   const result = tsquery(
-    node,
-    `ClassDeclaration > PropertyDeclaration > Identifier[name='${targetIdName}']`,
+    classDecl,
+    `PropertyDeclaration > Identifier[name='${propId}']`,
   );
   if (!result || result.length === 0) return;
   const found = result[0].parent as PropertyDeclaration;
@@ -199,6 +200,33 @@ export const findDecorator = (
     return;
   }
   return result[0].parent as Decorator;
+};
+
+export const findClassDecorator = (
+  node: Node,
+  { classId, id }: { classId: string; id: string },
+): Decorator | undefined => {
+  const classDecl = findClassDeclaration(node, classId);
+  if (!classDecl) return;
+  const dec = findDecorator(classDecl, id);
+  if (!dec) {
+    return;
+  }
+  return dec as Decorator;
+};
+
+// TODO: optimize: see findClassPropertyDeclaration
+export const findClassMethodDecorator = (
+  node: Node,
+  { classId, methodId, id }: { classId: string; methodId: string; id: string },
+): Decorator | undefined => {
+  const classDecl = findClassDeclaration(node, classId);
+  if (!classDecl) return;
+  const methodDecl = findMethodDeclaration(classDecl, id);
+  if (!methodDecl) return;
+  const dec = findDecorator(methodDecl, id);
+  if (!dec) return;
+  return dec as Decorator;
 };
 
 export const findParamWithDecorator = (
