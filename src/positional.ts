@@ -136,6 +136,11 @@ export type CollectionRemove = {
   relative?: BeforeOrAfter;
 };
 
+export type RemoveIndexAdj = {
+  start?: number;
+  end?: number;
+};
+
 export type BeforeOrAfter = 'before' | 'after' | 'replace';
 
 export const afterLastElementPos = (elements: ElementsType) =>
