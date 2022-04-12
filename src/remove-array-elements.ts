@@ -1,13 +1,13 @@
 import {
-  afterLastElementPos,
-  aroundElementPos,
+  afterLastElementRemovePos,
   CollectionRemove,
+  getElementRemovePositions,
   getRemovePosNum,
   RemoveIndexAdj,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
-import { insertCode, removeCode } from './modify-code';
+import { removeCode } from './modify-code';
 import { findVariableDeclaration } from './find';
 import { Tree } from '@nrwl/devkit';
 
@@ -27,40 +27,40 @@ export const removeElementsFromArray = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { literalExpr, remove, indexAdj } = opts;
+  let { node, remove, indexAdj } = opts;
   remove = remove || {};
-  const literals = literalExpr.elements;
-  const litCount = literals.length;
+  const elements = node.elements;
+  const count = elements.length;
 
-  let insertPosNum =
+  let posNum =
     getRemovePosNum({
       type: 'array',
-      node: literalExpr,
-      elements: literals,
+      node,
+      elements,
       remove,
-      count: litCount,
+      count,
     }) || 0;
-  if (litCount === 0) {
-    const startPos = literalExpr.getStart() + indexAdj.start;
-    const endPos = literalExpr.getEnd() + indexAdj.end;
+  if (count === 0) {
+    const startPos = node.getStart() + indexAdj.start;
+    const endPos = node.getEnd() + indexAdj.end;
     return removeCode(srcNode, { startPos, endPos });
   }
-  if (insertPosNum === -1) {
-    insertPosNum = 0;
+  if (posNum === -1) {
+    posNum = 0;
     remove.relative = 'before';
   }
 
   let positions =
-    insertPosNum >= litCount
-      ? afterLastElementPos(literals)
-      : aroundElementPos(literals, insertPosNum, remove.relative);
+    posNum >= count
+      ? afterLastElementRemovePos(elements)
+      : getElementRemovePositions(elements, posNum, remove.relative);
 
   if (!positions.startPos) {
-    positions.startPos = literalExpr.getStart();
+    positions.startPos = node.getStart();
   }
 
   if (!positions.endPos) {
-    positions.endPos = literalExpr.getEnd();
+    positions.endPos = node.getEnd();
   }
   positions.startPos += indexAdj.start || 0;
   positions.endPos += indexAdj.end || 0;
@@ -75,9 +75,9 @@ export const removeFromArray =
     if (!declaration) {
       return;
     }
-    const literalExpr = declaration.initializer as ArrayLiteralExpression;
+    const node = declaration.initializer as ArrayLiteralExpression;
     const newTxt = removeElementsFromArray(srcNode, {
-      literalExpr,
+      node,
     });
     return newTxt;
   };

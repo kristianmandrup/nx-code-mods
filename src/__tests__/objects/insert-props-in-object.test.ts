@@ -1,4 +1,4 @@
-import { findIdentifier } from './../../find';
+import { findIdentifier } from '../../find';
 import { insertIntoNamedObjectInFile } from '../..';
 import * as path from 'path';
 import { Node } from 'typescript';

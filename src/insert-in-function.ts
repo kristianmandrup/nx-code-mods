@@ -1,7 +1,7 @@
-import { FunctionDeclaration, SourceFile } from 'typescript';
-import { insertCode, InsertPosition } from './modify-code';
+import { SourceFile } from 'typescript';
+import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
-import { getFirstStatement, findFunctionBlock, findFunction } from './find';
+import { findFunctionBlock } from './find';
 import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
 import {
   afterLastElementPos,

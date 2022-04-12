@@ -146,6 +146,11 @@ export type BeforeOrAfter = 'before' | 'after' | 'replace';
 export const afterLastElementPos = (elements: ElementsType) =>
   elements[elements.length - 1].getEnd();
 
+export const afterLastElementRemovePos = (elements: ElementsType) => ({
+  startPos: elements[elements.length - 1].getEnd(),
+  endPos: undefined,
+});
+
 // TODO: add support for 'replace'
 export const aroundElementPos = (
   elements: ElementsType,

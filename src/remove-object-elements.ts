@@ -1,7 +1,9 @@
 import {
   afterLastElementPos,
+  afterLastElementRemovePos,
   aroundElementPos,
   CollectionRemove,
+  getElementRemovePositions,
   getRemovePosNum,
   RemoveIndexAdj,
 } from './positional';
@@ -15,7 +17,6 @@ import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 
 export interface RemoveObjectOptions {
   id: string;
-  codeToRemove: string;
   remove?: CollectionRemove;
   indexAdj?: RemoveIndexAdj;
 }
@@ -29,18 +30,18 @@ export const removePropsFromObject = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { literalExpr, codeToRemove, remove, indexAdj } = opts;
-  const props = literalExpr.properties;
-  const propCount = props.length;
+  let { literalExpr, remove, indexAdj } = opts;
+  const elements = literalExpr.properties;
+  const count = elements.length;
   let removePosNum =
     getRemovePosNum({
       type: 'object',
       node: literalExpr,
-      elements: props,
+      elements,
       remove,
-      count: propCount,
+      count,
     }) || 0;
-  if (propCount === 0) {
+  if (count === 0) {
     const startPos = literalExpr.getStart() + indexAdj.start;
     const endPos = literalExpr.getEnd() + indexAdj.end;
     return removeCode(srcNode, { startPos, endPos });
@@ -51,9 +52,9 @@ export const removePropsFromObject = (
   }
 
   let positions =
-    removePosNum >= propCount
-      ? afterLastElementPos(props)
-      : aroundElementPos(props, removePosNum, remove.relative);
+    removePosNum >= count
+      ? afterLastElementRemovePos(elements)
+      : getElementRemovePositions(elements, removePosNum, remove.relative);
 
   if (!positions.startPos) {
     positions.startPos = literalExpr.getStart();
@@ -90,7 +91,7 @@ export const removeFromObject =
     return newTxt;
   };
 
-export function removeFromObjectInFile(
+export function removeFromNamedObjectInFile(
   filePath: string,
   opts: RemoveObjectOptions,
 ) {
@@ -103,7 +104,7 @@ export function removeFromObjectInFile(
   });
 }
 
-export function removeFromObjectInTree(
+export function removeFromNamedObjectInTree(
   tree: Tree,
   opts: RemoveObjectTreeOptions,
 ) {
