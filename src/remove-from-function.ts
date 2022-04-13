@@ -11,7 +11,6 @@ import {
 } from './positional';
 
 export interface RemoveFunctionOptions {
-  codeToRemove: string;
   id: string;
   remove?: CollectionRemove;
   indexAdj?: number;

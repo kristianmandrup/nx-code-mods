@@ -5,18 +5,16 @@ import { Node } from 'typescript';
 
 const context = describe;
 
-describe('insert object', () => {
+describe('remove from object', () => {
   context('file with no named object', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-object.txt');
-      const codeToInsert = `c: 3`;
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
       });
       const codeTxt = code ? code : '';
       const origCode = 'const x = 2;';
       expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -27,14 +25,12 @@ describe('insert object', () => {
         'files',
         'has-non-matching-object.txt',
       );
-      const codeToInsert = `c: 3`;
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
       });
       const codeTxt = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
       expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -45,15 +41,12 @@ describe('insert object', () => {
         'files',
         'has-matching-empty-object.txt',
       );
-      const codeToInsert = `c: 3`;
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
       });
       const codeTxt = code ? code : '';
       const origCode = `const myNamedObj = {}`;
-      console.log({ codeTxt });
       expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -94,7 +87,7 @@ describe('insert object', () => {
     });
   });
 
-  context('end pos', () => {
+  context('last pos', () => {
     it('removes last prop of object', () => {
       const filePath = path.join(
         __dirname,
@@ -140,7 +133,6 @@ describe('insert object', () => {
         'files',
         'has-matching-object-with-props.txt',
       );
-
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         remove: {
