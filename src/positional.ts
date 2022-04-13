@@ -168,15 +168,21 @@ export const aroundElementPos = (
   return relativePos === 'after' ? element.getEnd() : element.getStart();
 };
 
+const getNextElem = (elements: ElementsType, pos: number) => {
+  const index = pos + 1 >= elements.length ? elements.length - 1 : pos + 1;
+  return elements[index];
+};
+
 export const getElementRemovePositions = (
   elements: ElementsType,
   pos: number,
   relativePos: BeforeOrAfter,
 ) => {
   const element = elements[pos];
+  const nextElement = getNextElem(elements, pos);
   return relativePos === 'after'
     ? { startPos: element.getEnd() }
-    : { endPos: element.getStart() };
+    : { endPos: nextElement.getStart() };
 };
 
 export const ensurePrefixComma = (codeToInsert: string) =>
