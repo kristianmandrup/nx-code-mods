@@ -17,6 +17,7 @@ The library includes a number of utility functions which should greatly simplify
 - [Insert class method decorator](#Insertclassmethoddecorator)
 - [Insert class method parameter decorator](#Insertclassmethodparameterdecorator)
 - [Full example](#Fullexample)
+- [Work in progress](#Workinprogress)
 
 <!-- vscode-markdown-toc-config
 	autoSave=true
@@ -554,3 +555,17 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
 export default pageGenerator;
 export const pageSchematic = convertNxGenerator(pageGenerator);
 ```
+
+## <a name='Workinprogress'></a>Work In Progress
+
+An outline of each these functions have been implemented.
+Requires testing and further refinement to be completed.
+
+- `removeFromNamedArrayInFile`
+- `removeClassDecoratorInFile`
+- `removeClassMethodInFile`
+- `removeClassPropertyInFile`
+- `removeInsideFunctionBlockInFile`
+- `removeImportIdInFile`
+- `removeImportInFile`
+- `removeFromNamedObjectInFile`
