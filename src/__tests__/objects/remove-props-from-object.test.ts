@@ -52,7 +52,7 @@ describe('remove from object', () => {
 
   context('file with named object with 2 elements', () => {
     context('remove from default pos', () => {
-      it('removes first prop of object', () => {
+      it.skip('removes first prop of object', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -69,7 +69,7 @@ describe('remove from object', () => {
   });
 
   context('numeric pos 1', () => {
-    it('removes element at pos 1', () => {
+    it.skip('removes element at pos 1', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -88,7 +88,7 @@ describe('remove from object', () => {
   });
 
   context('last pos', () => {
-    it('removes last prop of object', () => {
+    it.skip('removes last prop of object', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -107,7 +107,7 @@ describe('remove from object', () => {
   });
 
   context(`findElement function`, () => {
-    it('removes after b identifier', () => {
+    it.skip('removes after b identifier', () => {
       const filePath = path.join(
         __dirname,
         'files',

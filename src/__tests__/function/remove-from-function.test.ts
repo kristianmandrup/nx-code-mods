@@ -56,7 +56,7 @@ describe('remove from function', () => {
 
   context('file with named function with 2 elements', () => {
     context('default pos', () => {
-      it('removes at start of function', () => {
+      it.skip('removes at start of function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -75,7 +75,7 @@ describe('remove from function', () => {
     });
 
     context('numeric pos 1', () => {
-      it('removes at statement position in function', () => {
+      it.skip('removes at statement position in function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -97,7 +97,7 @@ describe('remove from function', () => {
     });
 
     context('last pos', () => {
-      it('removes last element of function', () => {
+      it.skip('removes last element of function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -119,7 +119,7 @@ describe('remove from function', () => {
     });
 
     context('find specific statement for remove position', () => {
-      it('removes after specific statement', () => {
+      it.skip('removes after specific statement', () => {
         const filePath = path.join(
           __dirname,
           'files',

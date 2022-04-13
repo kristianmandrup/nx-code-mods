@@ -29,25 +29,25 @@ export const insertIntoArray = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { literalExpr, codeToInsert, insert, indexAdj } = opts;
+  let { node, codeToInsert, insert, indexAdj } = opts;
   insert = insert || {};
   const { abortIfFound } = insert;
-  if (abortIfFound && abortIfFound(literalExpr)) {
+  if (abortIfFound && abortIfFound(node)) {
     return;
   }
-  const literals = literalExpr.elements;
-  const litCount = literals.length;
+  const elements = node.elements;
+  const count = elements.length;
 
   let insertPosNum =
     getInsertPosNum({
       type: 'array',
-      node: literalExpr,
-      elements: literals,
+      node,
+      elements,
       insert,
-      count: litCount,
+      count,
     }) || 0;
-  if (litCount === 0) {
-    let insertPosition = literalExpr.getStart() + 1;
+  if (count === 0) {
+    let insertPosition = node.getStart() + 1;
     insertPosition += indexAdj || 0;
     const code = ensureSuffixComma(codeToInsert);
     return insertCode(srcNode, insertPosition, code);
@@ -58,12 +58,12 @@ export const insertIntoArray = (
   }
 
   let insertPosition =
-    insertPosNum >= litCount
-      ? afterLastElementPos(literals)
-      : aroundElementPos(literals, insertPosNum, insert.relative);
+    insertPosNum >= count
+      ? afterLastElementPos(elements)
+      : aroundElementPos(elements, insertPosNum, insert.relative);
 
   const shouldInsertAfter =
-    insertPosNum === litCount || insert.relative === 'after';
+    insertPosNum === count || insert.relative === 'after';
   const code = shouldInsertAfter
     ? ensurePrefixComma(codeToInsert)
     : ensureSuffixComma(codeToInsert);
@@ -80,9 +80,9 @@ export const insertInArray =
     if (!declaration) {
       return;
     }
-    const literalExpr = declaration.initializer as ArrayLiteralExpression;
+    const node = declaration.initializer as ArrayLiteralExpression;
     const newTxt = insertIntoArray(srcNode, {
-      literalExpr,
+      node,
       codeToInsert,
       insert,
     });

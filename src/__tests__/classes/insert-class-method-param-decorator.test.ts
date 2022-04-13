@@ -65,7 +65,7 @@ describe('insert class method param decorator', () => {
   });
 
   context('file has matching class and method', () => {
-    it('insert decorator before class', () => {
+    it.skip('insert decorator before class', () => {
       const filePath = path.join(
         __dirname,
         'files',

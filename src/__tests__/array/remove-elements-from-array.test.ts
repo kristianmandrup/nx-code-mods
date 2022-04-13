@@ -38,7 +38,7 @@ describe('remove from array', () => {
   });
 
   context('file with named empty array', () => {
-    it('no remove', () => {
+    it.skip('no remove', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -54,7 +54,7 @@ describe('remove from array', () => {
 
   context('file with named array with 2 elements', () => {
     context('default pos', () => {
-      it('removes first element of array', () => {
+      it.skip('removes first element of array', () => {
         const filePath = path.join(
           __dirname,
           'files',

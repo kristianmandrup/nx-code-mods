@@ -1,3 +1,11 @@
+import {
+  afterLastElementPos,
+  aroundElementPos,
+  CollectionInsert,
+  ensurePrefixComma,
+  ensureSuffixComma,
+  getInsertPosNum,
+} from './positional';
 import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
@@ -5,6 +13,7 @@ import {
   findMethodDeclaration,
   findDecorator,
   findParamWithDecorator,
+  findClassMethodDeclaration,
 } from './find';
 import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
 import { Node, SourceFile } from 'typescript';
@@ -14,6 +23,7 @@ export interface ClassMethodDecParamInsertOptions {
   methodId: string;
   id: string;
   codeToInsert: string;
+  insert?: CollectionInsert;
   indexAdj?: number;
 }
 
@@ -23,26 +33,59 @@ export interface ClassMethodDecParamInsertTreeOptions
   relTargetFilePath: string;
 }
 
-export const insertParamInMatchingMethod = (opts: AnyOpts) => (node: Node) => {
-  const { className, methodId, id, codeToInsert, indexAdj } = opts;
-  const classDecl = findClassDeclaration(node, className);
-  if (!classDecl) return;
-  const methodDecl = findMethodDeclaration(classDecl, methodId);
-  if (!methodDecl) return;
+export const insertParamInMatchingMethod =
+  (opts: AnyOpts) => (srcNode: Node) => {
+    const { className, methodId, id, insert, codeToInsert, indexAdj } = opts;
+    const methodDecl = findClassMethodDeclaration(srcNode, {
+      classId: className,
+      methodId,
+    });
+    if (!methodDecl) return;
+    // abort if class decorator already present
+    const abortIfFound = (node: Node) => findParamWithDecorator(node, id);
 
-  // abort if class decorator already present
-  const abortIfFound = (node: Node) => findParamWithDecorator(node, id);
-
-  if (abortIfFound) {
-    const found = abortIfFound(methodDecl);
-    if (found) {
-      return;
+    if (abortIfFound) {
+      const found = abortIfFound(methodDecl);
+      if (found) {
+        return;
+      }
     }
-  }
-  // TODO: support full insert positional options
-  const parametersIndex = methodDecl.parameters.pos + (indexAdj || 0);
-  return insertCode(node, parametersIndex, codeToInsert);
-};
+    const node = methodDecl;
+    const elements = methodDecl.parameters;
+    const count = elements.length;
+    let insertPosNum =
+      getInsertPosNum({
+        type: 'object',
+        node,
+        elements,
+        insert,
+        count,
+      }) || 0;
+    if (count === 0) {
+      let insertPosition = node.getStart() + 1;
+      insertPosition += indexAdj || 0;
+      const code = codeToInsert; // ensureSuffixComma(codeToInsert);
+      return insertCode(srcNode, insertPosition, code);
+    }
+    if (insertPosNum === -1) {
+      insertPosNum = 0;
+      insert.relative = 'before';
+    }
+
+    let insertPosition =
+      insertPosNum >= count
+        ? afterLastElementPos(elements)
+        : aroundElementPos(elements, insertPosNum, insert.relative);
+
+    const shouldInsertAfter =
+      insertPosNum === count || insert.relative === 'after';
+    const code = shouldInsertAfter
+      ? ensurePrefixComma(codeToInsert)
+      : ensureSuffixComma(codeToInsert);
+
+    insertPosition += indexAdj || 0;
+    return insertCode(node, insertPosition, code);
+  };
 
 export function insertClassMethodParamDecoratorInFile(
   filePath: string,

@@ -30,24 +30,24 @@ export const insertIntoObject = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { literalExpr, codeToInsert, insert, indexAdj } = opts;
+  let { node, codeToInsert, insert, indexAdj } = opts;
   insert = insert || {};
   const { abortIfFound } = insert;
-  if (abortIfFound && abortIfFound(literalExpr)) {
+  if (abortIfFound && abortIfFound(node)) {
     return;
   }
-  const props = literalExpr.properties;
-  const propCount = props.length;
+  const elements = node.properties;
+  const count = elements.length;
   let insertPosNum =
     getInsertPosNum({
       type: 'object',
-      node: literalExpr,
-      elements: props,
+      node,
+      elements,
       insert,
-      count: propCount,
+      count,
     }) || 0;
-  if (propCount === 0) {
-    let insertPosition = literalExpr.getStart() + 1;
+  if (count === 0) {
+    let insertPosition = node.getStart() + 1;
     insertPosition += indexAdj || 0;
     const code = codeToInsert; // ensureSuffixComma(codeToInsert);
     return insertCode(srcNode, insertPosition, code);
@@ -58,12 +58,12 @@ export const insertIntoObject = (
   }
 
   let insertPosition =
-    insertPosNum >= propCount
-      ? afterLastElementPos(props)
-      : aroundElementPos(props, insertPosNum, insert.relative);
+    insertPosNum >= count
+      ? afterLastElementPos(elements)
+      : aroundElementPos(elements, insertPosNum, insert.relative);
 
   const shouldInsertAfter =
-    insertPosNum === propCount || insert.relative === 'after';
+    insertPosNum === count || insert.relative === 'after';
   const code = shouldInsertAfter
     ? ensurePrefixComma(codeToInsert)
     : ensureSuffixComma(codeToInsert);
@@ -86,9 +86,9 @@ export const insertInObject =
     if (!declaration) {
       return;
     }
-    const literalExpr = declaration.initializer as ObjectLiteralExpression;
+    const node = declaration.initializer as ObjectLiteralExpression;
     const newTxt = insertIntoObject(srcNode, {
-      literalExpr,
+      node,
       codeToInsert,
       insert,
     });
