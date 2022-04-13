@@ -1,4 +1,4 @@
-import { findVariableDeclaration } from './../../find';
+import { findVariableDeclaration } from '../../find';
 import { insertInsideFunctionBlockInFile } from '../..';
 import * as path from 'path';
 import { Node } from 'typescript';

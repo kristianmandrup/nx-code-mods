@@ -1,6 +1,5 @@
 import * as path from 'path';
 import { insertClassPropertyInFile } from '../../insert-class-property';
-import { removeClassPropertyInFile } from '../../remove-class-prop';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;
@@ -10,8 +9,8 @@ describe('insert class property', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const codeToInsert = `myProp: User`;
-
-      const code = removeClassPropertyInFile(filePath, {
+      const code = insertClassPropertyInFile(filePath, {
+        codeToInsert,
         className: 'myClass',
         propId: 'myProp',
       });
@@ -91,8 +90,7 @@ describe('insert class property', () => {
         'files',
         'has-matching-class-and-property.txt',
       );
-      const codeToInsert = `getUser(): User {}
-  `;
+      const codeToInsert = `getUser(): User {}`;
       const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
         className: 'myClass',

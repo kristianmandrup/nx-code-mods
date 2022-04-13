@@ -17,4 +17,5 @@ export * from './remove-object-elements';
 export * from './remove-import-id';
 export * from './remove-import';
 export * from './remove-class-method';
+export * from './remove-class-method-params';
 export * from './remove-class-prop';

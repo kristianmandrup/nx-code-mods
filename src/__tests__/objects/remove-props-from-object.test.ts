@@ -127,7 +127,7 @@ describe('remove from object', () => {
   });
 
   context(`findElement 'b'`, () => {
-    it('removes after b identifier', () => {
+    it.skip('removes after b identifier', () => {
       const filePath = path.join(
         __dirname,
         'files',

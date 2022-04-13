@@ -166,6 +166,25 @@ export const findClassPropertyDeclaration = (
   }
 };
 
+export const findClassMethodDeclaration = (
+  node: Node,
+  { classId, methodId }: { classId: string; methodId: string },
+  where?: WhereFn,
+): MethodDeclaration | undefined => {
+  const classDecl = findClassDeclaration(node, classId);
+  if (!classDecl) return;
+  const result = tsquery(
+    classDecl,
+    `MethodDeclaration > Identifier[name='${methodId}']`,
+  );
+  if (!result || result.length === 0) return;
+  const found = result[0].parent as MethodDeclaration;
+  if (!where) return found;
+  if (where(found)) {
+    return found;
+  }
+};
+
 export const findStringLiteral = (
   node: Node,
   id: string,
