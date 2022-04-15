@@ -16,7 +16,7 @@ import {
 import { replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { Node, SourceFile } from 'typescript';
 
-export interface ClassMethodDecParamDecoratorInsertOptions {
+export interface ClassMethodDecParamInsertOptions {
   className: string;
   methodId: string;
   id: string;
@@ -25,8 +25,8 @@ export interface ClassMethodDecParamDecoratorInsertOptions {
   indexAdj?: number;
 }
 
-export interface ClassMethodDecParamDecoratorInsertTreeOptions
-  extends ClassMethodDecParamDecoratorInsertOptions {
+export interface ClassMethodDecParamInsertTreeOptions
+  extends ClassMethodDecParamInsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
@@ -40,7 +40,7 @@ export const insertParamInMatchingMethod =
     });
     if (!methodDecl) return;
     // abort if class decorator already present
-    const abortIfFound = (node: Node) => findParamWithDecorator(node, id);
+    const abortIfFound = (node: Node) => findParameter(node, id);
 
     if (abortIfFound) {
       const found = abortIfFound(methodDecl);
@@ -85,9 +85,9 @@ export const insertParamInMatchingMethod =
     return insertCode(node, insertPosition, code);
   };
 
-export function insertClassMethodParamDecoratorInFile(
+export function insertClassMethodParamInFile(
   filePath: string,
-  opts: ClassMethodDecParamDecoratorInsertOptions,
+  opts: ClassMethodDecParamInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.className);
@@ -98,9 +98,9 @@ export function insertClassMethodParamDecoratorInFile(
   });
 }
 
-export function insertClassMethodParamDecoratorInTree(
+export function insertClassMethodParamInTree(
   tree: Tree,
-  opts: ClassMethodDecParamDecoratorInsertTreeOptions,
+  opts: ClassMethodDecParamInsertTreeOptions,
 ) {
   return modifyTree(tree, opts);
 }

@@ -1,0 +1,7 @@
+const x = 2;
+
+class myClass {    
+    myMethod(@Body body: string): string {
+        console.log('hello)
+    }
+}

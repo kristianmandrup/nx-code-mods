@@ -185,6 +185,17 @@ export const findClassMethodDeclaration = (
   }
 };
 
+export const findClassMethodParameterDeclaration = (
+  node: Node,
+  opts: { classId: string; methodId: string; paramId: string },
+  where?: WhereFn,
+): ParameterDeclaration | undefined => {
+  const { classId, methodId, paramId } = opts;
+  const methDecl = findClassMethodDeclaration(node, opts);
+  if (!methDecl) return;
+  return findParameter(methDecl, paramId);
+};
+
 export const findStringLiteral = (
   node: Node,
   id: string,
@@ -253,6 +264,18 @@ export const findParamWithDecorator = (
   id: string,
 ): ParameterDeclaration | undefined => {
   const selector = `Parameter > Decorator[name='${id}']`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[0].parent as ParameterDeclaration;
+};
+
+export const findParameter = (
+  node: Node,
+  id: string,
+): ParameterDeclaration | undefined => {
+  const selector = `Parameter > Identifier[name='${id}']`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
     return;
