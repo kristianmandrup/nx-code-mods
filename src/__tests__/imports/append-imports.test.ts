@@ -11,10 +11,10 @@ describe('appendAfterImports', () => {
       const code = appendAfterImportsInFile(filePath, {
         codeToInsert,
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(codeTxt.match(codeToInsert)).toBeTruthy();
-      expect(codeTxt.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match(codeToInsert)).toBeTruthy();
+      expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
 
@@ -25,10 +25,10 @@ describe('appendAfterImports', () => {
       const code = appendAfterImportsInFile(filePath, {
         codeToInsert,
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.match(codeToInsert)).toBeTruthy();
-      expect(codeTxt.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match(codeToInsert)).toBeTruthy();
+      expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
 });

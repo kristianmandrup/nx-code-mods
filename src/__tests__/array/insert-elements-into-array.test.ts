@@ -14,10 +14,10 @@ describe('insert array', () => {
         codeToInsert,
         id: 'myNamedList',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -33,10 +33,10 @@ describe('insert array', () => {
         codeToInsert,
         id: 'myNamedList',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `const anotherList = ['a','b']`;
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -52,8 +52,8 @@ describe('insert array', () => {
         codeToInsert,
         id: 'myNamedList',
       });
-      const codeTxt = code ? code : '';
-      expect(codeTxt.includes(`const myNamedList = ['c'`)).toBeTruthy();
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`const myNamedList = ['c'`)).toBeTruthy();
     });
   });
 
@@ -70,8 +70,8 @@ describe('insert array', () => {
           codeToInsert,
           id: 'myNamedList',
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'c','a'`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'c','a'`)).toBeTruthy();
       });
     });
 
@@ -90,8 +90,8 @@ describe('insert array', () => {
             index: 1,
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'c','b'`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'c','b'`)).toBeTruthy();
       });
     });
 
@@ -110,8 +110,8 @@ describe('insert array', () => {
             index: 'end',
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'b','c'`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'b','c'`)).toBeTruthy();
       });
     });
 
@@ -132,8 +132,8 @@ describe('insert array', () => {
             findElement: (node: Node) => findStringLiteral(node, 'b'),
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'b','c'`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'b','c'`)).toBeTruthy();
       });
     });
   });

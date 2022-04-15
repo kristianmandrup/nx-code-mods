@@ -14,10 +14,10 @@ describe('insert class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -34,10 +34,10 @@ describe('insert class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -54,10 +54,10 @@ describe('insert class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeTruthy();
     });
   });
 
@@ -74,12 +74,12 @@ describe('insert class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
       const str = `${escapeRegExp(codeToInsert)}\\s*;\\s*propA`;
       const regExp = new RegExp(str);
-      expect(codeTxt.match(regExp)).toBeTruthy();
+      expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
 
@@ -96,10 +96,10 @@ describe('insert class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 });

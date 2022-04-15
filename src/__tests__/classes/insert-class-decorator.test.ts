@@ -13,10 +13,10 @@ describe('insert class decorator', () => {
         codeToInsert,
         id: 'myClass',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -32,10 +32,10 @@ describe('insert class decorator', () => {
         codeToInsert,
         id: 'myClass',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -51,13 +51,13 @@ describe('insert class decorator', () => {
         codeToInsert,
         id: 'myClass',
       });
-      let codeTxt = code ? code : '';
+      let modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
       const str = `${escapeRegExp(codeToInsert)}\\s*\\nclass myClass`;
       const regExp = new RegExp(str);
-      expect(codeTxt.match(regExp)).toBeTruthy();
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.match(regExp)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 });

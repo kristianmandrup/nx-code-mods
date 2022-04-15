@@ -16,10 +16,10 @@ describe('insert class method param decorator', () => {
         methodId: 'myMethod',
         id: 'Body',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -37,10 +37,10 @@ describe('insert class method param decorator', () => {
         methodId: 'myMethod',
         id: 'Body',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -58,9 +58,9 @@ describe('insert class method param decorator', () => {
         methodId: 'myMethod',
         id: 'Body',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -78,13 +78,13 @@ describe('insert class method param decorator', () => {
         methodId: 'myMethod',
         id: 'Body',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       const str = `${escapeRegExp('myMethod(' + codeToInsert)}`;
       const regExp = new RegExp(str);
-      expect(codeTxt.match(regExp)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeTruthy();
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.match(regExp)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 });

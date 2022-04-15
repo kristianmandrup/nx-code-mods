@@ -13,10 +13,10 @@ describe('remove from array', () => {
       const code = removeFromNamedArrayInFile(filePath, {
         id: 'myNamedList',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -30,10 +30,10 @@ describe('remove from array', () => {
       const code = removeFromNamedArrayInFile(filePath, {
         id: 'myNamedList',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `const anotherList = ['a','b']`;
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      // expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      // expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -47,8 +47,8 @@ describe('remove from array', () => {
       const code = removeFromNamedArrayInFile(filePath, {
         id: 'myNamedList',
       });
-      const codeTxt = code ? code : '';
-      expect(codeTxt.includes(`const myNamedList = []`)).toBeTruthy();
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`const myNamedList = []`)).toBeTruthy();
     });
   });
 
@@ -63,9 +63,9 @@ describe('remove from array', () => {
         const code = removeFromNamedArrayInFile(filePath, {
           id: 'myNamedList',
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'b'`)).toBeTruthy();
-        expect(codeTxt.includes(`'a'`)).toBeFalsy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'a'`)).toBeFalsy();
       });
     });
 
@@ -82,9 +82,9 @@ describe('remove from array', () => {
             index: 1,
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'a'`)).toBeTruthy();
-        expect(codeTxt.includes(`'b'`)).toBeFalsy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeFalsy();
       });
     });
 
@@ -101,8 +101,8 @@ describe('remove from array', () => {
             index: 'last',
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'b','c'`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'b','c'`)).toBeTruthy();
       });
     });
 
@@ -121,9 +121,9 @@ describe('remove from array', () => {
             findElement: (node: Node) => findStringLiteral(node, 'a'),
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`'a'`)).toBeTruthy();
-        expect(codeTxt.includes(`'b'`)).toBeFalsy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeFalsy();
       });
     });
   });

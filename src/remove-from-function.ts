@@ -8,6 +8,7 @@ import {
   CollectionRemove,
   getElementRemovePositions,
   getRemovePosNum,
+  normalizeRemoveIndexAdj,
 } from './positional';
 
 export interface RemoveFunctionOptions {
@@ -23,6 +24,7 @@ export interface RemoveFunctionTreeOptions extends RemoveFunctionOptions {
 
 export const removeInFunctionBlock = (opts: AnyOpts) => (node: any) => {
   let { id, remove, indexAdj } = opts;
+  indexAdj = normalizeRemoveIndexAdj(indexAdj);
   remove = remove || {};
   const funBlock = findFunctionBlock(node, id);
   if (!funBlock) {
@@ -57,11 +59,11 @@ export const removeInFunctionBlock = (opts: AnyOpts) => (node: any) => {
       : getElementRemovePositions(elements, removePosNum, remove.relative);
 
   if (!positions.startPos) {
-    positions.startPos = funBlock.getStart();
+    positions.startPos = funBlock.getStart() + 1;
   }
 
   if (!positions.endPos) {
-    positions.endPos = funBlock.getEnd();
+    positions.endPos = funBlock.getEnd() - 1;
   }
   positions.startPos += indexAdj.start || 0;
   positions.endPos += indexAdj.end || 0;

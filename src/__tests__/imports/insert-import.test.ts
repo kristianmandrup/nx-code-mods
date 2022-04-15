@@ -14,10 +14,10 @@ describe('insertImport', () => {
         importId: 'x',
         importFileRef: './my-file',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(codeTxt.match(codeToInsert)).toBeFalsy();
-      expect(codeTxt.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
 
@@ -34,9 +34,9 @@ describe('insertImport', () => {
         importId: 'x',
         importFileRef: './my-file',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `import { y, x } from './other-file';`;
-      expect(codeTxt.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
 
@@ -53,9 +53,9 @@ describe('insertImport', () => {
         importId: 'x',
         importFileRef: './my-file',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `import { x, y } from './my-file';`;
-      expect(codeTxt.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
 
@@ -72,15 +72,15 @@ describe('insertImport', () => {
         importId: 'a',
         importFileRef: './my-file',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `import { x, y } from './my-file';`;
       const str = `${escapeRegExp(
         'import { ' + codeToInsert + ',x, y } from',
       )}`;
       const regExp = new RegExp(str);
-      expect(codeTxt.match(regExp)).toBeTruthy();
-      expect(codeTxt.match(codeToInsert)).toBeTruthy();
-      expect(codeTxt.match(origCode)).toBeFalsy();
+      expect(modifiedCode.match(regExp)).toBeTruthy();
+      expect(modifiedCode.match(codeToInsert)).toBeTruthy();
+      expect(modifiedCode.match(origCode)).toBeFalsy();
     });
   });
 
@@ -93,10 +93,10 @@ describe('insertImport', () => {
         importId: 'x',
         importFileRef: './my-file',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.match(codeToInsert)).toBeFalsy();
-      expect(codeTxt.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
 });

@@ -14,10 +14,10 @@ describe('insert object', () => {
         codeToInsert,
         id: 'myNamedObj',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -33,10 +33,10 @@ describe('insert object', () => {
         codeToInsert,
         id: 'myNamedObj',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -52,8 +52,8 @@ describe('insert object', () => {
         codeToInsert,
         id: 'myNamedObj',
       });
-      const codeTxt = code ? code : '';
-      expect(codeTxt.includes(`const myNamedObj = {c: 3}`)).toBeTruthy();
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`const myNamedObj = {c: 3}`)).toBeTruthy();
     });
   });
 
@@ -70,8 +70,8 @@ describe('insert object', () => {
           codeToInsert,
           id: 'myNamedObj',
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`c: 3,a: 1,`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`c: 3,a: 1,`)).toBeTruthy();
       });
     });
 
@@ -90,8 +90,8 @@ describe('insert object', () => {
             index: 1,
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`c: 3,b: 2`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`c: 3,b: 2`)).toBeTruthy();
       });
     });
 
@@ -110,8 +110,8 @@ describe('insert object', () => {
             index: 'end',
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
 
@@ -132,8 +132,8 @@ describe('insert object', () => {
             findElement: (node: Node) => findIdentifier(node, 'b'),
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
 
@@ -154,8 +154,8 @@ describe('insert object', () => {
             findElement: 'b',
           },
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`b: 2,c: 3`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`b: 2,c: 3`)).toBeTruthy();
       });
     });
   });

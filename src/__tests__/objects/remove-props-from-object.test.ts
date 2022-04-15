@@ -12,9 +12,9 @@ describe('remove from object', () => {
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -28,9 +28,9 @@ describe('remove from object', () => {
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -44,15 +44,15 @@ describe('remove from object', () => {
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `const myNamedObj = {}`;
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
   context('file with named object with 2 elements', () => {
     context('remove from default pos', () => {
-      it.skip('removes first prop of object', () => {
+      it('removes first prop of object', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -61,15 +61,15 @@ describe('remove from object', () => {
         const code = removeFromNamedObjectInFile(filePath, {
           id: 'myNamedObj',
         });
-        const codeTxt = code ? code : '';
-        expect(codeTxt.includes(`a: 1,`)).toBeFalsy();
-        expect(codeTxt.includes(`b: 1,`)).toBeTruthy();
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
+        expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
       });
     });
   });
 
   context('numeric pos 1', () => {
-    it.skip('removes element at pos 1', () => {
+    it('removes element at pos 1', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -79,16 +79,17 @@ describe('remove from object', () => {
         id: 'myNamedObj',
         remove: {
           index: 1,
+          // default before
         },
       });
-      const codeTxt = code ? code : '';
-      expect(codeTxt.includes(`a: 1`)).toBeTruthy();
-      expect(codeTxt.includes(`b: 2`)).toBeFalsy();
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
+      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
     });
   });
 
   context('last pos', () => {
-    it.skip('removes last prop of object', () => {
+    it('removes last prop of object', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -100,14 +101,14 @@ describe('remove from object', () => {
           index: 'last',
         },
       });
-      const codeTxt = code ? code : '';
-      expect(codeTxt.includes(`a: 1`)).toBeTruthy();
-      expect(codeTxt.includes(`b: 2`)).toBeFalsy();
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeFalsy();
     });
   });
 
   context(`findElement function`, () => {
-    it.skip('removes after b identifier', () => {
+    it('removes after b identifier - no remove', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -120,14 +121,34 @@ describe('remove from object', () => {
           findElement: (node: Node) => findIdentifier(node, 'b'),
         },
       });
-      const codeTxt = code ? code : '';
-      expect(codeTxt.includes(`a: 1`)).toBeTruthy();
-      expect(codeTxt.includes(`b: 2`)).toBeFalsy();
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
     });
   });
 
-  context(`findElement 'b'`, () => {
-    it.skip('removes after b identifier', () => {
+  context(`findElement function`, () => {
+    it('removes before b identifier', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-object-with-props.txt',
+      );
+      const code = removeFromNamedObjectInFile(filePath, {
+        id: 'myNamedObj',
+        remove: {
+          relative: 'before',
+          findElement: (node: Node) => findIdentifier(node, 'b'),
+        },
+      });
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
+      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
+    });
+  });
+
+  context(`findElement 'a'`, () => {
+    it('removes after a identifier', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -137,12 +158,12 @@ describe('remove from object', () => {
         id: 'myNamedObj',
         remove: {
           relative: 'after',
-          findElement: 'b',
+          findElement: 'a',
         },
       });
-      const codeTxt = code ? code : '';
-      expect(codeTxt.includes(`a: 1`)).toBeTruthy();
-      expect(codeTxt.includes(`b: 2`)).toBeFalsy();
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeFalsy();
     });
   });
 });

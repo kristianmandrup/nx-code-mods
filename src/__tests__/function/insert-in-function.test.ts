@@ -15,10 +15,10 @@ describe('insert function', () => {
         codeToInsert,
         id: 'myFun',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -34,10 +34,10 @@ describe('insert function', () => {
         codeToInsert,
         id: 'myFun',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `const x = 2;`;
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
     });
   });
 
@@ -54,11 +54,11 @@ describe('insert function', () => {
         id: 'myFun',
       });
       const origCode = `const x = 2;`;
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
       const regExp = new RegExp(str);
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      expect(codeTxt.match(regExp)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
 
@@ -76,11 +76,11 @@ describe('insert function', () => {
           id: 'myFun',
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
+        const modifiedCode = code ? code : '';
         const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
         const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        expect(codeTxt.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -100,11 +100,11 @@ describe('insert function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
+        const modifiedCode = code ? code : '';
         const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*let b = 5;`;
         const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        expect(codeTxt.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -124,11 +124,11 @@ describe('insert function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
+        const modifiedCode = code ? code : '';
         const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*}`;
         const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        expect(codeTxt.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -150,11 +150,11 @@ describe('insert function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
+        const modifiedCode = code ? code : '';
         const str = `let b = 5;\\s*${escapeRegExp(codeToInsert + ';')}`;
         const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        expect(codeTxt.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
   });

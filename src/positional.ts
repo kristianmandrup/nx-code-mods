@@ -1,5 +1,5 @@
 import { findStringLiteral, findIdentifier } from './find';
-import { Identifier, Node, NodeArray } from 'typescript';
+import { Node, NodeArray } from 'typescript';
 
 type ElementsType = any[] | NodeArray<any>;
 
@@ -153,10 +153,15 @@ export type BeforeOrAfter = 'before' | 'after' | 'replace';
 export const afterLastElementPos = (elements: ElementsType) =>
   elements[elements.length - 1].getEnd();
 
-export const afterLastElementRemovePos = (elements: ElementsType) => ({
-  startPos: elements[elements.length - 1].getEnd(),
-  endPos: undefined,
-});
+export const afterLastElementRemovePos = (elements: ElementsType) => {
+  const prevElementIndex = elements.length >= 2 ? elements.length - 2 : 0;
+  const element = elements[prevElementIndex];
+  const startPos = element.getEnd();
+  return {
+    startPos,
+    endPos: undefined,
+  };
+};
 
 // TODO: add support for 'replace'
 export const aroundElementPos = (
@@ -180,9 +185,9 @@ export const getElementRemovePositions = (
 ) => {
   const element = elements[pos];
   const nextElement = getNextElem(elements, pos);
-  return relativePos === 'after'
-    ? { startPos: element.getEnd() }
-    : { endPos: nextElement.getStart() };
+  const startPos = element.getEnd();
+  const endPos = nextElement.getStart();
+  return relativePos === 'after' ? { startPos } : { endPos };
 };
 
 export const ensurePrefixComma = (codeToInsert: string) =>

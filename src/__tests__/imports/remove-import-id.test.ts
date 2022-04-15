@@ -12,10 +12,10 @@ describe('insertImport', () => {
         importId: 'x',
         importFileRef: './my-file',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(codeTxt.match(codeToInsert)).toBeFalsy();
-      expect(codeTxt.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
 });

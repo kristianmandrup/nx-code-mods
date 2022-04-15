@@ -13,9 +13,9 @@ describe('remove class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -30,9 +30,9 @@ describe('remove class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -47,9 +47,9 @@ describe('remove class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -64,12 +64,12 @@ describe('remove class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
       // const str = `${escapeRegExp(codeToRemove)}\\s*;\\s*propA`;
       // const regExp = new RegExp(str);
-      // expect(codeTxt.match(regExp)).toBeTruthy();
+      // expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
 
@@ -84,9 +84,9 @@ describe('remove class property', () => {
         className: 'myClass',
         propId: 'myProp',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 });

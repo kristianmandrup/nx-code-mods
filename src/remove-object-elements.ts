@@ -56,17 +56,21 @@ export const removePropsFromObject = (
     remove.relative = 'before';
   }
 
+  if (removePosNum >= count) {
+    remove.relative = remove.relative || 'after';
+  }
+
   let positions =
     removePosNum >= count
       ? afterLastElementRemovePos(elements)
       : getElementRemovePositions(elements, removePosNum, remove.relative);
 
   if (!positions.startPos) {
-    positions.startPos = node.getStart();
+    positions.startPos = node.getStart() + 1;
   }
 
   if (!positions.endPos) {
-    positions.endPos = node.getEnd();
+    positions.endPos = node.getEnd() - 1;
   }
   positions.startPos += indexAdj.start;
   positions.endPos += indexAdj.end;

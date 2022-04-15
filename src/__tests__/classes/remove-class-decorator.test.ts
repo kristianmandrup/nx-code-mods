@@ -12,9 +12,9 @@ describe('remove class decorator', () => {
         className: 'myClass',
         id: 'Model',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -29,9 +29,9 @@ describe('remove class decorator', () => {
         className: 'myClass',
         id: 'Model',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -46,13 +46,13 @@ describe('remove class decorator', () => {
         className: 'myClass',
         id: 'Model',
       });
-      let codeTxt = code ? code : '';
+      let modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      // expect(codeTxt.includes(origCode)).toBeTruthy();
+      // expect(modifiedCode.includes(origCode)).toBeTruthy();
       // const str = `${escapeRegExp(codeToRemove)}\\s*\\nclass myClass`;
       // const regExp = new RegExp(str);
-      // expect(codeTxt.match(regExp)).toBeTruthy();
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      // expect(modifiedCode.match(regExp)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 });

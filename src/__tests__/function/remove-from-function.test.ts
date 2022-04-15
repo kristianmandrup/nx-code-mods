@@ -13,9 +13,9 @@ describe('remove from function', () => {
       const code = removeInsideFunctionBlockInFile(filePath, {
         id: 'myFun',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -29,9 +29,9 @@ describe('remove from function', () => {
       const code = removeInsideFunctionBlockInFile(filePath, {
         id: 'myFun',
       });
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       const origCode = `const x = 2;`;
-      expect(codeTxt.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -46,17 +46,17 @@ describe('remove from function', () => {
         id: 'myFun',
       });
       const origCode = `const x = 2;`;
-      const codeTxt = code ? code : '';
+      const modifiedCode = code ? code : '';
       // const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
       // const regExp = new RegExp(str);
-      expect(codeTxt.includes(origCode)).toBeTruthy();
-      // expect(codeTxt.match(regExp)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      // expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
 
   context('file with named function with 2 elements', () => {
     context('default pos', () => {
-      it.skip('removes at start of function', () => {
+      it('removes at start of function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -66,11 +66,16 @@ describe('remove from function', () => {
           id: 'myFun',
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
-        // const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
-        // const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        // expect(codeTxt.match(regExp)).toBeTruthy();
+        const firstRemainingStmt = `let b = 5`;
+        const modifiedCode = code ? code : '';
+        const removedStmt = `console.log('hello', a)`;
+        const removedStmtExp = escapeRegExp(removedStmt);
+        const remainStmtExp = `{\\s*${escapeRegExp(firstRemainingStmt)}`;
+        console.log({ firstRemainingStmt, remainStmtExp, modifiedCode });
+        expect(modifiedCode.match(removedStmtExp)).toBeFalsy();
+        expect(modifiedCode.match(remainStmtExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        // expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -88,11 +93,11 @@ describe('remove from function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
+        const modifiedCode = code ? code : '';
         // const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*let b = 5;`;
         // const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        // expect(codeTxt.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        // expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -110,11 +115,11 @@ describe('remove from function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
+        const modifiedCode = code ? code : '';
         // const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*}`;
         // const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        // expect(codeTxt.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        // expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -133,11 +138,11 @@ describe('remove from function', () => {
           },
         });
         const origCode = `const x = 2;`;
-        const codeTxt = code ? code : '';
+        const modifiedCode = code ? code : '';
         // const str = `let b = 5;\\s*${escapeRegExp(codeToInsert + ';')}`;
         // const regExp = new RegExp(str);
-        expect(codeTxt.includes(origCode)).toBeTruthy();
-        // expect(codeTxt.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+        // expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
   });
