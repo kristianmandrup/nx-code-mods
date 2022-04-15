@@ -1,3 +1,4 @@
+import { AnyOpts } from '../modify';
 import {
   findElementNode,
   findStringLiteral,
@@ -60,8 +61,50 @@ export interface RemovePosRange extends ResolveOpts {
   remove: RemovePosOpts;
 }
 
-export const getRemovePosRange = (opts: any) => {
-  const { count, remove } = opts;
+export const getPositions = (opts: AnyOpts) => {
+  const { type, node, elements, remove, count, indexAdj } = opts;
+  const { relative } = remove;
+  let pos =
+    getRemovePosNum({
+      type,
+      node,
+      elements,
+      remove,
+      count,
+    }) || 0;
+  if (count === 0) {
+    const positions = {
+      startPos: node.getStart() + 1 + indexAdj.start,
+      endPos: node.getEnd() - 1 + indexAdj.end,
+    };
+    return positions;
+  }
+  if (pos === -1) {
+    pos = 0;
+    remove.relative = 'at';
+  }
+
+  if (pos >= count) {
+    remove.relative = relative || 'at';
+  }
+  const removeOpts = { ...remove, elements, count, pos };
+  let positions =
+    lastElementRemovePos(removeOpts) ||
+    midElementRemovePos(removeOpts) ||
+    firstElementRemovePos(removeOpts);
+
+  if (!positions.startPos) {
+    positions.startPos = node.getStart() + 1;
+  }
+
+  if (!positions.endPos) {
+    positions.endPos = node.getEnd() - 1;
+  }
+  return positions;
+};
+
+export const getRemovePosRange = (opts: AnyOpts) => {
+  const { count, remove, node, elements } = opts;
   let { index, between } = remove || {};
   if (index && !between) {
     return;
@@ -71,8 +114,9 @@ export const getRemovePosRange = (opts: any) => {
   let { startPos, endPos } = between;
   checkOutOfBounds(startPos, 'startPos');
   checkOutOfBounds(endPos, 'endPos');
-  startPos = resolveRangePos(startPos, opts);
-  endPos = resolveRangePos(endPos, opts);
+  const posOpts = { node, elements };
+  startPos = resolveRangePos(startPos, posOpts);
+  endPos = resolveRangePos(endPos, posOpts);
   return { startPos, endPos };
 };
 

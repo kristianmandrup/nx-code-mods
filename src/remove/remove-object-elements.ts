@@ -1,7 +1,9 @@
 import {
   CollectionRemove,
   firstElementRemovePos,
+  getPositions,
   getRemovePosNum,
+  getRemovePosRange,
   lastElementRemovePos,
   midElementRemovePos,
   normalizeRemoveIndexAdj,
@@ -35,48 +37,23 @@ export const removePropsFromObject = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
+  const type = 'object';
   let { node, remove, replacementCode, indexAdj } = opts;
   remove = remove || {};
-  const { relative } = remove;
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node.properties;
   const count = elements.length;
-  let pos =
-    getRemovePosNum({
-      type: 'object',
-      node,
-      elements,
-      remove,
-      count,
-    }) || 0;
-  if (count === 0) {
-    const positions = {
-      startPos: node.getStart() + 1 + indexAdj.start,
-      endPos: node.getEnd() - 1 + indexAdj.end,
-    };
-    return removeCode(srcNode, positions);
-  }
-  if (pos === -1) {
-    pos = 0;
-    remove.relative = 'at';
-  }
 
-  if (pos >= count) {
-    remove.relative = relative || 'at';
-  }
-  const removeOpts = { ...remove, elements, count, pos };
-  let positions =
-    lastElementRemovePos(removeOpts) ||
-    midElementRemovePos(removeOpts) ||
-    firstElementRemovePos(removeOpts);
+  const posOpts = {
+    ...opts,
+    type,
+    srcNode,
+    elements,
+    count,
+    indexAdj,
+  };
+  const positions = getPositions(posOpts) || getRemovePosRange(posOpts);
 
-  if (!positions.startPos) {
-    positions.startPos = node.getStart() + 1;
-  }
-
-  if (!positions.endPos) {
-    positions.endPos = node.getEnd() - 1;
-  }
   positions.startPos += indexAdj.start;
   positions.endPos += indexAdj.end;
 
