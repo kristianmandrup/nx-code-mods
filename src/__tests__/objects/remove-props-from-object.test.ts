@@ -56,7 +56,7 @@ describe('remove from object', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-props.txt',
+          'has-matching-object-with-2-props.txt',
         );
         const code = removeFromNamedObjectInFile(filePath, {
           id: 'myNamedObj',
@@ -73,7 +73,7 @@ describe('remove from object', () => {
       const filePath = path.join(
         __dirname,
         'files',
-        'has-matching-object-with-props.txt',
+        'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
@@ -93,7 +93,7 @@ describe('remove from object', () => {
       const filePath = path.join(
         __dirname,
         'files',
-        'has-matching-object-with-props.txt',
+        'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
@@ -107,12 +107,135 @@ describe('remove from object', () => {
     });
   });
 
+  context('last pos - before', () => {
+    it('remove all props before last', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-object-with-2-props.txt',
+      );
+      const code = removeFromNamedObjectInFile(filePath, {
+        id: 'myNamedObj',
+        remove: {
+          relative: 'before',
+          index: 'last',
+        },
+      });
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
+      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
+    });
+  });
+
+  context('last pos - after', () => {
+    it('no remove', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-object-with-2-props.txt',
+      );
+      const code = removeFromNamedObjectInFile(filePath, {
+        id: 'myNamedObj',
+        remove: {
+          relative: 'after',
+          index: 'last',
+        },
+      });
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
+    });
+  });
+
+  context('first pos', () => {
+    it('removes first prop of object', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-object-with-2-props.txt',
+      );
+      const code = removeFromNamedObjectInFile(filePath, {
+        id: 'myNamedObj',
+        remove: {
+          index: 'first',
+        },
+      });
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
+      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
+    });
+  });
+
+  context('first pos - after', () => {
+    it('remove all props after first', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-object-with-2-props.txt',
+      );
+      const code = removeFromNamedObjectInFile(filePath, {
+        id: 'myNamedObj',
+        remove: {
+          relative: 'after',
+          index: 'first',
+        },
+      });
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeFalsy();
+    });
+  });
+
+  context('first pos - before', () => {
+    it('no remove', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-object-with-2-props.txt',
+      );
+      const code = removeFromNamedObjectInFile(filePath, {
+        id: 'myNamedObj',
+        remove: {
+          relative: 'before',
+          index: 'first',
+        },
+      });
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
+    });
+  });
+
+  context('between', () => {
+    it('remove middle 2 props', () => {
+      const filePath = path.join(
+        __dirname,
+        'files',
+        'has-matching-object-with-4-props.txt',
+      );
+      const code = removeFromNamedObjectInFile(filePath, {
+        id: 'myNamedObj',
+        remove: {
+          between: {
+            startPos: 1,
+            endPos: 2,
+          },
+        },
+      });
+      const modifiedCode = code ? code : '';
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeFalsy();
+      expect(modifiedCode.includes(`c: 3`)).toBeFalsy();
+      expect(modifiedCode.includes(`d: 4`)).toBeTruthy();
+    });
+  });
+
   context(`findElement function`, () => {
     it('removes after b identifier - no remove', () => {
       const filePath = path.join(
         __dirname,
         'files',
-        'has-matching-object-with-props.txt',
+        'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
@@ -132,7 +255,7 @@ describe('remove from object', () => {
       const filePath = path.join(
         __dirname,
         'files',
-        'has-matching-object-with-props.txt',
+        'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
@@ -152,7 +275,7 @@ describe('remove from object', () => {
       const filePath = path.join(
         __dirname,
         'files',
-        'has-matching-object-with-props.txt',
+        'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
         id: 'myNamedObj',
