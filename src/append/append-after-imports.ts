@@ -1,8 +1,12 @@
 import { SourceFile } from 'typescript';
-import { insertCode } from './modify-code';
+import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
-import { getFirstStatement, findLastImport, hasAnyImportDecl } from './find';
-import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
+import {
+  getFirstStatement,
+  findLastImport,
+  hasAnyImportDecl,
+} from '../find/find';
+import { modifyTree, AnyOpts, replaceInFile } from '../modify';
 
 export interface AppendAfterImportsOptions {
   codeToInsert: string;

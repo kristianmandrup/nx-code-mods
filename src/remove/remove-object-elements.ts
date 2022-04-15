@@ -1,20 +1,24 @@
 import {
-  afterLastElementPos,
-  afterLastElementRemovePos,
-  aroundElementPos,
   CollectionRemove,
-  getElementRemovePositions,
+  firstElementRemovePos,
   getRemovePosNum,
+  lastElementRemovePos,
+  midElementRemovePos,
   normalizeRemoveIndexAdj,
   RemoveIndexAdj,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { removeCode } from './modify-code';
-import { findVariableDeclaration } from './find';
+import {
+  AnyOpts,
+  replaceInFile,
+  modifyTree,
+  removeCode,
+  replaceCode,
+} from '../modify';
+import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 import { SourceFile } from 'typescript';
 import { ObjectLiteralExpression } from 'typescript';
-import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
 
 export interface RemoveObjectOptions {
   id: string;
@@ -31,12 +35,13 @@ export const removePropsFromObject = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { node, remove, indexAdj } = opts;
+  let { node, remove, replacementCode, indexAdj } = opts;
   remove = remove || {};
+  const { relative } = remove;
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node.properties;
   const count = elements.length;
-  let removePosNum =
+  let pos =
     getRemovePosNum({
       type: 'object',
       node,
@@ -51,19 +56,19 @@ export const removePropsFromObject = (
     };
     return removeCode(srcNode, positions);
   }
-  if (removePosNum === -1) {
-    removePosNum = 0;
-    remove.relative = 'before';
+  if (pos === -1) {
+    pos = 0;
+    remove.relative = 'at';
   }
 
-  if (removePosNum >= count) {
-    remove.relative = remove.relative || 'after';
+  if (pos >= count) {
+    remove.relative = relative || 'at';
   }
-
+  const removeOpts = { ...remove, elements, count, pos };
   let positions =
-    removePosNum >= count
-      ? afterLastElementRemovePos(elements)
-      : getElementRemovePositions(elements, removePosNum, remove.relative);
+    lastElementRemovePos(removeOpts) ||
+    midElementRemovePos(removeOpts) ||
+    firstElementRemovePos(removeOpts);
 
   if (!positions.startPos) {
     positions.startPos = node.getStart() + 1;
@@ -74,6 +79,10 @@ export const removePropsFromObject = (
   }
   positions.startPos += indexAdj.start;
   positions.endPos += indexAdj.end;
+
+  if (replacementCode) {
+    return replaceCode(srcNode, { ...positions, code: replacementCode });
+  }
   return removeCode(srcNode, positions);
 };
 

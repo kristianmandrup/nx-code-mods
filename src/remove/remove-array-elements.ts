@@ -5,11 +5,11 @@ import {
   getRemovePosNum,
   normalizeRemoveIndexAdj,
   RemoveIndexAdj,
-} from './positional';
+} from '../positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
-import { removeCode } from './modify-code';
-import { findVariableDeclaration } from './find';
+import { AnyOpts, replaceInFile, modifyTree } from '../modify';
+import { removeCode } from '../modify/modify-code';
+import { findVariableDeclaration } from '../find/find';
 import { Tree } from '@nrwl/devkit';
 
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
@@ -30,6 +30,7 @@ export const removeElementsFromArray = (
 ): string | undefined => {
   let { node, remove, indexAdj } = opts;
   remove = remove || {};
+  const { relative } = remove;
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node.elements;
   const count = elements.length;
@@ -54,8 +55,8 @@ export const removeElementsFromArray = (
 
   let positions =
     posNum >= count
-      ? afterLastElementRemovePos(elements)
-      : getElementRemovePositions(elements, posNum, remove.relative);
+      ? afterLastElementRemovePos(elements, relative)
+      : getElementRemovePositions(elements, posNum, relative);
 
   if (!positions.startPos) {
     positions.startPos = node.getStart();

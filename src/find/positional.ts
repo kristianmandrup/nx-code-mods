@@ -1,4 +1,4 @@
-import { findStringLiteral, findIdentifier } from './find/find';
+import { findStringLiteral, findIdentifier } from './find';
 import { Node, NodeArray } from 'typescript';
 
 type ElementsType = any[] | NodeArray<any>;
@@ -9,13 +9,13 @@ export const createFindStrLit = (id: string) => (node: Node) =>
 export const createFindId = (id: string) => (node: Node) =>
   findIdentifier(node, id);
 
-export type FindElementNodeParams = {
+type FindElementNodeParams = {
   node: any;
   elements: ElementsType;
   findElement: FindElementFn;
 };
 
-export const createMatchElem = (findElement: FindChildNode) => (el: any) => {
+const createMatchElem = (findElement: FindChildNode) => (el: any) => {
   return findElement(el);
 };
 
@@ -47,11 +47,6 @@ export type FindChildNode = (node: Node) => Node | undefined;
 export type CheckUnderNode = (node: Node) => boolean | undefined;
 
 export type FindElementFn = FindChildNode | string;
-
-export const getNextElem = (elements: ElementsType, pos: number) => {
-  const index = pos + 1 >= elements.length ? elements.length - 1 : pos + 1;
-  return elements[index];
-};
 
 export const ensurePrefixComma = (codeToInsert: string) =>
   codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;

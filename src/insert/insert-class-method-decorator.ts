@@ -1,12 +1,12 @@
 import { Node, SourceFile } from 'typescript';
-import { insertCode } from './modify-code';
+import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
   findMethodDeclaration,
   findDecorator,
-} from './find';
-import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
+} from '../find';
+import { replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { ensureNewlineClosing } from './positional';
 
 export interface ClassMethodDecInsertOptions {

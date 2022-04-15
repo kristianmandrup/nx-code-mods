@@ -1,6 +1,6 @@
 import { removeFromNamedObjectInFile } from '../..';
 import * as path from 'path';
-import { findIdentifier } from '../../find';
+import { findIdentifier } from '../../find/find';
 import { Node } from 'typescript';
 
 const context = describe;
