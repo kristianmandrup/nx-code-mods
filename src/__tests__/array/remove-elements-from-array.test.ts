@@ -106,6 +106,129 @@ describe('remove from array', () => {
       });
     });
 
+    context('last pos - before', () => {
+      it('remove all props before last', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-2-elements.txt',
+        );
+        const code = removeFromNamedArrayInFile(filePath, {
+          id: 'myNamedList',
+          remove: {
+            relative: 'before',
+            index: 'last',
+          },
+        });
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeFalsy();
+        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
+      });
+    });
+
+    context('last pos - after', () => {
+      it('no remove', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-2-elements.txt',
+        );
+        const code = removeFromNamedArrayInFile(filePath, {
+          id: 'myNamedList',
+          remove: {
+            relative: 'after',
+            index: 'last',
+          },
+        });
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
+      });
+    });
+
+    context('first pos', () => {
+      it('removes first prop of object', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-2-elements.txt',
+        );
+        const code = removeFromNamedArrayInFile(filePath, {
+          id: 'myNamedList',
+          remove: {
+            index: 'first',
+          },
+        });
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeFalsy();
+        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
+      });
+    });
+
+    context('first pos - after', () => {
+      it('remove all props after first', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-2-elements.txt',
+        );
+        const code = removeFromNamedArrayInFile(filePath, {
+          id: 'myNamedList',
+          remove: {
+            relative: 'after',
+            index: 'first',
+          },
+        });
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeFalsy();
+      });
+    });
+
+    context('first pos - before', () => {
+      it('no remove', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-2-elements.txt',
+        );
+        const code = removeFromNamedArrayInFile(filePath, {
+          id: 'myNamedList',
+          remove: {
+            relative: 'before',
+            index: 'first',
+          },
+        });
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
+      });
+    });
+
+    context('between', () => {
+      it('remove middle 2 elements', () => {
+        const filePath = path.join(
+          __dirname,
+          'files',
+          'has-matching-object-with-4-elements.txt',
+        );
+        const code = removeFromNamedArrayInFile(filePath, {
+          id: 'myNamedList',
+          remove: {
+            between: {
+              startPos: 1,
+              endPos: 2,
+            },
+          },
+        });
+        const modifiedCode = code ? code : '';
+        expect(modifiedCode.includes(`'a'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeFalsy();
+        expect(modifiedCode.includes(`'c'`)).toBeFalsy();
+        expect(modifiedCode.includes(`'d'`)).toBeTruthy();
+      });
+    });
+
     context('after b string literal', () => {
       it('remove after b string literal', () => {
         const filePath = path.join(

@@ -1,0 +1,5 @@
+const myNamedList = [
+    'a',
+    'b',
+    'c',
+]
