@@ -1,17 +1,8 @@
-import {
-  afterLastElementRemovePos,
-  CollectionRemove,
-  getElementRemovePositions,
-  getRemovePosNum,
-  normalizeRemoveIndexAdj,
-  RemoveIndexAdj,
-} from '../positional';
+import { removeFromNode, CollectionRemove, RemoveIndexAdj } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { AnyOpts, replaceInFile, modifyTree } from '../modify';
-import { removeCode } from '../modify/modify-code';
-import { findVariableDeclaration } from '../find/find';
+import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
-
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
 export interface RemoveArrayOptions {
   id: string;
@@ -24,52 +15,6 @@ export interface RemoveArrayTreeOptions extends RemoveArrayOptions {
   relTargetFilePath: string;
 }
 
-export const removeElementsFromArray = (
-  srcNode: SourceFile,
-  opts: AnyOpts,
-): string | undefined => {
-  let { node, remove, indexAdj } = opts;
-  remove = remove || {};
-  const { relative } = remove;
-  indexAdj = normalizeRemoveIndexAdj(indexAdj);
-  const elements = node.elements;
-  const count = elements.length;
-
-  let posNum =
-    getRemovePosNum({
-      type: 'array',
-      node,
-      elements,
-      remove,
-      count,
-    }) || 0;
-  if (count === 0) {
-    const startPos = node.getStart() + indexAdj.start;
-    const endPos = node.getEnd() + indexAdj.end;
-    return removeCode(srcNode, { startPos, endPos });
-  }
-  if (posNum === -1) {
-    posNum = 0;
-    remove.relative = 'before';
-  }
-
-  let positions =
-    posNum >= count
-      ? afterLastElementRemovePos(elements, relative)
-      : getElementRemovePositions(elements, posNum, relative);
-
-  if (!positions.startPos) {
-    positions.startPos = node.getStart();
-  }
-
-  if (!positions.endPos) {
-    positions.endPos = node.getEnd();
-  }
-  positions.startPos += indexAdj.start;
-  positions.endPos += indexAdj.end;
-  return removeCode(srcNode, positions);
-};
-
 export const removeFromArray =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
@@ -79,8 +24,11 @@ export const removeFromArray =
       return;
     }
     const node = declaration.initializer as ArrayLiteralExpression;
-    const newTxt = removeElementsFromArray(srcNode, {
+    const newTxt = removeFromNode(srcNode, {
+      type: 'object',
+      elementsField: 'elements',
       node,
+      ...opts,
     });
     return newTxt;
   };

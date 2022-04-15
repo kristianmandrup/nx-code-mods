@@ -1,26 +1,9 @@
-import {
-  CollectionRemove,
-  firstElementRemovePos,
-  getPositions,
-  getRemovePosNum,
-  getRemovePosRange,
-  lastElementRemovePos,
-  midElementRemovePos,
-  normalizeRemoveIndexAdj,
-  RemoveIndexAdj,
-} from './positional';
+import { CollectionRemove, removeFromNode, RemoveIndexAdj } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import {
-  AnyOpts,
-  replaceInFile,
-  modifyTree,
-  removeCode,
-  replaceCode,
-} from '../modify';
+import { AnyOpts, replaceInFile, modifyTree } from '../modify';
 import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
-import { SourceFile } from 'typescript';
-import { ObjectLiteralExpression } from 'typescript';
+import { ObjectLiteralExpression, SourceFile } from 'typescript';
 
 export interface RemoveObjectOptions {
   id: string;
@@ -33,36 +16,6 @@ export interface RemoveObjectTreeOptions extends RemoveObjectOptions {
   relTargetFilePath: string;
 }
 
-export const removePropsFromObject = (
-  srcNode: SourceFile,
-  opts: AnyOpts,
-): string | undefined => {
-  const type = 'object';
-  let { node, remove, replacementCode, indexAdj } = opts;
-  remove = remove || {};
-  indexAdj = normalizeRemoveIndexAdj(indexAdj);
-  const elements = node.properties;
-  const count = elements.length;
-
-  const posOpts = {
-    ...opts,
-    type,
-    srcNode,
-    elements,
-    count,
-    indexAdj,
-  };
-  const positions = getPositions(posOpts) || getRemovePosRange(posOpts);
-
-  positions.startPos += indexAdj.start;
-  positions.endPos += indexAdj.end;
-
-  if (replacementCode) {
-    return replaceCode(srcNode, { ...positions, code: replacementCode });
-  }
-  return removeCode(srcNode, positions);
-};
-
 export type RemoveInObjectFn = {
   id: string;
   codeToRemove: string;
@@ -73,15 +26,17 @@ export type RemoveInObjectFn = {
 export const removeFromObject =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id, remove } = opts;
+    const { id } = opts;
     const declaration = findVariableDeclaration(srcNode, id);
     if (!declaration) {
       return;
     }
     const node = declaration.initializer as ObjectLiteralExpression;
-    const newTxt = removePropsFromObject(srcNode, {
+    const newTxt = removeFromNode(srcNode, {
+      type: 'object',
+      elementsField: 'properties',
       node,
-      remove,
+      ...opts,
     });
     return newTxt;
   };

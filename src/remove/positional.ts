@@ -1,11 +1,11 @@
-import { AnyOpts } from '../modify';
+import { AnyOpts, removeCode, replaceCode } from '../modify';
 import {
   findElementNode,
   findStringLiteral,
   findIdentifier,
   FindElementFn,
 } from '../find';
-import { Node, NodeArray } from 'typescript';
+import { Node, NodeArray, SourceFile } from 'typescript';
 
 type ElementsType = any[] | NodeArray<any>;
 
@@ -253,4 +253,33 @@ export const midElementRemovePos = (opts: RemovePosOpts) => {
     return { startPos, endPos };
   }
   return relative === 'after' ? { startPos } : { endPos };
+};
+
+export const removeFromNode = (
+  srcNode: SourceFile,
+  opts: AnyOpts,
+): string | undefined => {
+  let { elementsField, type, node, remove, replacementCode, indexAdj } = opts;
+  remove = remove || {};
+  indexAdj = normalizeRemoveIndexAdj(indexAdj);
+  const elements = node[elementsField];
+  const count = elements.length;
+
+  const posOpts = {
+    ...opts,
+    type,
+    srcNode,
+    elements,
+    count,
+    indexAdj,
+  };
+  const positions = getPositions(posOpts) || getRemovePosRange(posOpts);
+
+  positions.startPos += indexAdj.start;
+  positions.endPos += indexAdj.end;
+
+  if (replacementCode) {
+    return replaceCode(srcNode, { ...positions, code: replacementCode });
+  }
+  return removeCode(srcNode, positions);
 };
