@@ -1,5 +1,8 @@
+import { findClassDeclaration } from './../find/find';
+import { Node, NodeArray, SourceFile } from 'typescript';
 import { FindElementFn, CheckUnderNode, findElementNode } from '../find';
-import { Node, NodeArray } from 'typescript';
+import { AnyOpts, insertCode } from '../modify';
+import { ensureCommaDelimiters, ensureStmtClosing } from '../ensure';
 
 type ElementsType = any[] | NodeArray<any>;
 
@@ -46,12 +49,98 @@ export type CollectionInsert = {
   relative?: InsertRelativePos;
 };
 
-type BetweenPos = {
-  startPos: number;
-  endPos: number;
+export type InsertRelativePos = 'before' | 'after';
+
+export const insertInClassScope = (node: Node, opts: AnyOpts) => {
+  const {
+    findMatchingNode,
+    findPivotNode,
+    findAltPivotNode,
+    classId,
+    codeToInsert,
+    insertPos,
+    propId,
+    indexAdj,
+  } = opts;
+
+  const abortIfFound = (node: any) =>
+    findMatchingNode(node, { classId: classId, propId });
+
+  const classDecl = findClassDeclaration(node, classId);
+  if (!classDecl) return;
+  // abort if property with that name already declared in class
+  if (abortIfFound) {
+    const found = abortIfFound(classDecl);
+    if (found) return;
+  }
+  let insertIndex;
+  // TODO: refactor and cleanup - avoid indentation hell!
+  if (insertPos === 'end') {
+    insertIndex = classDecl.getEnd() - 1;
+  } else {
+    const firstTypeNode = findPivotNode(classDecl);
+    if (!firstTypeNode) {
+      const { members } = classDecl;
+      if (members.length === 0) {
+        insertIndex = classDecl.getEnd() - 1;
+      } else {
+        const firstPivotNode = findAltPivotNode(classDecl);
+        if (!firstPivotNode) {
+          insertIndex = classDecl.getEnd() - 1;
+          return;
+        }
+        insertIndex = firstPivotNode.getStart();
+      }
+    } else {
+      insertIndex = firstTypeNode.getStart();
+    }
+  }
+  insertIndex += indexAdj || 0;
+  const code = ensureStmtClosing(codeToInsert);
+  return insertCode(node, insertIndex, code);
 };
 
-export type InsertRelativePos = 'before' | 'after';
+export const insertIntoNode = (
+  srcNode: SourceFile,
+  opts: AnyOpts,
+): string | undefined => {
+  let { formatCode, elementsField, node, codeToInsert, insert, indexAdj } =
+    opts;
+  formatCode = formatCode || ensureCommaDelimiters;
+  insert = insert || {};
+  const { abortIfFound } = insert;
+  if (abortIfFound && abortIfFound(node)) {
+    return;
+  }
+  const elements = node[elementsField];
+  const count = elements.length;
+  let insertPosNum =
+    getInsertPosNum({
+      node,
+      elements,
+      insert,
+      count,
+    }) || 0;
+  if (count === 0) {
+    let pos = node.getStart() + 1;
+    pos += indexAdj || 0;
+    const code = codeToInsert; // ensureSuffixComma(codeToInsert);
+    return insertCode(srcNode, pos, code);
+  }
+  if (insertPosNum === -1) {
+    insertPosNum = 0;
+    insert.relative = 'before';
+  }
+
+  let pos =
+    insertPosNum >= count
+      ? afterLastElementPos(elements)
+      : aroundElementPos(elements, insertPosNum, insert.relative);
+
+  const code = formatCode(codeToInsert, { insert, pos, count });
+  pos += indexAdj || 0;
+  return insertCode(srcNode, pos, code);
+};
 
 export const afterLastElementPos = (elements: ElementsType) =>
   elements[elements.length - 1].getEnd();

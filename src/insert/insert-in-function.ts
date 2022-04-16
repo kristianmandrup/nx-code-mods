@@ -8,6 +8,7 @@ import {
   aroundElementPos,
   CollectionInsert,
   getInsertPosNum,
+  insertIntoNode,
 } from './positional';
 
 export interface InsertFunctionOptions {
@@ -22,41 +23,20 @@ export interface InsertFunctionTreeOptions extends InsertFunctionOptions {
   relTargetFilePath: string;
 }
 
-export const insertInFunctionBlock = (opts: AnyOpts) => (node: any) => {
-  let { codeToInsert, id, insert, indexAdj } = opts;
+export const insertInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
+  let { codeToInsert, id, insert } = opts;
   insert = insert || {};
-  const funBlock = findFunctionBlock(node, id);
+  const funBlock = findFunctionBlock(srcNode, id);
   if (!funBlock) {
     return;
   }
-  const elements = funBlock.statements;
-  const count = elements.length;
-
-  let insertPosNum =
-    getInsertPosNum({
-      node: funBlock,
-      elements,
-      insert,
-      count,
-    }) || 0;
-  if (count === 0) {
-    const code = ensureStmtClosing(codeToInsert);
-    const insertPosition = funBlock.getStart() + 1;
-    return insertCode(node, insertPosition, code);
-  }
-  if (insertPosNum === -1) {
-    insertPosNum = 0;
-    insert.relative = 'before';
-  }
-
-  let insertPosition =
-    insertPosNum >= count
-      ? afterLastElementPos(elements)
-      : aroundElementPos(elements, insertPosNum, insert.relative);
-
-  insertPosition += indexAdj || 0;
-  const code = ensureStmtClosing(codeToInsert);
-  return insertCode(node, insertPosition, code);
+  return insertIntoNode(srcNode, {
+    formatCode: ensureStmtClosing,
+    elementsField: 'elements',
+    node: funBlock,
+    codeToInsert,
+    insert,
+  });
 };
 
 export function insertInsideFunctionBlockInFile(

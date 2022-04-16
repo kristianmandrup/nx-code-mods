@@ -397,7 +397,7 @@ Add decorator to a class
 ```ts
 insertClassDecoratorInFile(
   filePath: string,
-  opts: ClassDecInsertOptions,
+  opts: ClassDecoratorInsertOptions,
 )
 ```
 
@@ -406,7 +406,7 @@ In file tree
 ```ts
 insertClassDecoratorInTree(
   tree: Tree,
-  opts: ClassDecInsertTreeOptions,
+  opts: ClassDecoratorInsertTreeOptions,
 )
 ```
 

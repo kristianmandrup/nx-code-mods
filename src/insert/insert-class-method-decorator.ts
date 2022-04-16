@@ -1,3 +1,4 @@
+import { findClassMethodDeclaration } from './../find';
 import { Node, SourceFile } from 'typescript';
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
@@ -25,10 +26,7 @@ export interface ClassMethodDecInsertTreeOptions
 
 export const insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node) => {
   const { classId, methodId, id, codeToInsert, indexAdj } = opts;
-
-  const classDecl = findClassDeclaration(node, classId);
-  if (!classDecl) return;
-  const methodDecl = findMethodDeclaration(classDecl, methodId);
+  const methodDecl = findClassMethodDeclaration(node, { classId, methodId });
   if (!methodDecl) return;
   // abort if class decorator already present
   const abortIfFound = (node: Node) => findDecorator(node, id);

@@ -4,6 +4,7 @@ import {
   aroundElementPos,
   CollectionInsert,
   getInsertPosNum,
+  insertIntoNode,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { insertCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
@@ -23,52 +24,6 @@ export interface InsertArrayTreeOptions extends InsertArrayOptions {
   relTargetFilePath: string;
 }
 
-export const insertIntoArray = (
-  srcNode: SourceFile,
-  opts: AnyOpts,
-): string | undefined => {
-  let { node, codeToInsert, insert, indexAdj } = opts;
-  insert = insert || {};
-  const { abortIfFound } = insert;
-  if (abortIfFound && abortIfFound(node)) {
-    return;
-  }
-  const elements = node.elements;
-  const count = elements.length;
-
-  let insertPosNum =
-    getInsertPosNum({
-      node,
-      elements,
-      insert,
-      count,
-    }) || 0;
-  if (count === 0) {
-    let insertPosition = node.getStart() + 1;
-    insertPosition += indexAdj || 0;
-    const code = ensureSuffixComma(codeToInsert);
-    return insertCode(srcNode, insertPosition, code);
-  }
-  if (insertPosNum === -1) {
-    insertPosNum = 0;
-    insert.relative = 'before';
-  }
-
-  let insertPosition =
-    insertPosNum >= count
-      ? afterLastElementPos(elements)
-      : aroundElementPos(elements, insertPosNum, insert.relative);
-
-  const shouldInsertAfter =
-    insertPosNum === count || insert.relative === 'after';
-  const code = shouldInsertAfter
-    ? ensurePrefixComma(codeToInsert)
-    : ensureSuffixComma(codeToInsert);
-
-  insertPosition += indexAdj || 0;
-  return insertCode(srcNode, insertPosition, code);
-};
-
 export const insertInArray =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
@@ -78,12 +33,12 @@ export const insertInArray =
       return;
     }
     const node = declaration.initializer as ArrayLiteralExpression;
-    const newTxt = insertIntoArray(srcNode, {
+    return insertIntoNode(srcNode, {
+      elementsField: 'elements',
       node,
       codeToInsert,
       insert,
     });
-    return newTxt;
   };
 
 export function insertIntoNamedArrayInFile(

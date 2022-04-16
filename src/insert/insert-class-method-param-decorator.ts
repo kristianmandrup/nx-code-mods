@@ -1,18 +1,11 @@
-import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
-import {
-  afterLastElementPos,
-  aroundElementPos,
-  CollectionInsert,
-  getInsertPosNum,
-} from './positional';
-import { insertCode, replaceInSource } from '../modify';
+import { CollectionInsert, insertIntoNode } from './positional';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
-  findParamWithDecorator,
   findClassMethodDeclaration,
+  findClassMethodParameterDeclaration,
 } from '../find';
-import { replaceInFile, AnyOpts, modifyTree } from '../modify';
+import { AnyOpts, modifyTree, replaceInFile, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';
 
 export interface ClassMethodDecParamDecoratorInsertOptions {
@@ -30,57 +23,22 @@ export interface ClassMethodDecParamDecoratorInsertTreeOptions
   relTargetFilePath: string;
 }
 
-export const insertParamInMatchingMethod =
-  (opts: AnyOpts) => (srcNode: Node) => {
-    const { classId, methodId, id, insert, codeToInsert, indexAdj } = opts;
-    const methodDecl = findClassMethodDeclaration(srcNode, {
+export const insertParamDecorator =
+  (opts: AnyOpts) => (srcNode: SourceFile) => {
+    const { classId, methodId, id, insert, codeToInsert } = opts;
+    const node = findClassMethodParameterDeclaration(srcNode, {
       classId: classId,
       methodId,
+      paramId: id,
     });
-    if (!methodDecl) return;
-    // abort if class decorator already present
-    const abortIfFound = (node: Node) => findParamWithDecorator(node, id);
-
-    if (abortIfFound) {
-      const found = abortIfFound(methodDecl);
-      if (found) {
-        return;
-      }
-    }
-    const node = methodDecl;
-    const elements = methodDecl.parameters;
-    const count = elements.length;
-    let insertPosNum =
-      getInsertPosNum({
-        node,
-        elements,
-        insert,
-        count,
-      }) || 0;
-    if (count === 0) {
-      let insertPosition = node.getStart() + 1;
-      insertPosition += indexAdj || 0;
-      const code = codeToInsert; // ensureSuffixComma(codeToInsert);
-      return insertCode(srcNode, insertPosition, code);
-    }
-    if (insertPosNum === -1) {
-      insertPosNum = 0;
-      insert.relative = 'before';
-    }
-
-    let insertPosition =
-      insertPosNum >= count
-        ? afterLastElementPos(elements)
-        : aroundElementPos(elements, insertPosNum, insert.relative);
-
-    const shouldInsertAfter =
-      insertPosNum === count || insert.relative === 'after';
-    const code = shouldInsertAfter
-      ? ensurePrefixComma(codeToInsert)
-      : ensureSuffixComma(codeToInsert);
-
-    insertPosition += indexAdj || 0;
-    return insertCode(node, insertPosition, code);
+    if (!node) return;
+    return insertIntoNode(srcNode, {
+      elementsField: 'decorators',
+      node,
+      codeToInsert,
+      insert,
+      ...opts,
+    });
   };
 
 export function insertClassMethodParamDecoratorInSource(
@@ -91,7 +49,7 @@ export function insertClassMethodParamDecoratorInSource(
     findClassDeclaration(node, opts.classId);
   return replaceInSource(source, {
     findNodeFn,
-    modifyFn: insertParamInMatchingMethod,
+    modifyFn: insertParamDecorator,
     ...opts,
   });
 }
@@ -104,7 +62,7 @@ export function insertClassMethodParamDecoratorInFile(
     findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
-    modifyFn: insertParamInMatchingMethod,
+    modifyFn: insertParamDecorator,
     ...opts,
   });
 }

@@ -8,6 +8,7 @@ import {
 import { insertCode, replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { Node, SourceFile } from 'typescript';
 import { ensureStmtClosing } from '../ensure';
+import { insertInClassScope } from './positional';
 
 export interface ClassPropInsertOptions {
   classId: string;
@@ -22,43 +23,14 @@ export interface ClassPropInsertTreeOptions extends ClassPropInsertOptions {
   relTargetFilePath: string;
 }
 
-const insertInClassScope = (opts: AnyOpts) => (node: Node) => {
-  const { classId, codeToInsert, insertPos, propId, indexAdj } = opts;
+const functionsMap = {
+  findMatchingNode: findClassPropertyDeclaration,
+  findPivotNode: findFirstPropertyDeclaration,
+  findAltPivotNode: findFirstMethodDeclaration,
+};
 
-  const abortIfFound = (node: any) =>
-    findClassPropertyDeclaration(node, { classId: classId, propId });
-
-  const classDecl = findClassDeclaration(node, classId);
-  if (!classDecl) return;
-  // abort if property with that name already declared in class
-  if (abortIfFound) {
-    const found = abortIfFound(classDecl);
-    if (found) return;
-  }
-  let insertIndex;
-  if (insertPos === 'end') {
-    insertIndex = classDecl.getEnd() - 1;
-  } else {
-    const firstPropDecl = findFirstPropertyDeclaration(classDecl);
-    if (!firstPropDecl) {
-      const { members } = classDecl;
-      if (members.length === 0) {
-        insertIndex = classDecl.getEnd() - 1;
-      } else {
-        const firstMethDecl = findFirstMethodDeclaration(classDecl);
-        if (!firstMethDecl) {
-          insertIndex = classDecl.getEnd() - 1;
-          return;
-        }
-        insertIndex = firstMethDecl.getStart();
-      }
-    } else {
-      insertIndex = firstPropDecl.getStart();
-    }
-  }
-  insertIndex += indexAdj || 0;
-  const code = ensureStmtClosing(codeToInsert);
-  return insertCode(node, insertIndex, code);
+const insertClassProperty = (opts: AnyOpts) => (srcNode: SourceFile) => {
+  return insertInClassScope(srcNode, { ...functionsMap, ...opts });
 };
 
 export function insertClassPropertyInFile(
@@ -69,7 +41,7 @@ export function insertClassPropertyInFile(
     findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
-    modifyFn: insertInClassScope,
+    modifyFn: insertClassProperty,
     ...opts,
   });
 }

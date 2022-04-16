@@ -13,6 +13,7 @@ import {
   aroundElementPos,
   CollectionInsert,
   getInsertPosNum,
+  insertIntoNode,
 } from './positional';
 
 export interface InsertImportOptions {
@@ -28,9 +29,12 @@ export interface InsertImportTreeOptions extends InsertImportOptions {
   relTargetFilePath: string;
 }
 
-export const insertImport = (opts: AnyOpts) => (node: any) => {
-  let { codeToInsert, insert, indexAdj, importId, importFileRef } = opts;
-  const importDecl = findMatchingImportDecl(node, { importId, importFileRef });
+export const insertImport = (opts: AnyOpts) => (srcNode: SourceFile) => {
+  let { codeToInsert, insert, importId, importFileRef } = opts;
+  const importDecl = findMatchingImportDecl(srcNode, {
+    importId,
+    importFileRef,
+  });
   if (!importDecl) {
     return;
   }
@@ -48,39 +52,14 @@ export const insertImport = (opts: AnyOpts) => (node: any) => {
     return;
   }
   if (!namedBindings['elements']) return;
-  const { elements } = namedBindings as NamedImports;
-  const count = elements.length;
-  let insertPosNum =
-    getInsertPosNum({
-      node: importDecl,
-      elements,
-      insert,
-      count,
-    }) || 0;
-
-  if (count === 0) {
-    let insertPosition = importDecl.getStart() + 1;
-    insertPosition += indexAdj || 0;
-    const code = ensureSuffixComma(codeToInsert);
-    return insertCode(node, insertPosition, code);
-  }
-  if (insertPosNum === -1) {
-    insertPosNum = 0;
-    insert.relative = 'before';
-  }
-
-  let insertPosition =
-    insertPosNum >= count
-      ? afterLastElementPos(elements)
-      : aroundElementPos(elements, insertPosNum, insert.relative);
-
-  const shouldInsertAfter =
-    insertPosNum === count || insert.relative === 'after';
-  const code = shouldInsertAfter
-    ? ensurePrefixComma(codeToInsert)
-    : ensureSuffixComma(codeToInsert);
-  insertPosition += indexAdj || 0;
-  return insertCode(node, insertPosition, code);
+  const node: NamedImports = namedBindings;
+  return insertIntoNode(srcNode, {
+    elementsField: 'elements',
+    node,
+    codeToInsert,
+    insert,
+    ...opts,
+  });
 };
 
 export function insertImportInFile(

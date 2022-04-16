@@ -1,7 +1,7 @@
 import {
   insertClassMethodDecoratorInSource,
   insertClassDecoratorInSource,
-  ClassDecInsertOptions,
+  ClassDecoratorInsertOptions,
   ClassMethodDecInsertOptions,
 } from '.';
 import { BaseApi } from '../api';
@@ -19,7 +19,7 @@ export class InsertApi extends BaseApi {
     super(source);
   }
 
-  classDecorator(opts: ClassDecInsertOptions): InsertApi {
+  classDecorator(opts: ClassDecoratorInsertOptions): InsertApi {
     return this.apply(insertClassDecoratorInSource, opts);
   }
 

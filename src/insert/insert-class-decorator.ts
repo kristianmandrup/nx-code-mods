@@ -11,7 +11,8 @@ export interface ClassDecoratorInsertOptions {
   indexAdj?: number;
 }
 
-export interface ClassDecoratorInsertTreeOptions extends ClassDecInsertOptions {
+export interface ClassDecoratorInsertTreeOptions
+  extends ClassDecoratorInsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
@@ -39,7 +40,7 @@ export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
 
 export function insertClassDecoratorInSource(
   source: string,
-  opts: ClassDecInsertOptions,
+  opts: ClassDecoratorInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
 
@@ -52,7 +53,7 @@ export function insertClassDecoratorInSource(
 
 export function insertClassDecoratorInFile(
   filePath: string,
-  opts: ClassDecInsertOptions,
+  opts: ClassDecoratorInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
 
@@ -65,7 +66,7 @@ export function insertClassDecoratorInFile(
 
 export async function insertClassDecoratorInTree(
   tree: Tree,
-  opts: ClassDecInsertTreeOptions,
+  opts: ClassDecoratorInsertTreeOptions,
 ) {
   return await modifyTree(tree, opts);
 }

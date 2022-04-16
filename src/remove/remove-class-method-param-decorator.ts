@@ -1,3 +1,4 @@
+import { findClassMethodParameterDeclaration } from './../find/find';
 import {
   removeCode,
   AnyOpts,
@@ -8,7 +9,7 @@ import {
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { SourceFile } from 'typescript';
-import { CollectionModifyOpts } from './positional';
+import { CollectionModifyOpts, removeFromNode } from './positional';
 
 export interface ClassMethodParamDecoratorRemoveOptions {
   classId: string;
@@ -23,22 +24,21 @@ export interface ClassMethodParamDecoratorRemoveTreeOptions
   relTargetFilePath: string;
 }
 
-const removeInMethodParamDecorator = (opts: AnyOpts) => (node: any) => {
-  const { classId, methodId } = opts;
-  const methDecl = findClassMethodDeclaration(node, {
-    classId: classId,
-    methodId,
-  });
-  if (!methDecl) return;
-  const parameters = methDecl.parameters;
-  // TODO: use remove from opts to select which params to use as pivots for remove span
-  const lastParamIndex = parameters.length - 1;
-  const firstParam = parameters[0];
-  const lastParam = parameters[lastParamIndex];
-  const startPos = firstParam.getStart();
-  const endPos = lastParam.getEnd();
-  return removeCode(node, { startPos, endPos });
-};
+export const removeMethodParamDecorators =
+  (opts: AnyOpts) => (srcNode: SourceFile) => {
+    const { classId, methodId, paramId } = opts;
+    const node = findClassMethodParameterDeclaration(srcNode, {
+      classId: classId,
+      methodId,
+      paramId,
+    });
+    if (!node) return;
+    return removeFromNode(srcNode, {
+      elementsField: 'decorators',
+      node,
+      ...opts,
+    });
+  };
 
 export function removeClassMethodParamDecoratorsInSource(
   source: string,
@@ -48,7 +48,7 @@ export function removeClassMethodParamDecoratorsInSource(
     findClassDeclaration(node, opts.classId);
   return replaceInSource(source, {
     findNodeFn,
-    modifyFn: removeInMethodParamDecorator,
+    modifyFn: removeMethodParamDecorators,
     ...opts,
   });
 }
@@ -61,7 +61,7 @@ export function removeClassMethodParamDecoratorsInFile(
     findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
-    modifyFn: removeInMethodParamDecorator,
+    modifyFn: removeMethodParamDecorators,
     ...opts,
   });
 }

@@ -10,3 +10,11 @@ export const ensureStmtClosing = (codeToInsert: string) => {
 };
 export const ensureNewlineClosing = (codeToInsert: string) =>
   codeToInsert.match(/\n$/) ? codeToInsert : codeToInsert + '\n';
+
+export const ensureCommaDelimiters = (
+  code: string,
+  { insert, pos, count }: any,
+) => {
+  const shouldInsertAfter = pos === count || insert.relative === 'after';
+  return shouldInsertAfter ? ensurePrefixComma(code) : ensureSuffixComma(code);
+};

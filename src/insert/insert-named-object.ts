@@ -3,6 +3,7 @@ import {
   aroundElementPos,
   CollectionInsert,
   getInsertPosNum,
+  insertIntoNode,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { findVariableDeclaration } from '../find';
@@ -24,50 +25,6 @@ export interface InsertObjectTreeOptions extends InsertObjectOptions {
   relTargetFilePath: string;
 }
 
-export const insertIntoObject = (
-  srcNode: SourceFile,
-  opts: AnyOpts,
-): string | undefined => {
-  let { node, codeToInsert, insert, indexAdj } = opts;
-  insert = insert || {};
-  const { abortIfFound } = insert;
-  if (abortIfFound && abortIfFound(node)) {
-    return;
-  }
-  const elements = node.properties;
-  const count = elements.length;
-  let insertPosNum =
-    getInsertPosNum({
-      node,
-      elements,
-      insert,
-      count,
-    }) || 0;
-  if (count === 0) {
-    let insertPosition = node.getStart() + 1;
-    insertPosition += indexAdj || 0;
-    const code = codeToInsert; // ensureSuffixComma(codeToInsert);
-    return insertCode(srcNode, insertPosition, code);
-  }
-  if (insertPosNum === -1) {
-    insertPosNum = 0;
-    insert.relative = 'before';
-  }
-
-  let insertPosition =
-    insertPosNum >= count
-      ? afterLastElementPos(elements)
-      : aroundElementPos(elements, insertPosNum, insert.relative);
-
-  const shouldInsertAfter =
-    insertPosNum === count || insert.relative === 'after';
-  const code = shouldInsertAfter
-    ? ensurePrefixComma(codeToInsert)
-    : ensureSuffixComma(codeToInsert);
-  insertPosition += indexAdj || 0;
-  return insertCode(srcNode, insertPosition, code);
-};
-
 export type InsertInObjectFn = {
   id: string;
   codeToInsert: string;
@@ -84,12 +41,12 @@ export const insertInObject =
       return;
     }
     const node = declaration.initializer as ObjectLiteralExpression;
-    const newTxt = insertIntoObject(srcNode, {
+    return insertIntoNode(srcNode, {
+      elementsField: 'properties',
       node,
       codeToInsert,
       insert,
     });
-    return newTxt;
   };
 
 export function insertIntoNamedObjectInFile(
