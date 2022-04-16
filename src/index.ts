@@ -3,3 +3,5 @@ export * from './append';
 export * from './find';
 export * from './modify';
 export * from './remove';
+export * from './replace';
+export * from './ensure';

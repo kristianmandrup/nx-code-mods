@@ -565,7 +565,13 @@ Requires testing and further refinement to be completed.
 - `removeClassDecoratorInFile`
 - `removeClassMethodInFile`
 - `removeClassPropertyInFile`
+- `removeClassMethodParamsInFile`
 - `removeInsideFunctionBlockInFile`
 - `removeImportIdInFile`
 - `removeImportInFile`
 - `removeFromNamedObjectInFile`
+
+### Replace (WIP)
+
+- `replaceInNamedObjectInSource` and `replaceInNamedObjectInFile`
+-

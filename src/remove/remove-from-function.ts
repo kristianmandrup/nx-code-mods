@@ -1,14 +1,11 @@
 import { SourceFile } from 'typescript';
-import { removeCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
-import { findFunctionBlock } from './find';
-import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
+import { findFunctionBlock } from '../find';
+import { modifyTree, AnyOpts, replaceInFile } from '../modify';
 import {
-  afterLastElementRemovePos,
   CollectionRemove,
-  getElementRemovePositions,
-  getRemovePosNum,
   normalizeRemoveIndexAdj,
+  removeFromNode,
 } from './positional';
 
 export interface RemoveFunctionOptions {
@@ -22,52 +19,19 @@ export interface RemoveFunctionTreeOptions extends RemoveFunctionOptions {
   relTargetFilePath: string;
 }
 
-export const removeInFunctionBlock = (opts: AnyOpts) => (node: any) => {
+export const removeInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
   let { id, remove, indexAdj } = opts;
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   remove = remove || {};
-  const funBlock = findFunctionBlock(node, id);
+  const funBlock = findFunctionBlock(srcNode, id);
   if (!funBlock) {
     return;
   }
-  const elements = funBlock.statements;
-  const count = elements.length;
-
-  let removePosNum =
-    getRemovePosNum({
-      type: 'array',
-      node: funBlock,
-      elements,
-      remove,
-      count,
-    }) || 0;
-  if (count === 0) {
-    const positions = {
-      startPos: funBlock.getStart() + 1,
-      endPos: funBlock.getEnd() - 1,
-    };
-    return removeCode(node, positions);
-  }
-  if (removePosNum === -1) {
-    removePosNum = 0;
-    remove.relative = 'before';
-  }
-
-  let positions =
-    removePosNum >= count
-      ? afterLastElementRemovePos(elements)
-      : getElementRemovePositions(elements, removePosNum, remove.relative);
-
-  if (!positions.startPos) {
-    positions.startPos = funBlock.getStart() + 1;
-  }
-
-  if (!positions.endPos) {
-    positions.endPos = funBlock.getEnd() - 1;
-  }
-  positions.startPos += indexAdj.start || 0;
-  positions.endPos += indexAdj.end || 0;
-  return removeCode(node, positions);
+  return removeFromNode(srcNode, {
+    elementsField: 'properties',
+    node: funBlock,
+    ...opts,
+  });
 };
 
 export function removeInsideFunctionBlockInFile(
@@ -80,6 +44,7 @@ export function removeInsideFunctionBlockInFile(
     modifyFn: removeInFunctionBlock,
     ...opts,
   };
+
   return replaceInFile(filePath, allOpts);
 }
 

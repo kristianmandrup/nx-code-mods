@@ -1,9 +1,8 @@
+import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
 import {
   afterLastElementPos,
   aroundElementPos,
   CollectionInsert,
-  ensurePrefixComma,
-  ensureSuffixComma,
   getInsertPosNum,
 } from './positional';
 import { insertCode } from '../modify';
@@ -53,7 +52,6 @@ export const insertParamInMatchingMethod =
     const count = elements.length;
     let insertPosNum =
       getInsertPosNum({
-        type: 'object',
         node,
         elements,
         insert,

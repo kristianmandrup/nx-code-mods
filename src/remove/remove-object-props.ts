@@ -1,6 +1,6 @@
 import { CollectionRemove, removeFromNode, RemoveIndexAdj } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { AnyOpts, replaceInFile, modifyTree } from '../modify';
+import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 import { ObjectLiteralExpression, SourceFile } from 'typescript';
@@ -18,8 +18,7 @@ export interface RemoveObjectTreeOptions extends RemoveObjectOptions {
 
 export type RemoveInObjectFn = {
   id: string;
-  codeToRemove: string;
-  insert: CollectionRemove;
+  remove: CollectionRemove;
   indexAdj?: number;
 };
 
@@ -32,14 +31,25 @@ export const removeFromObject =
       return;
     }
     const node = declaration.initializer as ObjectLiteralExpression;
-    const newTxt = removeFromNode(srcNode, {
-      type: 'object',
-      elementsField: 'properties',
+    return removeFromNode(srcNode, {
+      elementsField: 'elements',
       node,
       ...opts,
     });
-    return newTxt;
   };
+
+export function removeFromNamedObjectInSource(
+  sourceCode: string,
+  opts: RemoveObjectOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findVariableDeclaration(node, opts.id);
+  return replaceInSource(sourceCode, {
+    findNodeFn,
+    modifyFn: removeFromObject,
+    ...opts,
+  });
+}
 
 export function removeFromNamedObjectInFile(
   filePath: string,

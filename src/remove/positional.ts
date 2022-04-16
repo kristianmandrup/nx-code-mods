@@ -10,18 +10,11 @@ import { Node, NodeArray, SourceFile } from 'typescript';
 type ElementsType = any[] | NodeArray<any>;
 
 export type RemovePosNumParams = {
-  type: 'array' | 'object';
   node: Node;
   elements: ElementsType;
   remove: CollectionRemove;
   count: number;
 };
-
-export const createFindStrLit = (id: string) => (node: Node) =>
-  findStringLiteral(node, id);
-
-export const createFindId = (id: string) => (node: Node) =>
-  findIdentifier(node, id);
 
 export const normalizeRemoveIndexAdj = (indexAdj: RemoveIndexAdj) => {
   indexAdj = indexAdj || {};
@@ -66,7 +59,6 @@ export const getPositions = (opts: AnyOpts) => {
   const { relative } = remove;
   let pos =
     getRemovePosNum({
-      type,
       node,
       elements,
       remove,
@@ -259,7 +251,7 @@ export const removeFromNode = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { elementsField, type, node, remove, replacementCode, indexAdj } = opts;
+  let { elementsField, node, remove, replacementCode, indexAdj } = opts;
   remove = remove || {};
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node[elementsField];
@@ -267,7 +259,6 @@ export const removeFromNode = (
 
   const posOpts = {
     ...opts,
-    type,
     srcNode,
     elements,
     count,

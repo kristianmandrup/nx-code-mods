@@ -1,15 +1,13 @@
+import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
 import {
   afterLastElementPos,
   aroundElementPos,
   CollectionInsert,
-  ensurePrefixComma,
-  ensureSuffixComma,
   getInsertPosNum,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
-import { insertCode } from './modify-code';
-import { findVariableDeclaration } from './find';
+import { insertCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
+import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
@@ -40,7 +38,6 @@ export const insertIntoArray = (
 
   let insertPosNum =
     getInsertPosNum({
-      type: 'array',
       node,
       elements,
       insert,

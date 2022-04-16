@@ -1,7 +1,6 @@
 import { findStringLiteral, findIdentifier } from './find';
 import { Node, NodeArray } from 'typescript';
-
-type ElementsType = any[] | NodeArray<any>;
+import { ElementsType } from '../types';
 
 export const createFindStrLit = (id: string) => (node: Node) =>
   findStringLiteral(node, id);
@@ -47,17 +46,3 @@ export type FindChildNode = (node: Node) => Node | undefined;
 export type CheckUnderNode = (node: Node) => boolean | undefined;
 
 export type FindElementFn = FindChildNode | string;
-
-export const ensurePrefixComma = (codeToInsert: string) =>
-  codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;
-
-export const ensureSuffixComma = (codeToInsert: string) =>
-  codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
-
-export const ensureStmtClosing = (codeToInsert: string) => {
-  codeToInsert = codeToInsert.match(/;$/) ? codeToInsert : codeToInsert + ';';
-  return ensureNewlineClosing(codeToInsert);
-};
-
-export const ensureNewlineClosing = (codeToInsert: string) =>
-  codeToInsert.match(/\n$/) ? codeToInsert : codeToInsert + '\n';

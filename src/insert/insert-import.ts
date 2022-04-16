@@ -1,19 +1,17 @@
+import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
 import { ImportClause, NamedImports, Node, SourceFile } from 'typescript';
-import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
   findImportSpecifier,
   findMatchingImportDecl,
   findMatchingImportDeclarationsByFileRef,
   hasAnyImportDecl,
-} from './find';
-import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
+} from '../find';
+import { insertCode, modifyTree, AnyOpts, replaceInFile } from '../modify';
 import {
   afterLastElementPos,
   aroundElementPos,
   CollectionInsert,
-  ensurePrefixComma,
-  ensureSuffixComma,
   getInsertPosNum,
 } from './positional';
 
@@ -54,7 +52,6 @@ export const insertImport = (opts: AnyOpts) => (node: any) => {
   const count = elements.length;
   let insertPosNum =
     getInsertPosNum({
-      type: 'object',
       node: importDecl,
       elements,
       insert,

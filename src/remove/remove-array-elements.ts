@@ -25,7 +25,6 @@ export const removeFromArray =
     }
     const node = declaration.initializer as ArrayLiteralExpression;
     const newTxt = removeFromNode(srcNode, {
-      type: 'object',
       elementsField: 'elements',
       node,
       ...opts,

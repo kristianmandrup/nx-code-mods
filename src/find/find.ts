@@ -103,23 +103,6 @@ export const findClassDeclaration = (
   }
 };
 
-export const findMethodDeclaration = (
-  node: Node,
-  targetIdName: string,
-  where?: WhereFn,
-): MethodDeclaration | undefined => {
-  const result = tsquery(
-    node,
-    `MethodDeclaration > Identifier[name='${targetIdName}']`,
-  );
-  if (!result || result.length === 0) return;
-  const found = result[0].parent as MethodDeclaration;
-  if (!where) return found;
-  if (where(found)) {
-    return found;
-  }
-};
-
 export const findFirstMethodDeclaration = (
   node: Node,
 ): MethodDeclaration | undefined => {
@@ -154,8 +137,16 @@ export const findClassPropertyDeclaration = (
 ): PropertyDeclaration | undefined => {
   const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) return;
+  return findPropertyDeclaration(classDecl, propId);
+};
+
+export const findPropertyDeclaration = (
+  node: Node,
+  propId: string,
+  where?: WhereFn,
+): PropertyDeclaration | undefined => {
   const result = tsquery(
-    classDecl,
+    node,
     `PropertyDeclaration > Identifier[name='${propId}']`,
   );
   if (!result || result.length === 0) return;
@@ -173,8 +164,16 @@ export const findClassMethodDeclaration = (
 ): MethodDeclaration | undefined => {
   const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) return;
+  return findMethodDeclaration(classDecl, methodId);
+};
+
+export const findMethodDeclaration = (
+  node: Node,
+  methodId: string,
+  where?: WhereFn,
+): MethodDeclaration | undefined => {
   const result = tsquery(
-    classDecl,
+    node,
     `MethodDeclaration > Identifier[name='${methodId}']`,
   );
   if (!result || result.length === 0) return;

@@ -81,20 +81,24 @@ export function replaceInFile(targetFilePath: string, opts: ModifyFileOptions) {
     console.log('no such file', targetFilePath);
     return;
   }
-  const ast = tsquery.ast(targetFile);
+  return replaceInSource(targetFile, opts);
+}
+
+export function replaceInSource(sourceCode: string, opts: ModifyFileOptions) {
+  const ast = tsquery.ast(sourceCode);
   const { checkFn, getDefaultNodeFn } = opts;
   if (checkFn) {
     const checkResult = checkFn(ast);
     if (checkResult) {
-      return replaceContentInSrc(targetFile, ast, opts);
+      return replaceContentInSrc(sourceCode, ast, opts);
     } else {
       if (getDefaultNodeFn) {
         const node = getDefaultNodeFn(ast);
-        return replaceNodeContents(targetFile, node, opts);
+        return replaceNodeContents(sourceCode, node, opts);
       }
     }
   }
-  return replaceContentInSrc(targetFile, ast, opts);
+  return replaceContentInSrc(sourceCode, ast, opts);
 }
 
 export function modifyTree(tree: Tree, opts: ModifyTreeOptions) {

@@ -1,12 +1,11 @@
-import { ImportClause, NamedImports, Node, SourceFile } from 'typescript';
-import { removeCode } from './modify-code';
+import { SourceFile } from 'typescript';
 import { Tree } from '@nrwl/devkit';
 import {
   findMatchingImportDecl,
   findMatchingImportDeclarationsByFileRef,
   hasAnyImportDecl,
-} from './find';
-import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
+} from '../find';
+import { removeCode, modifyTree, AnyOpts, replaceInFile } from '../modify';
 
 export interface RemoveImportOptions {
   importId: string;

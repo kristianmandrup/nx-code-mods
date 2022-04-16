@@ -1,13 +1,12 @@
+import { ensureStmtClosing } from './../ensure';
 import { SourceFile } from 'typescript';
-import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
-import { findFunctionBlock } from './find';
-import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
+import { findFunctionBlock } from '../find';
+import { insertCode, modifyTree, AnyOpts, replaceInFile } from '../modify';
 import {
   afterLastElementPos,
   aroundElementPos,
   CollectionInsert,
-  ensureStmtClosing,
   getInsertPosNum,
 } from './positional';
 
@@ -35,7 +34,6 @@ export const insertInFunctionBlock = (opts: AnyOpts) => (node: any) => {
 
   let insertPosNum =
     getInsertPosNum({
-      type: 'array',
       node: funBlock,
       elements,
       insert,

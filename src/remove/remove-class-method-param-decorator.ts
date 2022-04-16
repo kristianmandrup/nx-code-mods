@@ -4,19 +4,20 @@ import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { SourceFile } from 'typescript';
 
-export interface ClassMethodParamRemoveOptions {
+export interface ClassMethodParamDecoratorRemoveOptions {
   className: string;
   methodId: string;
+  paramId: string;
   remove?: CollectionRemove;
 }
 
-export interface ClassMethodParamRemoveTreeOptions
-  extends ClassMethodParamRemoveOptions {
+export interface ClassMethodParamDecoratorRemoveTreeOptions
+  extends ClassMethodParamDecoratorRemoveOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
 
-const removeInMethodParams = (opts: AnyOpts) => (node: any) => {
+const removeInMethodParamDecorator = (opts: AnyOpts) => (node: any) => {
   const { className, methodId } = opts;
   const methDecl = findClassMethodDeclaration(node, {
     classId: className,
@@ -33,22 +34,22 @@ const removeInMethodParams = (opts: AnyOpts) => (node: any) => {
   return removeCode(node, { startPos, endPos });
 };
 
-export function removeClassMethodParamsInFile(
+export function removeClassMethodParamDecoratorsInFile(
   filePath: string,
-  opts: ClassMethodParamRemoveOptions,
+  opts: ClassMethodParamDecoratorRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.className);
   return replaceInFile(filePath, {
     findNodeFn,
-    modifyFn: removeInMethodParams,
+    modifyFn: removeInMethodParamDecorator,
     ...opts,
   });
 }
 
-export function removeClassMethodParamsInTree(
+export function removeClassMethodParamDecoratorsInTree(
   tree: Tree,
-  opts: ClassMethodParamRemoveTreeOptions,
+  opts: ClassMethodParamDecoratorRemoveTreeOptions,
 ) {
   modifyTree(tree, opts);
 }

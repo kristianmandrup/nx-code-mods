@@ -1,7 +1,6 @@
-import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
-import { removeCode } from './modify-code';
+import { removeCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration, findClassMethodDeclaration } from './find';
+import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { SourceFile } from 'typescript';
 
 export interface ClassMethodRemoveOptions {

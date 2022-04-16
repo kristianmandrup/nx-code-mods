@@ -1,9 +1,8 @@
+import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
 import {
   afterLastElementPos,
   aroundElementPos,
   CollectionInsert,
-  ensurePrefixComma,
-  ensureSuffixComma,
   getInsertPosNum,
 } from './positional';
 import { insertCode } from '../modify';
@@ -12,6 +11,7 @@ import {
   findClassDeclaration,
   findParamWithDecorator,
   findClassMethodDeclaration,
+  findParameter,
 } from '../find';
 import { replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { Node, SourceFile } from 'typescript';
@@ -53,7 +53,6 @@ export const insertParamInMatchingMethod =
     const count = elements.length;
     let insertPosNum =
       getInsertPosNum({
-        type: 'object',
         node,
         elements,
         insert,

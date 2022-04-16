@@ -2,17 +2,15 @@ import {
   afterLastElementPos,
   aroundElementPos,
   CollectionInsert,
-  ensurePrefixComma,
-  ensureSuffixComma,
   getInsertPosNum,
 } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { insertCode } from './modify-code';
-import { findVariableDeclaration } from './find';
+import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 import { SourceFile } from 'typescript';
 import { ObjectLiteralExpression } from 'typescript';
-import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
+import { insertCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
+import { ensurePrefixComma, ensureSuffixComma } from '../ensure';
 
 export interface InsertObjectOptions {
   id: string;
@@ -40,7 +38,6 @@ export const insertIntoObject = (
   const count = elements.length;
   let insertPosNum =
     getInsertPosNum({
-      type: 'object',
       node,
       elements,
       insert,
