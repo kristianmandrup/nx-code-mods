@@ -10,7 +10,7 @@ describe('remove class method', () => {
       const codeToInsert = `myMethod() {}`;
 
       const code = removeClassMethodInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -28,7 +28,7 @@ describe('remove class method', () => {
         'has-no-matching-class.txt',
       );
       const code = removeClassMethodInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -45,7 +45,7 @@ describe('remove class method', () => {
         'has-matching-empty-class.txt',
       );
       const code = removeClassMethodInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       let modifiedCode = code ? code : '';

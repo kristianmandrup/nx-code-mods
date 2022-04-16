@@ -10,7 +10,7 @@ import { Node, SourceFile } from 'typescript';
 import { ensureStmtClosing } from '../ensure';
 
 export interface ClassPropInsertOptions {
-  className: string;
+  classId: string;
   propId: string;
   codeToInsert: string;
   insertPos?: InsertPosition;
@@ -23,12 +23,12 @@ export interface ClassPropInsertTreeOptions extends ClassPropInsertOptions {
 }
 
 const insertInClassScope = (opts: AnyOpts) => (node: Node) => {
-  const { className, codeToInsert, insertPos, propId, indexAdj } = opts;
+  const { classId, codeToInsert, insertPos, propId, indexAdj } = opts;
 
   const abortIfFound = (node: any) =>
-    findClassPropertyDeclaration(node, { classId: className, propId });
+    findClassPropertyDeclaration(node, { classId: classId, propId });
 
-  const classDecl = findClassDeclaration(node, className);
+  const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) return;
   // abort if property with that name already declared in class
   if (abortIfFound) {
@@ -66,7 +66,7 @@ export function insertClassPropertyInFile(
   opts: ClassPropInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: insertInClassScope,

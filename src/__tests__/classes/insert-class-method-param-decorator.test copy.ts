@@ -12,7 +12,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `@Body() body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Body',
       });
@@ -33,7 +33,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `@Body() body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Body',
       });
@@ -54,7 +54,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `@Body() body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Body',
       });
@@ -74,7 +74,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `@Body() body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Body',
       });

@@ -5,13 +5,13 @@ import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';
 import { ensureNewlineClosing } from '../ensure';
 
-export interface ClassDecInsertOptions {
+export interface ClassDecoratorInsertOptions {
   id: string;
   codeToInsert: string;
   indexAdj?: number;
 }
 
-export interface ClassDecInsertTreeOptions extends ClassDecInsertOptions {
+export interface ClassDecoratorInsertTreeOptions extends ClassDecInsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }

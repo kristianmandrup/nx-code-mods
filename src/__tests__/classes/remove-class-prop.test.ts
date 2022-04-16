@@ -10,7 +10,7 @@ describe('remove class property', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const codeToRemove = `myProp: User`;
       const code = removeClassPropertyInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -27,7 +27,7 @@ describe('remove class property', () => {
         'has-no-matching-class.txt',
       );
       const code = removeClassPropertyInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -44,7 +44,7 @@ describe('remove class property', () => {
         'has-matching-empty-class.txt',
       );
       const code = removeClassPropertyInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -61,7 +61,7 @@ describe('remove class property', () => {
         'has-matching-class-no-matching-property.txt',
       );
       const code = removeClassPropertyInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -81,7 +81,7 @@ describe('remove class property', () => {
         'has-matching-class-and-property.txt',
       );
       const code = removeClassPropertyInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';

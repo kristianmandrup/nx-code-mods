@@ -10,7 +10,7 @@ import {
 import { Node, SourceFile } from 'typescript';
 
 export interface ClassPropRemoveOptions {
-  className: string;
+  classId: string;
   propId: string;
 }
 
@@ -20,10 +20,10 @@ export interface ClassPropRemoveTreeOptions extends ClassPropRemoveOptions {
 }
 
 const removeInClassScope = (opts: AnyOpts) => (node: Node) => {
-  const { className, propId } = opts;
+  const { classId, propId } = opts;
 
   const propDecl = findClassPropertyDeclaration(node, {
-    classId: className,
+    classId: classId,
     propId,
   });
   if (!propDecl) return;
@@ -37,7 +37,7 @@ export function removeClassPropertyInSource(
   opts: ClassPropRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: removeInClassScope,
@@ -50,7 +50,7 @@ export function removeClassPropertyInFile(
   opts: ClassPropRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: removeInClassScope,

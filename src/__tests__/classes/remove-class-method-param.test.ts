@@ -10,7 +10,7 @@ describe('remove class method param', () => {
       const codeToInsert = `myMethod() {}`;
 
       const code = removeClassMethodParamsInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -28,7 +28,7 @@ describe('remove class method param', () => {
         'has-no-matching-class.txt',
       );
       const code = removeClassMethodParamsInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         remove: {
           index: 1,
@@ -48,7 +48,7 @@ describe('remove class method param', () => {
         'has-matching-empty-class.txt',
       );
       const code = removeClassMethodParamsInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       let modifiedCode = code ? code : '';

@@ -11,7 +11,7 @@ describe('insert class property', () => {
       const codeToInsert = `myProp: User`;
       const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -31,7 +31,7 @@ describe('insert class property', () => {
       const codeToInsert = `myProp: User`;
       const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -51,7 +51,7 @@ describe('insert class property', () => {
       const codeToInsert = `myProp: User`;
       const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -71,7 +71,7 @@ describe('insert class property', () => {
       const codeToInsert = `myProp: User`;
       const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';
@@ -93,7 +93,7 @@ describe('insert class property', () => {
       const codeToInsert = `getUser(): User {}`;
       const code = insertClassPropertyInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         propId: 'myProp',
       });
       const modifiedCode = code ? code : '';

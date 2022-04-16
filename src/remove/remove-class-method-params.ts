@@ -11,7 +11,7 @@ import { SourceFile } from 'typescript';
 import { CollectionModifyOpts } from './positional';
 
 export interface ClassMethodParamRemoveOptions {
-  className: string;
+  classId: string;
   methodId: string;
   remove?: CollectionModifyOpts;
 }
@@ -23,9 +23,9 @@ export interface ClassMethodParamRemoveTreeOptions
 }
 
 const removeInMethodParams = (opts: AnyOpts) => (node: any) => {
-  const { className, methodId } = opts;
+  const { classId, methodId } = opts;
   const methDecl = findClassMethodDeclaration(node, {
-    classId: className,
+    classId: classId,
     methodId,
   });
   if (!methDecl) return;
@@ -44,7 +44,7 @@ export function removeClassMethodParamsInSource(
   opts: ClassMethodParamRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: removeInMethodParams,
@@ -56,7 +56,7 @@ export function removeClassMethodParamsInFile(
   opts: ClassMethodParamRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: removeInMethodParams,

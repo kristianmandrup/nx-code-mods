@@ -12,7 +12,7 @@ describe('insert class decorator', () => {
       const codeToInsert = `@Post()`;
       const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });
@@ -33,7 +33,7 @@ describe('insert class decorator', () => {
       const codeToInsert = `@Post()`;
       const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });
@@ -54,7 +54,7 @@ describe('insert class decorator', () => {
       const codeToInsert = `@Post()`;
       const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });
@@ -74,7 +74,7 @@ describe('insert class decorator', () => {
       const codeToInsert = `@Post()`;
       const code = insertClassMethodDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Post',
       });

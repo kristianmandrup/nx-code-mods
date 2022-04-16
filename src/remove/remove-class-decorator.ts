@@ -9,20 +9,21 @@ import {
 } from '../modify';
 import { Node, SourceFile } from 'typescript';
 
-export interface ClassDecRemoveOptions {
-  className: string;
+export interface ClassDecoratorRemoveOptions {
+  classId: string;
   id: string;
 }
 
-export interface ClassDecRemoveTreeOptions extends ClassDecRemoveOptions {
+export interface ClassDecoratorRemoveTreeOptions
+  extends ClassDecoratorRemoveOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
 
 export const removeBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
-  const { id, className } = opts;
+  const { id, classId } = opts;
   const decorator = findClassDecorator(node, {
-    classId: className,
+    classId: classId,
     id,
   });
   if (!decorator) {
@@ -35,7 +36,7 @@ export const removeBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
 
 export function removeClassDecoratorInSource(
   source: string,
-  opts: ClassDecRemoveOptions,
+  opts: ClassDecoratorRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
 
@@ -48,7 +49,7 @@ export function removeClassDecoratorInSource(
 
 export function removeClassDecoratorInFile(
   filePath: string,
-  opts: ClassDecRemoveOptions,
+  opts: ClassDecoratorRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
 
@@ -61,7 +62,7 @@ export function removeClassDecoratorInFile(
 
 export async function removeClassDecoratorInTree(
   tree: Tree,
-  opts: ClassDecRemoveTreeOptions,
+  opts: ClassDecoratorRemoveTreeOptions,
 ) {
   return await modifyTree(tree, opts);
 }

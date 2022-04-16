@@ -10,7 +10,7 @@ import {
 import { Node, SourceFile } from 'typescript';
 
 export interface ClassMethodInsertOptions {
-  className: string;
+  classId: string;
   methodId: string;
   codeToInsert: string;
   insertPos?: InsertPosition;
@@ -23,11 +23,11 @@ export interface ClassMethodInsertTreeOptions extends ClassMethodInsertOptions {
 }
 
 const insertInMethodBlock = (opts: AnyOpts) => (node: any) => {
-  const { className, codeToInsert, insertPos, indexAdj } = opts;
+  const { classId, codeToInsert, insertPos, indexAdj } = opts;
   const abortIfFound = (node: Node) =>
     findMethodDeclaration(node, opts.methodId);
 
-  const classDecl = findClassDeclaration(node, className);
+  const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) return;
 
   // abort insert of method if method already declared in class
@@ -70,7 +70,7 @@ export function insertClassMethodInFile(
   opts: ClassMethodInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: insertInMethodBlock,

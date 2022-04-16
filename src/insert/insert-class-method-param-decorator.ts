@@ -16,7 +16,7 @@ import { replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { Node, SourceFile } from 'typescript';
 
 export interface ClassMethodDecParamDecoratorInsertOptions {
-  className: string;
+  classId: string;
   methodId: string;
   id: string;
   codeToInsert: string;
@@ -32,9 +32,9 @@ export interface ClassMethodDecParamDecoratorInsertTreeOptions
 
 export const insertParamInMatchingMethod =
   (opts: AnyOpts) => (srcNode: Node) => {
-    const { className, methodId, id, insert, codeToInsert, indexAdj } = opts;
+    const { classId, methodId, id, insert, codeToInsert, indexAdj } = opts;
     const methodDecl = findClassMethodDeclaration(srcNode, {
-      classId: className,
+      classId: classId,
       methodId,
     });
     if (!methodDecl) return;
@@ -88,7 +88,7 @@ export function insertClassMethodParamDecoratorInSource(
   opts: ClassMethodDecParamDecoratorInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: insertParamInMatchingMethod,
@@ -101,7 +101,7 @@ export function insertClassMethodParamDecoratorInFile(
   opts: ClassMethodDecParamDecoratorInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: insertParamInMatchingMethod,

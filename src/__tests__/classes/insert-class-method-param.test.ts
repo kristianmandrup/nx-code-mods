@@ -11,7 +11,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Body',
       });
@@ -32,7 +32,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         id: 'Body',
       });
@@ -53,7 +53,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -72,7 +72,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `body: string`;
       const code = insertClassMethodParamDecoratorInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
         insert: {
           index: 1,
@@ -101,7 +101,7 @@ describe('insert class method param decorator', () => {
       it('insert param in class method at position 1, between params', () => {
         const code = insertClassMethodParamDecoratorInFile(filePath, {
           codeToInsert,
-          className: 'myClass',
+          classId: 'myClass',
           methodId: 'myMethod',
           insert: {
             index: 1,
@@ -127,7 +127,7 @@ describe('insert class method param decorator', () => {
         const codeToInsert = `body: string`;
         const code = insertClassMethodParamDecoratorInFile(filePath, {
           codeToInsert,
-          className: 'myClass',
+          classId: 'myClass',
           methodId: 'myMethod',
           insert: {
             index: 'first',
@@ -153,7 +153,7 @@ describe('insert class method param decorator', () => {
         const codeToInsert = `body: string`;
         const code = insertClassMethodParamDecoratorInFile(filePath, {
           codeToInsert,
-          className: 'myClass',
+          classId: 'myClass',
           methodId: 'myMethod',
           insert: {
             index: 'last',

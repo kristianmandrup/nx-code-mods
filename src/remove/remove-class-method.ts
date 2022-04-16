@@ -10,7 +10,7 @@ import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { SourceFile } from 'typescript';
 
 export interface ClassMethodRemoveOptions {
-  className: string;
+  classId: string;
   methodId: string;
 }
 
@@ -20,9 +20,9 @@ export interface ClassMethodRemoveTreeOptions extends ClassMethodRemoveOptions {
 }
 
 const removeInMethodBlock = (opts: AnyOpts) => (node: any) => {
-  const { className, methodId } = opts;
+  const { classId, methodId } = opts;
   const methDecl = findClassMethodDeclaration(node, {
-    classId: className,
+    classId: classId,
     methodId,
   });
   if (!methDecl) return;
@@ -36,7 +36,7 @@ export function removeClassMethodInSource(
   opts: ClassMethodRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: removeInMethodBlock,
@@ -49,7 +49,7 @@ export function removeClassMethodInFile(
   opts: ClassMethodRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: removeInMethodBlock,

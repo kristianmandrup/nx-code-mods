@@ -1,7 +1,9 @@
+import { Tree } from '@nrwl/devkit';
 import {
   removeFromNamedObjectInSource,
   removeFromNamedObjectInFile,
   CollectionModifyOpts,
+  removeFromNamedObjectInTree,
 } from '../remove';
 import { IndexAdj } from '../types';
 export interface ReplaceObjectOptions {
@@ -28,6 +30,16 @@ export function replaceInNamedObjectInFile(
   opts: ReplaceObjectOptions,
 ) {
   return removeFromNamedObjectInFile(targetFilePath, {
+    remove: opts.replace,
+    ...opts,
+  });
+}
+
+export async function replaceInNamedObjectInTree(
+  tree: Tree,
+  opts: ReplaceObjectTreeOptions,
+) {
+  return await removeFromNamedObjectInTree(tree, {
     remove: opts.replace,
     ...opts,
   });

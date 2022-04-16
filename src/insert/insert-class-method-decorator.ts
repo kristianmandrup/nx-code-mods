@@ -10,7 +10,7 @@ import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { ensureNewlineClosing } from '../ensure';
 
 export interface ClassMethodDecInsertOptions {
-  className: string;
+  classId: string;
   methodId: string;
   id: string; // decorator id
   codeToInsert: string;
@@ -24,9 +24,9 @@ export interface ClassMethodDecInsertTreeOptions
 }
 
 export const insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node) => {
-  const { className, methodId, id, codeToInsert, indexAdj } = opts;
+  const { classId, methodId, id, codeToInsert, indexAdj } = opts;
 
-  const classDecl = findClassDeclaration(node, className);
+  const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) return;
   const methodDecl = findMethodDeclaration(classDecl, methodId);
   if (!methodDecl) return;
@@ -50,7 +50,7 @@ export function insertClassMethodDecoratorInSource(
   opts: ClassMethodDecInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: insertBeforeMatchingMethod,
@@ -63,7 +63,7 @@ export function insertClassMethodDecoratorInFile(
   opts: ClassMethodDecInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findClassDeclaration(node, opts.className);
+    findClassDeclaration(node, opts.classId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: insertBeforeMatchingMethod,

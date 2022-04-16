@@ -9,7 +9,7 @@ describe('remove class decorator', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const code = removeClassDecoratorInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         id: 'Model',
       });
       const modifiedCode = code ? code : '';
@@ -26,7 +26,7 @@ describe('remove class decorator', () => {
         'has-no-matching-class.txt',
       );
       const code = removeClassDecoratorInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         id: 'Model',
       });
       const modifiedCode = code ? code : '';
@@ -43,7 +43,7 @@ describe('remove class decorator', () => {
         'has-matching-empty-class.txt',
       );
       const code = removeClassDecoratorInFile(filePath, {
-        className: 'myClass',
+        classId: 'myClass',
         id: 'Model',
       });
       let modifiedCode = code ? code : '';

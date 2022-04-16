@@ -354,7 +354,7 @@ insertClassMethodInFile(
 const codeToInsert = `myMethod() {}`;
 const code = insertClassMethodInFile(filePath, {
   codeToInsert,
-  className: 'myClass',
+  classId: 'myClass',
   methodId: 'myMethod',
 });
 ```
@@ -385,7 +385,7 @@ insertClassPropertyInTree(
 const codeToInsert = `myProp: User`;
 const code = insertClassPropertyInFile(filePath, {
   codeToInsert,
-  className: 'myClass',
+  classId: 'myClass',
   propId: 'myProp',
 });
 ```
@@ -441,7 +441,7 @@ insertClassMethodDecoratorInTree(
 const codeToInsert = `@Post()`;
 const code = insertClassMethodDecoratorInFile(filePath, {
   codeToInsert,
-  className: 'myClass',
+  classId: 'myClass',
   methodId: 'myMethod',
 });
 ```
@@ -472,7 +472,7 @@ insertClassMethodParamDecoratorInTree(
 const codeToInsert = `@Body() body: string`;
 const code = insertClassMethodParamDecoratorInFile(filePath, {
   codeToInsert,
-  className: 'myClass',
+  classId: 'myClass',
   methodId: 'myMethod',
 });
 ```
@@ -536,7 +536,7 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
   const codeToInsert = `{
     path: '${pageNames.fileName}',
     loadChildren: () =>
-      import('${importPath}').then((m) => m.${pageNames.className}PageModule),
+      import('${importPath}').then((m) => m.${pageNames.classId}PageModule),
   }`;
   insertIntoNamedArrayInTree(tree,
     {
@@ -600,7 +600,7 @@ insert
   })
   .classMethodDecorator({
     codeToInsert: '@Post()',
-    className: 'myClass',
+    classId: 'myClass',
     methodId: 'myMethod',
   });
 

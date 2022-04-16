@@ -12,7 +12,7 @@ describe('insert class method', () => {
 
       const code = insertClassMethodInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -33,7 +33,7 @@ describe('insert class method', () => {
 
       const code = insertClassMethodInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -53,7 +53,7 @@ describe('insert class method', () => {
       const codeToInsert = `myMethod() {}`;
       const code = insertClassMethodInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -76,7 +76,7 @@ describe('insert class method', () => {
       const codeToInsert = `myMethod() {}`;
       const code = insertClassMethodInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
@@ -99,7 +99,7 @@ describe('insert class method', () => {
   `;
       const code = insertClassMethodInFile(filePath, {
         codeToInsert,
-        className: 'myClass',
+        classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
