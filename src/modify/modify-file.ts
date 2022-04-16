@@ -1,7 +1,7 @@
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
-import { Tree } from '@nrwl/devkit';
+import { formatFiles, Tree } from '@nrwl/devkit';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { replaceOne } from './replace';
 import { Node, SourceFile } from 'typescript';
@@ -22,6 +22,7 @@ export interface ModifyFileOptions {
 export interface ModifyTreeOptions extends ModifyFileOptions {
   projectRoot: string;
   relTargetFilePath: string;
+  format?: boolean;
 }
 
 export type AnyOpts = {
@@ -101,13 +102,29 @@ export function replaceInSource(sourceCode: string, opts: ModifyFileOptions) {
   return replaceContentInSrc(sourceCode, ast, opts);
 }
 
-export function modifyTree(tree: Tree, opts: ModifyTreeOptions) {
-  const { projectRoot, relTargetFilePath } = opts;
+export const saveTree = ({
+  tree,
+  targetFile,
+  targetFilePath,
+  newContents,
+}: any) => {
+  if (!newContents || newContents == targetFile) return;
+  tree.write(targetFilePath, newContents);
+};
+
+export async function modifyTree(tree: Tree, opts: ModifyTreeOptions) {
+  const { projectRoot, relTargetFilePath, format } = opts;
   const targetFilePath = path.join(projectRoot, relTargetFilePath);
   const targetFile = readFileIfExisting(targetFilePath);
   const newContents = replaceInFile(targetFilePath, opts);
-  if (newContents !== targetFile && newContents) {
-    tree.write(targetFilePath, newContents);
+  saveTree({
+    tree,
+    targetFile,
+    targetFilePath,
+    newContents,
+  });
+  if (format) {
+    await formatFiles(tree);
   }
   return newContents;
 }

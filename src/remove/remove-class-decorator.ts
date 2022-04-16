@@ -1,6 +1,12 @@
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findClassDecorator } from '../find';
-import { removeCode, replaceInFile, AnyOpts, modifyTree } from '../modify';
+import {
+  removeCode,
+  replaceInFile,
+  AnyOpts,
+  modifyTree,
+  replaceInSource,
+} from '../modify';
 import { Node, SourceFile } from 'typescript';
 
 export interface ClassDecRemoveOptions {
@@ -27,6 +33,19 @@ export const removeBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
   return removeCode(node, { startPos, endPos });
 };
 
+export function removeClassDecoratorInSource(
+  source: string,
+  opts: ClassDecRemoveOptions,
+) {
+  const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
+
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: removeBeforeClassDecl,
+    ...opts,
+  });
+}
+
 export function removeClassDecoratorInFile(
   filePath: string,
   opts: ClassDecRemoveOptions,
@@ -40,9 +59,9 @@ export function removeClassDecoratorInFile(
   });
 }
 
-export function removeClassDecoratorInTree(
+export async function removeClassDecoratorInTree(
   tree: Tree,
   opts: ClassDecRemoveTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

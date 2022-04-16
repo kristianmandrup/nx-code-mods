@@ -1,13 +1,18 @@
 import { SourceFile } from 'typescript';
-import { removeCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
   findImportSpecifier,
   findMatchingImportDecl,
   findMatchingImportDeclarationsByFileRef,
   hasAnyImportDecl,
-} from './find';
-import { modifyTree, AnyOpts, replaceInFile } from './modify-file';
+} from '../find';
+import {
+  replaceInSource,
+  removeCode,
+  modifyTree,
+  AnyOpts,
+  replaceInFile,
+} from '../modify';
 
 export interface RemoveImportIdOptions {
   importId: string;
@@ -34,6 +39,22 @@ export const removeImportId = (opts: AnyOpts) => (node: any) => {
   return removeCode(node, { startPos, endPos });
 };
 
+export function removeImportIdInSource(
+  source: string,
+  opts: RemoveImportIdOptions,
+) {
+  const findNodeFn = (node: SourceFile) => {
+    return findMatchingImportDeclarationsByFileRef(node, opts.importFileRef);
+  };
+  const allOpts = {
+    checkFn: hasAnyImportDecl,
+    findNodeFn,
+    modifyFn: removeImportId,
+    ...opts,
+  };
+  return replaceInSource(source, allOpts);
+}
+
 export function removeImportIdInFile(
   filePath: string,
   opts: RemoveImportIdOptions,
@@ -50,9 +71,9 @@ export function removeImportIdInFile(
   return replaceInFile(filePath, allOpts);
 }
 
-export function removeImportIdInTree(
+export async function removeImportIdInTree(
   tree: Tree,
   opts: RemoveImportIdTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

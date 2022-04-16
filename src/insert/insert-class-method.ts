@@ -1,13 +1,12 @@
-import { ensureStmtClosing } from './positional';
-import { AnyOpts, replaceInFile, modifyTree } from './modify-file';
-import { insertCode } from './modify-code';
+import { ensureStmtClosing } from '../ensure';
+import { insertCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
   findFirstMethodDeclaration,
   findLastPropertyDeclaration,
   findMethodDeclaration,
-} from './find';
+} from '../find';
 import { Node, SourceFile } from 'typescript';
 
 export interface ClassMethodInsertOptions {
@@ -79,9 +78,9 @@ export function insertClassMethodInFile(
   });
 }
 
-export function insertClassMethodInTree(
+export async function insertClassMethodInTree(
   tree: Tree,
   opts: ClassMethodInsertTreeOptions,
 ) {
-  modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

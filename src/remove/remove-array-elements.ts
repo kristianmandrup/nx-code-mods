@@ -1,13 +1,14 @@
-import { removeFromNode, CollectionRemove, RemoveIndexAdj } from './positional';
+import { CollectionModifyOpts, removeFromNode } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { AnyOpts, replaceInFile, modifyTree } from '../modify';
+import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
+import { IndexAdj } from '../types';
 export interface RemoveArrayOptions {
   id: string;
-  remove?: CollectionRemove;
-  indexAdj?: RemoveIndexAdj;
+  remove?: CollectionModifyOpts;
+  indexAdj?: IndexAdj;
 }
 
 export interface RemoveArrayTreeOptions extends RemoveArrayOptions {
@@ -32,6 +33,19 @@ export const removeFromArray =
     return newTxt;
   };
 
+export function removeFromNamedArrayInSource(
+  source: string,
+  opts: RemoveArrayOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findVariableDeclaration(node, opts.id);
+  return replaceInSource(source, {
+    ...opts,
+    findNodeFn,
+    modifyFn: removeFromArray,
+  });
+}
+
 export function removeFromNamedArrayInFile(
   filePath: string,
   opts: RemoveArrayOptions,
@@ -45,9 +59,9 @@ export function removeFromNamedArrayInFile(
   });
 }
 
-export function removeFromNamedArrayInTree(
+export async function removeFromNamedArrayInTree(
   tree: Tree,
   opts: RemoveArrayTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

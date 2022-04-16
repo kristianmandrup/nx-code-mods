@@ -8,3 +8,4 @@ export * from './insert-in-function';
 export * from './insert-named-array';
 export * from './insert-named-object';
 export * from './positional';
+export * from './api';

@@ -5,7 +5,13 @@ import {
   findMatchingImportDeclarationsByFileRef,
   hasAnyImportDecl,
 } from '../find';
-import { removeCode, modifyTree, AnyOpts, replaceInFile } from '../modify';
+import {
+  removeCode,
+  modifyTree,
+  AnyOpts,
+  replaceInFile,
+  replaceInSource,
+} from '../modify';
 
 export interface RemoveImportOptions {
   importId: string;
@@ -28,6 +34,22 @@ export const removeImport = (opts: AnyOpts) => (node: any) => {
   return removeCode(node, { startPos, endPos });
 };
 
+export function removeImportInSource(
+  sourceCode: string,
+  opts: RemoveImportOptions,
+) {
+  const findNodeFn = (node: SourceFile) => {
+    return findMatchingImportDeclarationsByFileRef(node, opts.importFileRef);
+  };
+  const allOpts = {
+    checkFn: hasAnyImportDecl,
+    findNodeFn,
+    modifyFn: removeImport,
+    ...opts,
+  };
+  return replaceInSource(sourceCode, allOpts);
+}
+
 export function removeImportInFile(
   filePath: string,
   opts: RemoveImportOptions,
@@ -44,6 +66,9 @@ export function removeImportInFile(
   return replaceInFile(filePath, allOpts);
 }
 
-export function removeImportInTree(tree: Tree, opts: RemoveImportTreeOptions) {
-  return modifyTree(tree, opts);
+export async function removeImportInTree(
+  tree: Tree,
+  opts: RemoveImportTreeOptions,
+) {
+  return await modifyTree(tree, opts);
 }

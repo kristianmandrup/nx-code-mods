@@ -99,6 +99,9 @@ export function insertImportInFile(
   return replaceInFile(filePath, allOpts);
 }
 
-export function insertImportInTree(tree: Tree, opts: InsertImportTreeOptions) {
-  return modifyTree(tree, opts);
+export async function insertImportInTree(
+  tree: Tree,
+  opts: InsertImportTreeOptions,
+) {
+  return await modifyTree(tree, opts);
 }

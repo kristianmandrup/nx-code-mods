@@ -1,4 +1,10 @@
-import { removeCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
+import {
+  removeCode,
+  AnyOpts,
+  replaceInFile,
+  modifyTree,
+  replaceInSource,
+} from '../modify';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { SourceFile } from 'typescript';
@@ -25,6 +31,19 @@ const removeInMethodBlock = (opts: AnyOpts) => (node: any) => {
   return removeCode(node, { startPos, endPos });
 };
 
+export function removeClassMethodInSource(
+  source: string,
+  opts: ClassMethodRemoveOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.className);
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: removeInMethodBlock,
+    ...opts,
+  });
+}
+
 export function removeClassMethodInFile(
   filePath: string,
   opts: ClassMethodRemoveOptions,
@@ -38,9 +57,9 @@ export function removeClassMethodInFile(
   });
 }
 
-export function removeClassMethodInTree(
+export async function removeClassMethodInTree(
   tree: Tree,
   opts: ClassMethodRemoveTreeOptions,
 ) {
-  modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

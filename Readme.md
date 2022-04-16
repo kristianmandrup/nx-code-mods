@@ -566,6 +566,7 @@ Requires testing and further refinement to be completed.
 - `removeClassMethodInFile`
 - `removeClassPropertyInFile`
 - `removeClassMethodParamsInFile`
+- `removeClassMethodParamDecoratorInFile`
 - `removeInsideFunctionBlockInFile`
 - `removeImportIdInFile`
 - `removeImportInFile`
@@ -574,4 +575,90 @@ Requires testing and further refinement to be completed.
 ### Replace (WIP)
 
 - `replaceInNamedObjectInSource` and `replaceInNamedObjectInFile`
--
+
+### APIs
+
+- Chain API
+- Insert API
+- Remove API
+- Replace API
+
+#### Chain API
+
+- `chainApi(source: string)`
+
+Example
+
+```ts
+const chain = chainApi(source);
+const { insert, remove } = chain;
+
+insert
+  .classDecorator({
+    codeToInsert: '@Model()',
+    id: 'myClass',
+  })
+  .classMethodDecorator({
+    codeToInsert: '@Post()',
+    className: 'myClass',
+    methodId: 'myMethod',
+  });
+
+remove.fromNamedArray({
+  id: 'Routes',
+  codeToInsert: `{ x: 2 }`,
+  insert: {
+    index: 'end',
+  },
+});
+```
+
+#### Insert API
+
+- `insertApi(source: string)`
+
+Example
+
+```ts
+const insert = insertApi(source);
+
+insert.classDecorator({
+  codeToInsert: '@Model()',
+  id: 'myClass',
+});
+```
+
+#### Remove API
+
+- `removeApi(source: string)`
+
+Example
+
+```ts
+const remove = removeApi(source);
+
+remove.fromNamedArray({
+  id: 'Routes',
+  remove: {
+    index: 'end',
+  },
+});
+```
+
+#### Replace API
+
+- `replaceApi(source: string)`
+
+Example
+
+```ts
+const replace = replaceApi(source);
+
+replace.inNamedObject({
+  id: 'Routes',
+  codeToInsert: `{ x: 2 }`,
+  replace: {
+    index: 'end',
+  },
+});
+```

@@ -5,3 +5,7 @@ export * from './modify';
 export * from './remove';
 export * from './replace';
 export * from './ensure';
+export * from './types';
+export * from './ensure';
+export * from './api';
+export * from './utils';

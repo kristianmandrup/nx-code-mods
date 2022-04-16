@@ -105,9 +105,9 @@ export function insertIntoNamedObjectInFile(
   });
 }
 
-export function insertIntoNamedObjectInTree(
+export async function insertIntoNamedObjectInTree(
   tree: Tree,
   opts: InsertObjectTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

@@ -1,14 +1,13 @@
-import { insertCode } from './modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
   findClassPropertyDeclaration,
   findFirstMethodDeclaration,
   findFirstPropertyDeclaration,
-} from './find';
-import { replaceInFile, AnyOpts, modifyTree } from './modify-file';
+} from '../find';
+import { insertCode, replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { Node, SourceFile } from 'typescript';
-import { ensureStmtClosing } from './positional';
+import { ensureStmtClosing } from '../ensure';
 
 export interface ClassPropInsertOptions {
   className: string;
@@ -75,9 +74,9 @@ export function insertClassPropertyInFile(
   });
 }
 
-export function insertClassPropertyInTree(
+export async function insertClassPropertyInTree(
   tree: Tree,
   opts: ClassPropInsertTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

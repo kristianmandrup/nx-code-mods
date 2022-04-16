@@ -5,7 +5,7 @@ import {
   CollectionInsert,
   getInsertPosNum,
 } from './positional';
-import { insertCode } from '../modify';
+import { insertCode, replaceInSource } from '../modify';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
@@ -83,6 +83,19 @@ export const insertParamInMatchingMethod =
     return insertCode(node, insertPosition, code);
   };
 
+export function insertClassMethodParamDecoratorInSource(
+  source: string,
+  opts: ClassMethodDecParamDecoratorInsertOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.className);
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: insertParamInMatchingMethod,
+    ...opts,
+  });
+}
+
 export function insertClassMethodParamDecoratorInFile(
   filePath: string,
   opts: ClassMethodDecParamDecoratorInsertOptions,
@@ -96,9 +109,9 @@ export function insertClassMethodParamDecoratorInFile(
   });
 }
 
-export function insertClassMethodParamDecoratorInTree(
+export async function insertClassMethodParamDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecParamDecoratorInsertTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

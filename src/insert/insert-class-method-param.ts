@@ -1,21 +1,18 @@
-import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
+import { ensurePrefixComma, ensureSuffixComma } from '../ensure';
 import {
   afterLastElementPos,
   aroundElementPos,
   CollectionInsert,
   getInsertPosNum,
 } from './positional';
-import { insertCode } from '../modify';
-import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
-  findParamWithDecorator,
   findClassMethodDeclaration,
   findParameter,
 } from '../find';
-import { replaceInFile, AnyOpts, modifyTree } from '../modify';
+import { insertCode, replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { Node, SourceFile } from 'typescript';
-
+import { Tree } from '@nrwl/devkit';
 export interface ClassMethodDecParamInsertOptions {
   className: string;
   methodId: string;
@@ -97,9 +94,9 @@ export function insertClassMethodParamInFile(
   });
 }
 
-export function insertClassMethodParamInTree(
+export async function insertClassMethodParamInTree(
   tree: Tree,
   opts: ClassMethodDecParamInsertTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

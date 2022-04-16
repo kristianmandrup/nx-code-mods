@@ -6,8 +6,8 @@ import {
   findMethodDeclaration,
   findDecorator,
 } from '../find';
-import { replaceInFile, AnyOpts, modifyTree } from '../modify';
-import { ensureNewlineClosing } from './positional';
+import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
+import { ensureNewlineClosing } from '../ensure';
 
 export interface ClassMethodDecInsertOptions {
   className: string;
@@ -45,6 +45,19 @@ export const insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node) => {
   return insertCode(node, methodDeclIndex, code);
 };
 
+export function insertClassMethodDecoratorInSource(
+  source: string,
+  opts: ClassMethodDecInsertOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.className);
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: insertBeforeMatchingMethod,
+    ...opts,
+  });
+}
+
 export function insertClassMethodDecoratorInFile(
   filePath: string,
   opts: ClassMethodDecInsertOptions,
@@ -58,9 +71,9 @@ export function insertClassMethodDecoratorInFile(
   });
 }
 
-export function insertClassMethodDecoratorInTree(
+export async function insertClassMethodDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecInsertTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

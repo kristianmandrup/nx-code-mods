@@ -6,17 +6,18 @@ import {
   FindElementFn,
 } from '../find';
 import { Node, NodeArray, SourceFile } from 'typescript';
+import { BetweenPos, CollectionIndex, IndexAdj, RelativePos } from '../types';
 
 type ElementsType = any[] | NodeArray<any>;
 
 export type RemovePosNumParams = {
   node: Node;
   elements: ElementsType;
-  remove: CollectionRemove;
+  remove: CollectionModifyOpts;
   count: number;
 };
 
-export const normalizeRemoveIndexAdj = (indexAdj: RemoveIndexAdj) => {
+export const normalizeRemoveIndexAdj = (indexAdj: IndexAdj) => {
   indexAdj = indexAdj || {};
   indexAdj.start = indexAdj.start || 0;
   indexAdj.end = indexAdj.end || 0;
@@ -142,33 +143,19 @@ export const getRemovePosNum = ({
   return;
 };
 
-export type CollectionRemoveIndex = 'first' | 'last' | number;
-
-type BetweenPos = {
-  startPos: number;
-  endPos: number;
-};
-
-export type CollectionRemove = {
-  index?: CollectionRemoveIndex;
+export type CollectionModifyOpts = {
+  index?: CollectionIndex;
   between?: BetweenPos;
   findElement?: FindElementFn;
-  relative?: RemoveRelativePos;
+  relative?: RelativePos;
   replacementCode?: string;
 };
-
-export type RemoveIndexAdj = {
-  start?: number;
-  end?: number;
-};
-
-export type RemoveRelativePos = 'before' | 'after' | 'at';
 
 export type RemovePosOpts = {
   elements: ElementsType;
   count: number;
   pos: number;
-  remove: CollectionRemove;
+  remove: CollectionModifyOpts;
 };
 
 export const lastElementRemovePos = (opts: RemovePosOpts) => {

@@ -1,16 +1,16 @@
 import { SourceFile } from 'typescript';
 import { Tree } from '@nrwl/devkit';
 import { findFunctionBlock } from '../find';
-import { modifyTree, AnyOpts, replaceInFile } from '../modify';
+import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
 import {
-  CollectionRemove,
+  CollectionModifyOpts,
   normalizeRemoveIndexAdj,
   removeFromNode,
 } from './positional';
 
 export interface RemoveFunctionOptions {
   id: string;
-  remove?: CollectionRemove;
+  remove?: CollectionModifyOpts;
   indexAdj?: number;
 }
 
@@ -34,6 +34,19 @@ export const removeInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
   });
 };
 
+export function removeInsideFunctionBlockInSource(
+  source: string,
+  opts: RemoveFunctionOptions,
+) {
+  const findNodeFn = (node: SourceFile) => findFunctionBlock(node, opts.id);
+  const allOpts = {
+    findNodeFn,
+    modifyFn: removeInFunctionBlock,
+    ...opts,
+  };
+  return replaceInSource(source, allOpts);
+}
+
 export function removeInsideFunctionBlockInFile(
   filePath: string,
   opts: RemoveFunctionOptions,
@@ -44,13 +57,12 @@ export function removeInsideFunctionBlockInFile(
     modifyFn: removeInFunctionBlock,
     ...opts,
   };
-
   return replaceInFile(filePath, allOpts);
 }
 
-export function removeInsideFunctionBlockInTree(
+export async function removeInsideFunctionBlockInTree(
   tree: Tree,
   opts: RemoveFunctionTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

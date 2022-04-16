@@ -9,7 +9,7 @@ const replacementCode = `x: 99`;
 
 describe('replace props in object', () => {
   context('file with no named object', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(__dirname, 'files', 'no-object.txt');
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
@@ -22,7 +22,7 @@ describe('replace props in object', () => {
   });
 
   context('file with non-matching named object', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -39,7 +39,7 @@ describe('replace props in object', () => {
   });
 
   context('file with named empty object', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -56,8 +56,8 @@ describe('replace props in object', () => {
   });
 
   context('file with named object with 2 elements', () => {
-    context('remove from default pos', () => {
-      it('removes first prop of object', () => {
+    context('replace from default pos', () => {
+      it('replaces first prop of object', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -75,7 +75,7 @@ describe('replace props in object', () => {
   });
 
   context('numeric pos 1', () => {
-    it('removes element at pos 1', () => {
+    it('replaces element at pos 1', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -96,7 +96,7 @@ describe('replace props in object', () => {
   });
 
   context('last pos', () => {
-    it('removes last prop of object', () => {
+    it('replaces last prop of object', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -116,7 +116,7 @@ describe('replace props in object', () => {
   });
 
   context('last pos - before', () => {
-    it('remove all props before last', () => {
+    it('replace all props before last', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -137,7 +137,7 @@ describe('replace props in object', () => {
   });
 
   context('last pos - after', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -158,7 +158,7 @@ describe('replace props in object', () => {
   });
 
   context('first pos', () => {
-    it('removes first prop of object', () => {
+    it('replaces first prop of object', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -178,7 +178,7 @@ describe('replace props in object', () => {
   });
 
   context('first pos - after', () => {
-    it('remove all props after first', () => {
+    it('replace all props after first', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -199,7 +199,7 @@ describe('replace props in object', () => {
   });
 
   context('first pos - before', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -220,7 +220,7 @@ describe('replace props in object', () => {
   });
 
   context('between', () => {
-    it('remove middle 2 props', () => {
+    it('replace middle 2 props', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -245,7 +245,7 @@ describe('replace props in object', () => {
   });
 
   context(`findElement function`, () => {
-    it('removes after b identifier - no remove', () => {
+    it('after b identifier - no replace', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -266,7 +266,7 @@ describe('replace props in object', () => {
   });
 
   context(`findElement function`, () => {
-    it('removes before b identifier', () => {
+    it('replaces before b identifier', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -287,7 +287,7 @@ describe('replace props in object', () => {
   });
 
   context(`findElement 'a'`, () => {
-    it('removes after a identifier', () => {
+    it('replaces after a identifier', () => {
       const filePath = path.join(
         __dirname,
         'files',

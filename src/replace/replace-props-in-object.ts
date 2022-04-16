@@ -1,14 +1,14 @@
 import {
-  CollectionRemove,
-  RemoveIndexAdj,
   removeFromNamedObjectInSource,
   removeFromNamedObjectInFile,
+  CollectionModifyOpts,
 } from '../remove';
+import { IndexAdj } from '../types';
 export interface ReplaceObjectOptions {
   id: string;
   replacementCode: string;
-  remove?: CollectionRemove;
-  indexAdj?: RemoveIndexAdj;
+  replace?: CollectionModifyOpts;
+  indexAdj?: IndexAdj;
 }
 
 export interface ReplaceObjectTreeOptions extends ReplaceObjectOptions {
@@ -27,5 +27,8 @@ export function replaceInNamedObjectInFile(
   targetFilePath: string,
   opts: ReplaceObjectOptions,
 ) {
-  return removeFromNamedObjectInFile(targetFilePath, opts);
+  return removeFromNamedObjectInFile(targetFilePath, {
+    remove: opts.replace,
+    ...opts,
+  });
 }

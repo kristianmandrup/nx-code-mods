@@ -1,9 +1,9 @@
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findDecorator } from '../find/find';
-import { replaceInFile, AnyOpts, modifyTree } from '../modify';
+import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';
-import { ensureNewlineClosing } from '../positional';
+import { ensureNewlineClosing } from '../ensure';
 
 export interface ClassDecInsertOptions {
   id: string;
@@ -37,6 +37,19 @@ export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
   return insertCode(node, classDeclIndex, code);
 };
 
+export function insertClassDecoratorInSource(
+  source: string,
+  opts: ClassDecInsertOptions,
+) {
+  const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
+
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: insertBeforeClassDecl,
+    ...opts,
+  });
+}
+
 export function insertClassDecoratorInFile(
   filePath: string,
   opts: ClassDecInsertOptions,
@@ -50,9 +63,9 @@ export function insertClassDecoratorInFile(
   });
 }
 
-export function insertClassDecoratorInTree(
+export async function insertClassDecoratorInTree(
   tree: Tree,
   opts: ClassDecInsertTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

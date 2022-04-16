@@ -1,14 +1,20 @@
-import { CollectionRemove } from './positional';
-import { removeCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
+import {
+  removeCode,
+  AnyOpts,
+  replaceInFile,
+  modifyTree,
+  replaceInSource,
+} from '../modify';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { SourceFile } from 'typescript';
+import { CollectionModifyOpts } from './positional';
 
 export interface ClassMethodParamDecoratorRemoveOptions {
   className: string;
   methodId: string;
   paramId: string;
-  remove?: CollectionRemove;
+  remove?: CollectionModifyOpts;
 }
 
 export interface ClassMethodParamDecoratorRemoveTreeOptions
@@ -34,6 +40,19 @@ const removeInMethodParamDecorator = (opts: AnyOpts) => (node: any) => {
   return removeCode(node, { startPos, endPos });
 };
 
+export function removeClassMethodParamDecoratorsInSource(
+  source: string,
+  opts: ClassMethodParamDecoratorRemoveOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.className);
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: removeInMethodParamDecorator,
+    ...opts,
+  });
+}
+
 export function removeClassMethodParamDecoratorsInFile(
   filePath: string,
   opts: ClassMethodParamDecoratorRemoveOptions,
@@ -47,9 +66,9 @@ export function removeClassMethodParamDecoratorsInFile(
   });
 }
 
-export function removeClassMethodParamDecoratorsInTree(
+export async function removeClassMethodParamDecoratorsInTree(
   tree: Tree,
   opts: ClassMethodParamDecoratorRemoveTreeOptions,
 ) {
-  modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

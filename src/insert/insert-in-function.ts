@@ -72,9 +72,9 @@ export function insertInsideFunctionBlockInFile(
   return replaceInFile(filePath, allOpts);
 }
 
-export function insertInsideFunctionBlockInTree(
+export async function insertInsideFunctionBlockInTree(
   tree: Tree,
   opts: InsertFunctionTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

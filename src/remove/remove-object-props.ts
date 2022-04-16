@@ -1,14 +1,15 @@
-import { CollectionRemove, removeFromNode, RemoveIndexAdj } from './positional';
+import { CollectionModifyOpts, removeFromNode } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 import { ObjectLiteralExpression, SourceFile } from 'typescript';
+import { IndexAdj } from '../types';
 
 export interface RemoveObjectOptions {
   id: string;
-  remove?: CollectionRemove;
-  indexAdj?: RemoveIndexAdj;
+  remove?: CollectionModifyOpts;
+  indexAdj?: IndexAdj;
 }
 
 export interface RemoveObjectTreeOptions extends RemoveObjectOptions {
@@ -18,7 +19,7 @@ export interface RemoveObjectTreeOptions extends RemoveObjectOptions {
 
 export type RemoveInObjectFn = {
   id: string;
-  remove: CollectionRemove;
+  remove: CollectionModifyOpts;
   indexAdj?: number;
 };
 
@@ -64,9 +65,9 @@ export function removeFromNamedObjectInFile(
   });
 }
 
-export function removeFromNamedObjectInTree(
+export async function removeFromNamedObjectInTree(
   tree: Tree,
   opts: RemoveObjectTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }

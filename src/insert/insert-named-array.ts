@@ -99,9 +99,9 @@ export function insertIntoNamedArrayInFile(
   });
 }
 
-export function insertIntoNamedArrayInTree(
+export async function insertIntoNamedArrayInTree(
   tree: Tree,
   opts: InsertArrayTreeOptions,
 ) {
-  return modifyTree(tree, opts);
+  return await modifyTree(tree, opts);
 }
