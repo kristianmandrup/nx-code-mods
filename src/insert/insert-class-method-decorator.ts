@@ -2,11 +2,7 @@ import { findClassMethodDeclaration } from './../find';
 import { Node, SourceFile } from 'typescript';
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
-import {
-  findClassDeclaration,
-  findMethodDeclaration,
-  findDecorator,
-} from '../find';
+import { findClassDeclaration, findDecorator } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { ensureNewlineClosing } from '../ensure';
 

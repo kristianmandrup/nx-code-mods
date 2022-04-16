@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { insertClassMethodParamDecoratorInFile } from '../../';
+import { insertClassMethodParameterInFile } from '../../';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;
@@ -9,11 +9,10 @@ describe('insert class method param decorator', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const codeToInsert = `body: string`;
-      const code = insertClassMethodParamDecoratorInFile(filePath, {
+      const code = insertClassMethodParameterInFile(filePath, {
         codeToInsert,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -30,11 +29,10 @@ describe('insert class method param decorator', () => {
         'has-no-matching-class.txt',
       );
       const codeToInsert = `body: string`;
-      const code = insertClassMethodParamDecoratorInFile(filePath, {
+      const code = insertClassMethodParameterInFile(filePath, {
         codeToInsert,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -51,7 +49,7 @@ describe('insert class method param decorator', () => {
         'has-matching-empty-class.txt',
       );
       const codeToInsert = `body: string`;
-      const code = insertClassMethodParamDecoratorInFile(filePath, {
+      const code = insertClassMethodParameterInFile(filePath, {
         codeToInsert,
         classId: 'myClass',
         methodId: 'myMethod',
@@ -70,7 +68,7 @@ describe('insert class method param decorator', () => {
         'has-matching-class-and-method.txt',
       );
       const codeToInsert = `body: string`;
-      const code = insertClassMethodParamDecoratorInFile(filePath, {
+      const code = insertClassMethodParameterInFile(filePath, {
         codeToInsert,
         classId: 'myClass',
         methodId: 'myMethod',
@@ -99,7 +97,7 @@ describe('insert class method param decorator', () => {
       const codeToInsert = `body: string`;
 
       it('insert param in class method at position 1, between params', () => {
-        const code = insertClassMethodParamDecoratorInFile(filePath, {
+        const code = insertClassMethodParameterInFile(filePath, {
           codeToInsert,
           classId: 'myClass',
           methodId: 'myMethod',
@@ -125,12 +123,12 @@ describe('insert class method param decorator', () => {
           'has-matching-class-and-method.txt',
         );
         const codeToInsert = `body: string`;
-        const code = insertClassMethodParamDecoratorInFile(filePath, {
+        const code = insertClassMethodParameterInFile(filePath, {
           codeToInsert,
           classId: 'myClass',
           methodId: 'myMethod',
           insert: {
-            index: 'first',
+            index: 'start',
           },
         });
         const modifiedCode = code ? code : '';
@@ -151,12 +149,12 @@ describe('insert class method param decorator', () => {
           'has-matching-class-and-method.txt',
         );
         const codeToInsert = `body: string`;
-        const code = insertClassMethodParamDecoratorInFile(filePath, {
+        const code = insertClassMethodParameterInFile(filePath, {
           codeToInsert,
           classId: 'myClass',
           methodId: 'myMethod',
           insert: {
-            index: 'last',
+            index: 'end',
           },
         });
         const modifiedCode = code ? code : '';

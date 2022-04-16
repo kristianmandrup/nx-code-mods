@@ -10,7 +10,13 @@ import {
   ClassMethodReplaceOptions,
   replaceClassMethodParamsInSource,
   ClassMethodParamReplaceOptions,
-} from '.';
+  replaceClassPropertyInSource,
+  ClassPropertyReplaceOptions,
+  replaceImportIdInSource,
+  ReplaceImportIdOptions,
+  replaceInsideFunctionBlockInSource,
+  ReplaceInsideFunctionBlockOptions,
+} from './functions';
 
 export const replaceApi = (source: string) => {
   return new ReplaceApi(source);
@@ -21,11 +27,7 @@ export class ReplaceApi extends BaseApi {
     super(source);
   }
 
-  inNamedObject(opts: ReplaceObjectOptions): ReplaceApi {
-    return this.apply(replaceInNamedObjectInSource, opts);
-  }
-
-  inNamedArray(opts: ReplaceArrayOptions): ReplaceApi {
+  inArray(opts: ReplaceArrayOptions): ReplaceApi {
     return this.apply(replaceInNamedArrayInSource, opts);
   }
 
@@ -33,11 +35,27 @@ export class ReplaceApi extends BaseApi {
     return this.apply(replaceClassDecoratorInSource, opts);
   }
 
+  classMethodParams(opts: ClassMethodParamReplaceOptions): ReplaceApi {
+    return this.apply(replaceClassMethodParamsInSource, opts);
+  }
+
   classMethod(opts: ClassMethodReplaceOptions): ReplaceApi {
     return this.apply(replaceClassMethodInSource, opts);
   }
 
-  classMethodParams(opts: ClassMethodParamReplaceOptions): ReplaceApi {
-    return this.apply(replaceClassMethodParamsInSource, opts);
+  classProperty(opts: ClassPropertyReplaceOptions): ReplaceApi {
+    return this.apply(replaceClassPropertyInSource, opts);
+  }
+
+  importIds(opts: ReplaceImportIdOptions): ReplaceApi {
+    return this.apply(replaceImportIdInSource, opts);
+  }
+
+  inFunction(opts: ReplaceInsideFunctionBlockOptions): ReplaceApi {
+    return this.apply(replaceInsideFunctionBlockInSource, opts);
+  }
+
+  inObject(opts: ReplaceObjectOptions): ReplaceApi {
+    return this.apply(replaceInNamedObjectInSource, opts);
   }
 }

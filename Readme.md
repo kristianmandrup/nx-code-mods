@@ -561,22 +561,30 @@ export const pageSchematic = convertNxGenerator(pageGenerator);
 An outline of each these functions have been implemented.
 Requires testing and further refinement to be completed.
 
-- `removeFromNamedArrayInFile`
-- `removeClassDecoratorInFile`
-- `removeClassMethodInFile`
-- `removeClassPropertyInFile`
-- `removeClassMethodParamsInFile`
-- `removeClassMethodParamDecoratorInFile`
-- `removeInsideFunctionBlockInFile`
-- `removeImportIdInFile`
-- `removeImportInFile`
-- `removeFromNamedObjectInFile`
+- `removeFromNamedArray`
+- `removeClassDecorator`
+- `removeClassMethod`
+- `removeClassProperty`
+- `removeClassMethodParams`
+- `removeClassMethodParamDecorator`
+- `removeInsideFunctionBlock`
+- `removeImportId`
+- `removeImport`
+- `removeFromNamedObject`
 
 ### Replace (WIP)
 
-- `replaceInNamedObjectInSource` and `replaceInNamedObjectInFile`
+- `replaceInNamedObject`
+- `replaceInNamedArray`
+- `replaceClassDecorator`
+- `replaceClassMethodDecorator`
+- `replaceClassMethodParams`
+- `replaceClassMethod`
+- `replaceClassProperty`
+- `replaceImportIds`
+- `replaceInFunction`
 
-### APIs
+### APIs (WIP)
 
 - Chain API
 - Insert API

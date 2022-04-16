@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { insertClassMethodInFile } from '../../insert-class-method';
+import { insertClassMethodInFile } from '../../';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;

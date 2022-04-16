@@ -1,4 +1,3 @@
-import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
 import { ImportClause, NamedImports, Node, SourceFile } from 'typescript';
 import { Tree } from '@nrwl/devkit';
 import {
@@ -7,14 +6,8 @@ import {
   findMatchingImportDeclarationsByFileRef,
   hasAnyImportDecl,
 } from '../find';
-import { insertCode, modifyTree, AnyOpts, replaceInFile } from '../modify';
-import {
-  afterLastElementPos,
-  aroundElementPos,
-  CollectionInsert,
-  getInsertPosNum,
-  insertIntoNode,
-} from './positional';
+import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
+import { CollectionInsert, insertIntoNode } from './positional';
 
 export interface InsertImportOptions {
   codeToInsert?: string;
@@ -61,6 +54,22 @@ export const insertImport = (opts: AnyOpts) => (srcNode: SourceFile) => {
     ...opts,
   });
 };
+
+export function insertImportInSource(
+  source: string,
+  opts: InsertImportOptions,
+) {
+  const findNodeFn = (node: SourceFile) => {
+    return findMatchingImportDeclarationsByFileRef(node, opts.importFileRef);
+  };
+  const allOpts = {
+    checkFn: hasAnyImportDecl,
+    findNodeFn,
+    modifyFn: insertImport,
+    ...opts,
+  };
+  return replaceInSource(source, allOpts);
+}
 
 export function insertImportInFile(
   filePath: string,

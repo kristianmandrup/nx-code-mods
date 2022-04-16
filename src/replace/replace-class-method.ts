@@ -6,6 +6,7 @@ import {
 } from '../remove';
 
 export interface ClassMethodReplaceOptions {
+  replacementCode: string;
   classId: string;
   methodId: string;
 }
@@ -18,13 +19,13 @@ export interface ClassMethodReplaceTreeOptions
 
 export function replaceClassMethodInSource(
   source: string,
-  opts: ClassMethodReplaceTreeOptions,
+  opts: ClassMethodReplaceOptions,
 ) {
   return removeClassMethodInSource(source, opts);
 }
 export function replaceClassMethodInFile(
   filePath: string,
-  opts: ClassMethodReplaceTreeOptions,
+  opts: ClassMethodReplaceOptions,
 ) {
   return removeClassMethodInFile(filePath, opts);
 }

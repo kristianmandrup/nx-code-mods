@@ -2,14 +2,8 @@ import { ensureStmtClosing } from './../ensure';
 import { SourceFile } from 'typescript';
 import { Tree } from '@nrwl/devkit';
 import { findFunctionBlock } from '../find';
-import { insertCode, modifyTree, AnyOpts, replaceInFile } from '../modify';
-import {
-  afterLastElementPos,
-  aroundElementPos,
-  CollectionInsert,
-  getInsertPosNum,
-  insertIntoNode,
-} from './positional';
+import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
+import { CollectionInsert, insertIntoNode } from './positional';
 
 export interface InsertFunctionOptions {
   codeToInsert: string;
@@ -38,6 +32,19 @@ export const insertInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
     insert,
   });
 };
+
+export function insertInsideFunctionBlockInSource(
+  source: string,
+  opts: InsertFunctionOptions,
+) {
+  const findNodeFn = (node: SourceFile) => findFunctionBlock(node, opts.id);
+  const allOpts = {
+    findNodeFn,
+    modifyFn: insertInFunctionBlock,
+    ...opts,
+  };
+  return replaceInSource(source, allOpts);
+}
 
 export function insertInsideFunctionBlockInFile(
   filePath: string,

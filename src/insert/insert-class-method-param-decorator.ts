@@ -2,11 +2,10 @@ import { CollectionInsert, insertIntoNode } from './positional';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
-  findClassMethodDeclaration,
   findClassMethodParameterDeclaration,
 } from '../find';
 import { AnyOpts, modifyTree, replaceInFile, replaceInSource } from '../modify';
-import { Node, SourceFile } from 'typescript';
+import { SourceFile } from 'typescript';
 
 export interface ClassMethodDecParamDecoratorInsertOptions {
   classId: string;

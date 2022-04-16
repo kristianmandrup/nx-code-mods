@@ -1,13 +1,6 @@
-import { ensurePrefixComma, ensureSuffixComma } from './../ensure';
-import {
-  afterLastElementPos,
-  aroundElementPos,
-  CollectionInsert,
-  getInsertPosNum,
-  insertIntoNode,
-} from './positional';
+import { CollectionInsert, insertIntoNode } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { insertCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
+import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 
@@ -40,6 +33,19 @@ export const insertInArray =
       insert,
     });
   };
+
+export function insertIntoNamedArrayInSource(
+  source: string,
+  opts: InsertArrayOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findVariableDeclaration(node, opts.id);
+  return replaceInSource(source, {
+    ...opts,
+    findNodeFn,
+    modifyFn: insertInArray,
+  });
+}
 
 export function insertIntoNamedArrayInFile(
   filePath: string,

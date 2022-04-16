@@ -3,12 +3,22 @@ import {
   insertClassDecoratorInSource,
   ClassDecoratorInsertOptions,
   ClassMethodDecInsertOptions,
-} from '.';
-import { BaseApi } from '../api';
-import {
+  InsertObjectOptions,
+  InsertArrayOptions,
+  InsertFunctionOptions,
+  InsertImportOptions,
+  ClassMethodInsertOptions,
   insertClassMethodParamDecoratorInSource,
   ClassMethodDecParamDecoratorInsertOptions,
-} from '../insert';
+  insertClassMethodInSource,
+  insertImportInSource,
+  insertInsideFunctionBlockInSource,
+  insertIntoNamedArrayInSource,
+  insertIntoNamedObjectInSource,
+  insertClassPropertyInSource,
+  ClassPropertyInsertOptions,
+} from './functions';
+import { BaseApi } from '../api';
 
 export const insertApi = (source: string) => {
   return new InsertApi(source);
@@ -31,5 +41,29 @@ export class InsertApi extends BaseApi {
     opts: ClassMethodDecParamDecoratorInsertOptions,
   ): InsertApi {
     return this.apply(insertClassMethodParamDecoratorInSource, opts);
+  }
+
+  classMethod(opts: ClassMethodInsertOptions): InsertApi {
+    return this.apply(insertClassMethodInSource, opts);
+  }
+
+  classProperty(opts: ClassPropertyInsertOptions): InsertApi {
+    return this.apply(insertClassPropertyInSource, opts);
+  }
+
+  import(opts: InsertImportOptions): InsertApi {
+    return this.apply(insertImportInSource, opts);
+  }
+
+  inFunction(opts: InsertFunctionOptions): InsertApi {
+    return this.apply(insertInsideFunctionBlockInSource, opts);
+  }
+
+  inArray(opts: InsertArrayOptions): InsertApi {
+    return this.apply(insertIntoNamedArrayInSource, opts);
+  }
+
+  inObject(opts: InsertObjectOptions): InsertApi {
+    return this.apply(insertIntoNamedObjectInSource, opts);
   }
 }

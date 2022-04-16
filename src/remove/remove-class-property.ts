@@ -9,12 +9,12 @@ import {
 } from '../modify';
 import { Node, SourceFile } from 'typescript';
 
-export interface ClassPropRemoveOptions {
+export interface ClassPropertyRemoveOptions {
   classId: string;
   propId: string;
 }
 
-export interface ClassPropRemoveTreeOptions extends ClassPropRemoveOptions {
+export interface ClassPropRemoveTreeOptions extends ClassPropertyRemoveOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
@@ -34,7 +34,7 @@ const removeInClassScope = (opts: AnyOpts) => (node: Node) => {
 
 export function removeClassPropertyInSource(
   source: string,
-  opts: ClassPropRemoveOptions,
+  opts: ClassPropertyRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.classId);
@@ -47,7 +47,7 @@ export function removeClassPropertyInSource(
 
 export function removeClassPropertyInFile(
   filePath: string,
-  opts: ClassPropRemoveOptions,
+  opts: ClassPropertyRemoveOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.classId);

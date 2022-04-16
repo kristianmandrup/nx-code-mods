@@ -1,11 +1,4 @@
-import { ensurePrefixComma, ensureSuffixComma } from '../ensure';
-import {
-  afterLastElementPos,
-  aroundElementPos,
-  CollectionInsert,
-  getInsertPosNum,
-  insertIntoNode,
-} from './positional';
+import { CollectionInsert, insertIntoNode } from './positional';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { replaceInFile, AnyOpts, modifyTree } from '../modify';
 import { SourceFile } from 'typescript';
@@ -13,7 +6,6 @@ import { Tree } from '@nrwl/devkit';
 export interface ClassMethodParamsInsertOptions {
   classId: string;
   methodId: string;
-  id: string;
   codeToInsert: string;
   insert?: CollectionInsert;
   indexAdj?: number;
@@ -42,7 +34,7 @@ export const insertParametersInClassMethod =
     });
   };
 
-export function insertClassMethodParamInFile(
+export function insertClassMethodParameterInFile(
   filePath: string,
   opts: ClassMethodParamsInsertOptions,
 ) {
@@ -55,7 +47,7 @@ export function insertClassMethodParamInFile(
   });
 }
 
-export async function insertClassMethodParamInTree(
+export async function insertClassMethodParameterInTree(
   tree: Tree,
   opts: ClassMethodParamsInsertTreeOptions,
 ) {

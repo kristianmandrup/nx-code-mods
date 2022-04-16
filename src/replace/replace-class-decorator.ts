@@ -5,6 +5,7 @@ import {
   removeClassDecoratorInTree,
 } from '../remove';
 export interface ClassDecoratorReplaceOptions {
+  replacementCode: string;
   classId: string;
   id: string;
 }

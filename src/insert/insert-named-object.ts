@@ -1,17 +1,10 @@
-import {
-  afterLastElementPos,
-  aroundElementPos,
-  CollectionInsert,
-  getInsertPosNum,
-  insertIntoNode,
-} from './positional';
+import { CollectionInsert, insertIntoNode } from './positional';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 import { SourceFile } from 'typescript';
 import { ObjectLiteralExpression } from 'typescript';
-import { insertCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
-import { ensurePrefixComma, ensureSuffixComma } from '../ensure';
+import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 
 export interface InsertObjectOptions {
   id: string;
@@ -48,6 +41,19 @@ export const insertInObject =
       insert,
     });
   };
+
+export function insertIntoNamedObjectInSource(
+  source: string,
+  opts: InsertObjectOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findVariableDeclaration(node, opts.id);
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: insertInObject,
+    ...opts,
+  });
+}
 
 export function insertIntoNamedObjectInFile(
   filePath: string,

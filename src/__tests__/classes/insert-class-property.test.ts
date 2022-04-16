@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { insertClassPropertyInFile } from '../../insert-class-property';
+import { insertClassPropertyInFile } from '../../';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;

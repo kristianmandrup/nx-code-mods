@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Node } from 'typescript';
-import { insertClassMethodDecoratorInFile } from '../../insert-class-method-decorator';
+import { insertClassMethodDecoratorInFile } from '../../';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;

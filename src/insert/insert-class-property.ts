@@ -5,12 +5,11 @@ import {
   findFirstMethodDeclaration,
   findFirstPropertyDeclaration,
 } from '../find';
-import { insertCode, replaceInFile, AnyOpts, modifyTree } from '../modify';
-import { Node, SourceFile } from 'typescript';
-import { ensureStmtClosing } from '../ensure';
-import { insertInClassScope } from './positional';
+import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
+import { SourceFile } from 'typescript';
+import { insertInClassScope, startOfIndex } from './positional';
 
-export interface ClassPropInsertOptions {
+export interface ClassPropertyInsertOptions {
   classId: string;
   propId: string;
   codeToInsert: string;
@@ -18,12 +17,14 @@ export interface ClassPropInsertOptions {
   indexAdj?: number;
 }
 
-export interface ClassPropInsertTreeOptions extends ClassPropInsertOptions {
+export interface ClassPropertyInsertTreeOptions
+  extends ClassPropertyInsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
 
 const functionsMap = {
+  defaultIndex: startOfIndex,
   findMatchingNode: findClassPropertyDeclaration,
   findPivotNode: findFirstPropertyDeclaration,
   findAltPivotNode: findFirstMethodDeclaration,
@@ -33,9 +34,22 @@ const insertClassProperty = (opts: AnyOpts) => (srcNode: SourceFile) => {
   return insertInClassScope(srcNode, { ...functionsMap, ...opts });
 };
 
+export function insertClassPropertyInSource(
+  source: string,
+  opts: ClassPropertyInsertOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.classId);
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: insertClassProperty,
+    ...opts,
+  });
+}
+
 export function insertClassPropertyInFile(
   filePath: string,
-  opts: ClassPropInsertOptions,
+  opts: ClassPropertyInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.classId);
@@ -46,9 +60,9 @@ export function insertClassPropertyInFile(
   });
 }
 
-export async function insertClassPropertyInTree(
+export async function insertClassPropertyertyInTree(
   tree: Tree,
-  opts: ClassPropInsertTreeOptions,
+  opts: ClassPropertyInsertTreeOptions,
 ) {
   return await modifyTree(tree, opts);
 }

@@ -1,5 +1,5 @@
 import { findClassDeclaration } from './../find/find';
-import { Node, NodeArray, SourceFile } from 'typescript';
+import { Node, NodeArray, SourceFile, ClassDeclaration } from 'typescript';
 import { FindElementFn, CheckUnderNode, findElementNode } from '../find';
 import { AnyOpts, insertCode } from '../modify';
 import { ensureCommaDelimiters, ensureStmtClosing } from '../ensure';
@@ -51,53 +51,85 @@ export type CollectionInsert = {
 
 export type InsertRelativePos = 'before' | 'after';
 
-export const insertInClassScope = (node: Node, opts: AnyOpts) => {
+export const insertClassCode = (
+  srcNode: SourceFile,
+  { index, code, indexAdj }: any,
+) => {
+  index += indexAdj || 0;
+  code = ensureStmtClosing(code);
+  return insertCode(srcNode, index, code);
+};
+
+export const endOfIndex = (node: Node) => {
+  return node.getEnd() - 1;
+};
+
+export const startOfIndex = (node: Node) => {
+  return node.getStart() + 1;
+};
+
+export const beforeIndex = (node: Node) => {
+  return node.getStart() - 1;
+};
+
+export const afterIndex = (node: Node) => {
+  return node.getEnd() + 1;
+};
+
+export const alternativeClassInsertIndex = (
+  classDecl: ClassDeclaration,
+  opts: any,
+) => {
+  const { findAltPivotNode, defaultIndex } = opts;
+  const { members } = classDecl;
+  if (members.length === 0) {
+    return defaultIndex(classDecl);
+  }
+  const altPivotNode = findAltPivotNode(classDecl);
+  if (!altPivotNode) {
+    return defaultIndex(classDecl);
+  }
+  return beforeIndex(altPivotNode);
+};
+
+const defaultClassInsertIndex = (node: Node) => {
+  return node.getStart() - 1;
+};
+
+export const classInsertIndex = (classDecl: ClassDeclaration, opts: any) => {
+  const { firstTypeNode } = opts;
+  return !firstTypeNode
+    ? defaultClassInsertIndex(firstTypeNode)
+    : alternativeClassInsertIndex(classDecl, opts);
+};
+
+export const insertInClassScope = (srcNode: SourceFile, opts: AnyOpts) => {
   const {
     findMatchingNode,
-    findPivotNode,
-    findAltPivotNode,
     classId,
     codeToInsert,
     insertPos,
     propId,
     indexAdj,
   } = opts;
-
   const abortIfFound = (node: any) =>
     findMatchingNode(node, { classId: classId, propId });
 
-  const classDecl = findClassDeclaration(node, classId);
+  const classDecl = findClassDeclaration(srcNode, classId);
   if (!classDecl) return;
   // abort if property with that name already declared in class
   if (abortIfFound) {
     const found = abortIfFound(classDecl);
     if (found) return;
   }
-  let insertIndex;
+
   // TODO: refactor and cleanup - avoid indentation hell!
   if (insertPos === 'end') {
-    insertIndex = classDecl.getEnd() - 1;
-  } else {
-    const firstTypeNode = findPivotNode(classDecl);
-    if (!firstTypeNode) {
-      const { members } = classDecl;
-      if (members.length === 0) {
-        insertIndex = classDecl.getEnd() - 1;
-      } else {
-        const firstPivotNode = findAltPivotNode(classDecl);
-        if (!firstPivotNode) {
-          insertIndex = classDecl.getEnd() - 1;
-          return;
-        }
-        insertIndex = firstPivotNode.getStart();
-      }
-    } else {
-      insertIndex = firstTypeNode.getStart();
-    }
+    const index = classDecl.getEnd() - 1;
+    return insertClassCode(srcNode, { index, code: codeToInsert, indexAdj });
   }
-  insertIndex += indexAdj || 0;
-  const code = ensureStmtClosing(codeToInsert);
-  return insertCode(node, insertIndex, code);
+  const index = classInsertIndex(classDecl, opts);
+  return insertClassCode(srcNode, { index, code: codeToInsert, indexAdj });
 };
 
 export const insertIntoNode = (

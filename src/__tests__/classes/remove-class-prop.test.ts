@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { removeClassPropertyInFile } from '../../remove-class-prop';
+import { removeClassPropertyInFile } from '../..';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;

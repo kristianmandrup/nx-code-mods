@@ -18,13 +18,13 @@ export interface ClassMethodParamReplaceTreeOptions
 
 export function replaceClassMethodParamsInSource(
   source: string,
-  opts: ClassMethodParamReplaceTreeOptions,
+  opts: ClassMethodParamReplaceOptions,
 ) {
   return removeClassMethodParamsInSource(source, opts);
 }
 export function replaceClassMethodParamsInFile(
   filePath: string,
-  opts: ClassMethodParamReplaceTreeOptions,
+  opts: ClassMethodParamReplaceOptions,
 ) {
   return removeClassMethodParamsInFile(filePath, opts);
 }

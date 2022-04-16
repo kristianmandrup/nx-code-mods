@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { removeClassDecoratorInFile } from '../../remove-class-decorator';
+import { removeClassDecoratorInFile } from '../../';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;

@@ -1,6 +1,6 @@
 import { replaceInNamedObjectInFile } from '../..';
 import * as path from 'path';
-import { findIdentifier } from '../../find/find';
+import { findIdentifier } from '../../find';
 import { Node } from 'typescript';
 
 const context = describe;
@@ -84,7 +84,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           index: 1,
           // default before
         },
@@ -105,7 +105,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           index: 'last',
         },
       });
@@ -125,7 +125,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           relative: 'before',
           index: 'last',
         },
@@ -146,7 +146,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           relative: 'after',
           index: 'last',
         },
@@ -167,7 +167,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           index: 'first',
         },
       });
@@ -187,7 +187,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           relative: 'after',
           index: 'first',
         },
@@ -208,7 +208,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           relative: 'before',
           index: 'first',
         },
@@ -229,7 +229,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           between: {
             startPos: 1,
             endPos: 2,
@@ -254,7 +254,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           relative: 'after',
           findElement: (node: Node) => findIdentifier(node, 'b'),
         },
@@ -275,7 +275,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           relative: 'before',
           findElement: (node: Node) => findIdentifier(node, 'b'),
         },
@@ -296,7 +296,7 @@ describe('replace props in object', () => {
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
         replacementCode,
-        remove: {
+        replace: {
           relative: 'after',
           findElement: 'a',
         },

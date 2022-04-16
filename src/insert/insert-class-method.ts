@@ -1,5 +1,11 @@
 import { ensureStmtClosing } from '../ensure';
-import { insertCode, AnyOpts, replaceInFile, modifyTree } from '../modify';
+import {
+  insertCode,
+  AnyOpts,
+  replaceInFile,
+  modifyTree,
+  replaceInSource,
+} from '../modify';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
@@ -8,7 +14,7 @@ import {
   findMethodDeclaration,
 } from '../find';
 import { Node, SourceFile } from 'typescript';
-import { insertInClassScope } from './positional';
+import { insertInClassScope, endOfIndex } from './positional';
 
 export interface ClassMethodInsertOptions {
   classId: string;
@@ -24,6 +30,7 @@ export interface ClassMethodInsertTreeOptions extends ClassMethodInsertOptions {
 }
 
 const functionsMap = {
+  defaultIndex: endOfIndex,
   findMatchingNode: findMethodDeclaration,
   findPivotNode: findFirstMethodDeclaration,
   findAltPivotNode: findLastPropertyDeclaration,
@@ -32,6 +39,19 @@ const functionsMap = {
 export const insertClassMethod = (opts: AnyOpts) => (srcNode: SourceFile) => {
   return insertInClassScope(srcNode, { ...functionsMap, ...opts });
 };
+
+export function insertClassMethodInSource(
+  source: string,
+  opts: ClassMethodInsertOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.classId);
+  return replaceInSource(source, {
+    findNodeFn,
+    modifyFn: insertClassMethod,
+    ...opts,
+  });
+}
 
 export function insertClassMethodInFile(
   filePath: string,
