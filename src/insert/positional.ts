@@ -92,14 +92,15 @@ export const alternativeClassInsertIndex = (
   return beforeIndex(altPivotNode);
 };
 
-const defaultClassInsertIndex = (node: Node) => {
-  return node.getStart() - 1;
+const nodeClassInsertIndex = (node: Node, opts: any) => {
+  return opts.nodeIndex(node);
 };
 
 export const classInsertIndex = (classDecl: ClassDeclaration, opts: any) => {
   const { firstTypeNode } = opts;
+  opts.nodeIndex = opts.nodeIndex || beforeIndex;
   return !firstTypeNode
-    ? defaultClassInsertIndex(firstTypeNode)
+    ? nodeClassInsertIndex(firstTypeNode, opts)
     : alternativeClassInsertIndex(classDecl, opts);
 };
 
@@ -123,9 +124,8 @@ export const insertInClassScope = (srcNode: SourceFile, opts: AnyOpts) => {
     if (found) return;
   }
 
-  // TODO: refactor and cleanup - avoid indentation hell!
   if (insertPos === 'end') {
-    const index = classDecl.getEnd() - 1;
+    const index = endOfIndex(classDecl);
     return insertClassCode(srcNode, { index, code: codeToInsert, indexAdj });
   }
   const index = classInsertIndex(classDecl, opts);

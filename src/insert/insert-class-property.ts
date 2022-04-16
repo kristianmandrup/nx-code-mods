@@ -7,7 +7,7 @@ import {
 } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
-import { insertInClassScope, startOfIndex } from './positional';
+import { insertInClassScope, startOfIndex, afterIndex } from './positional';
 
 export interface ClassPropertyInsertOptions {
   classId: string;
@@ -25,6 +25,7 @@ export interface ClassPropertyInsertTreeOptions
 
 const functionsMap = {
   defaultIndex: startOfIndex,
+  nodeIndex: afterIndex,
   findMatchingNode: findClassPropertyDeclaration,
   findPivotNode: findFirstPropertyDeclaration,
   findAltPivotNode: findFirstMethodDeclaration,

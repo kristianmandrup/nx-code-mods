@@ -14,7 +14,7 @@ import {
   findMethodDeclaration,
 } from '../find';
 import { Node, SourceFile } from 'typescript';
-import { insertInClassScope, endOfIndex } from './positional';
+import { insertInClassScope, endOfIndex, beforeIndex } from './positional';
 
 export interface ClassMethodInsertOptions {
   classId: string;
@@ -31,6 +31,7 @@ export interface ClassMethodInsertTreeOptions extends ClassMethodInsertOptions {
 
 const functionsMap = {
   defaultIndex: endOfIndex,
+  nodeIndex: beforeIndex,
   findMatchingNode: findMethodDeclaration,
   findPivotNode: findFirstMethodDeclaration,
   findAltPivotNode: findLastPropertyDeclaration,
