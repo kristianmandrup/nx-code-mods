@@ -10,15 +10,21 @@ export type GetDefaultNodeFn = (node: SourceFile) => Node;
 export type FindNodeFn = (node: SourceFile) => Node | Node[] | undefined;
 export type CheckFn = (node: SourceFile) => boolean;
 
-export interface ModifyFileOptions {
+export interface ModifyOptions {
   code?: string;
   selector?: string;
   checkFn?: CheckFn;
   findNodeFn?: FindNodeFn;
   getDefaultNodeFn?: GetDefaultNodeFn;
-  modifyFn?: ModifyFn;
-  modifySrcFn?: ModifySrcFn;
   [key: string]: any;
+}
+
+export interface ModifyFileOptions extends ModifyOptions {
+  modifyFn?: ModifyFn;
+}
+
+export interface ModifySrcOptions extends ModifyOptions {
+  modifySrcFn?: ModifySrcFn;
 }
 
 export interface ModifyTreeOptions extends ModifyFileOptions {
@@ -31,7 +37,11 @@ export type AnyOpts = {
   [key: string]: any;
 };
 
-export type ModifyFn = (opts: AnyOpts) => TSQueryStringTransformer;
+type TSSourceFileStringTransformer = (node: Node) => string | null | undefined;
+
+export type ModifyFn = (
+  opts: AnyOpts,
+) => TSQueryStringTransformer | TSSourceFileStringTransformer;
 export type ModifySrcFn = (opts: AnyOpts) => TSQuerySourceTransformer;
 
 export function replaceNodeContents(
@@ -52,7 +62,7 @@ export function replaceNodeContents(
   }
 }
 
-export function replaceSrcContents(source: string, opts: ModifyFileOptions) {
+export function replaceSrcContents(source: string, opts: ModifySrcOptions) {
   const { modifySrcFn } = opts;
   if (!modifySrcFn) {
     throw new Error(
@@ -71,7 +81,7 @@ export function replaceSrcContents(source: string, opts: ModifyFileOptions) {
 export function findAndReplaceNodeContents(
   targetFile: string,
   ast: SourceFile,
-  opts: ModifyFileOptions,
+  opts: ModifyOptions,
 ) {
   const { findNodeFn } = opts;
   if (!findNodeFn) return;

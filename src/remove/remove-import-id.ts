@@ -13,6 +13,7 @@ import {
   AnyOpts,
   replaceInFile,
 } from '../modify';
+import { endOfIndex, startOfIndex } from '../positional';
 
 export interface RemoveImportIdOptions {
   importId: string;
@@ -33,10 +34,14 @@ export const removeImportId = (opts: AnyOpts) => (node: any) => {
   // const { abortIfFound } = remove;
   const importSpec = findImportSpecifier(node, importId);
   if (!importSpec) return;
+  const startPos = startOfIndex(importSpec);
+  const endPos = endOfIndex(importSpec);
+  const positions = {
+    startPos,
+    endPos,
+  };
 
-  const startPos = importSpec.getStart();
-  const endPos = importSpec.getEnd();
-  return removeCode(node, { startPos, endPos });
+  return removeCode(node, positions);
 };
 
 export function removeImportIdInSource(

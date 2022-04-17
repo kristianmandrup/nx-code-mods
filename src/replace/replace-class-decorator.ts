@@ -7,7 +7,7 @@ import {
 export interface ClassDecoratorReplaceOptions {
   code: string;
   classId: string;
-  id: string;
+  decoratorId: string;
 }
 
 export interface ClassDecoratorReplaceTreeOptions

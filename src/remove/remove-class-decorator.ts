@@ -11,7 +11,7 @@ import { Node, SourceFile } from 'typescript';
 
 export interface ClassDecoratorRemoveOptions {
   classId: string;
-  id: string;
+  decoratorId: string;
 }
 
 export interface ClassDecoratorRemoveTreeOptions
@@ -21,10 +21,10 @@ export interface ClassDecoratorRemoveTreeOptions
 }
 
 export const removeBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
-  const { id, classId } = opts;
+  const { decoratorId, classId } = opts;
   const decorator = findClassDecorator(node, {
     classId: classId,
-    id,
+    decoratorId,
   });
   if (!decorator) {
     return;
@@ -38,7 +38,8 @@ export function removeClassDecoratorInSource(
   source: string,
   opts: ClassDecoratorRemoveOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.decoratorId);
 
   return replaceInSource(source, {
     findNodeFn,
@@ -51,7 +52,8 @@ export function removeClassDecoratorInFile(
   filePath: string,
   opts: ClassDecoratorRemoveOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.decoratorId);
 
   return replaceInFile(filePath, {
     findNodeFn,

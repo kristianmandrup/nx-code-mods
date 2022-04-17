@@ -302,7 +302,7 @@ export const midElementRemovePos = (opts: RemovePosOpts) => {
 };
 
 export const removeFromNode = (
-  srcNode: SourceFile,
+  srcNode: Node | SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
   let { elementsField, node, remove, code, indexAdj } = opts;

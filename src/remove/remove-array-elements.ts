@@ -17,7 +17,7 @@ export interface RemoveArrayTreeOptions extends RemoveArrayOptions {
 }
 
 export const removeFromArray =
-  (opts: AnyOpts): TSQueryStringTransformer =>
+  (opts: AnyOpts) =>
   (srcNode: any): string | null | undefined => {
     const { varId } = opts;
     const declaration = findVariableDeclaration(srcNode, varId);

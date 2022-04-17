@@ -19,16 +19,16 @@ export interface ClassMethodRemoveTreeOptions extends ClassMethodRemoveOptions {
   relTargetFilePath: string;
 }
 
-const removeInMethodBlock = (opts: AnyOpts) => (node: any) => {
+const removeInMethodBlock = (opts: AnyOpts) => (srcNode: any) => {
   const { classId, methodId } = opts;
-  const methDecl = findClassMethodDeclaration(node, {
+  const methDecl = findClassMethodDeclaration(srcNode, {
     classId: classId,
     methodId,
   });
   if (!methDecl) return;
   const startPos = methDecl.getStart();
   const endPos = methDecl.getEnd();
-  return removeCode(node, { startPos, endPos });
+  return removeCode(srcNode, { startPos, endPos });
 };
 
 export function removeClassMethodInSource(

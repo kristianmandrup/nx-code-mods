@@ -1,3 +1,4 @@
+import { CollectionReplace } from './positional';
 import { Tree } from '@nrwl/devkit';
 import {
   removeClassMethodParamsInFile,
@@ -6,8 +7,10 @@ import {
 } from '../remove';
 
 export interface ClassMethodParamReplaceOptions {
+  code: string;
   classId: string;
   methodId: string;
+  replace?: CollectionReplace;
 }
 
 export interface ClassMethodParamReplaceTreeOptions

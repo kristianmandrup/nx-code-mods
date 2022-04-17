@@ -8,6 +8,7 @@ import {
   replaceInSource,
 } from '../modify';
 import { Node, SourceFile } from 'typescript';
+import { endOfIndex, startOfIndex } from '../positional';
 
 export interface ClassPropertyRemoveOptions {
   classId: string;
@@ -19,17 +20,21 @@ export interface ClassPropRemoveTreeOptions extends ClassPropertyRemoveOptions {
   relTargetFilePath: string;
 }
 
-const removeInClassScope = (opts: AnyOpts) => (node: Node) => {
+const removeInClassScope = (opts: AnyOpts) => (srcNode: Node) => {
   const { classId, propertyId } = opts;
 
-  const propDecl = findClassPropertyDeclaration(node, {
+  const propDecl = findClassPropertyDeclaration(srcNode, {
     classId: classId,
     propertyId,
   });
   if (!propDecl) return;
-  const startPos = propDecl.getStart();
-  const endPos = propDecl.getEnd();
-  return removeCode(node, { startPos, endPos });
+  const startPos = startOfIndex(propDecl);
+  const endPos = endOfIndex(propDecl);
+  const positions = {
+    startPos,
+    endPos,
+  };
+  return removeCode(srcNode, positions);
 };
 
 export function removeClassPropertyInSource(

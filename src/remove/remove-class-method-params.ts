@@ -23,7 +23,7 @@ export interface ClassMethodParamRemoveTreeOptions
 }
 
 export const removeClassMethodParameters =
-  (opts: AnyOpts) => (srcNode: SourceFile) => {
+  (opts: AnyOpts) => (srcNode: any) => {
     const { classId, methodId } = opts;
     const node = findClassMethodDeclaration(srcNode, {
       classId: classId,
