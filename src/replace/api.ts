@@ -18,6 +18,7 @@ import {
   replaceInsideFunctionBlockInSource,
   ReplaceInsideFunctionBlockOptions,
 } from './functions';
+import { replaceClassMethodParamDecoratorsInSource } from './replace-class-method-param-decorator';
 
 export const replaceApi = (chain: Chainable): ReplaceApi => {
   return new ReplaceApi(chain);
@@ -38,6 +39,10 @@ export class ReplaceApi extends BaseApi {
 
   classMethodParams(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceClassMethodParamsInSource, opts);
+  }
+
+  classMethodParamDecorators(opts: AnyOpts): ReplaceApi {
+    return this.apply(replaceClassMethodParamDecoratorsInSource, opts);
   }
 
   classMethod(opts: AnyOpts): ReplaceApi {

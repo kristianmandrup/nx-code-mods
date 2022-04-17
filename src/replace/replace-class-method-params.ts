@@ -23,18 +23,27 @@ export function replaceClassMethodParamsInSource(
   source: string,
   opts: ClassMethodParamReplaceOptions,
 ) {
-  return removeClassMethodParamsInSource(source, opts);
+  return removeClassMethodParamsInSource(source, {
+    remove: opts.replace,
+    ...opts,
+  });
 }
 export function replaceClassMethodParamsInFile(
   filePath: string,
   opts: ClassMethodParamReplaceOptions,
 ) {
-  return removeClassMethodParamsInFile(filePath, opts);
+  return removeClassMethodParamsInFile(filePath, {
+    remove: opts.replace,
+    ...opts,
+  });
 }
 
 export async function replaceClassMethodParamsInTree(
   tree: Tree,
   opts: ClassMethodParamReplaceTreeOptions,
 ) {
-  return await removeClassMethodParamsInTree(tree, opts);
+  return await removeClassMethodParamsInTree(tree, {
+    remove: opts.replace,
+    ...opts,
+  });
 }

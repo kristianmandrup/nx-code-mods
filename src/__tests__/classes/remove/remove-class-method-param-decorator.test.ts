@@ -1,20 +1,24 @@
 import * as path from 'path';
-import { removeClassDecoratorInFile } from '../../..';
-import { escapeRegExp } from '../../../utils';
+import { removeClassMethodParamDecoratorsInFile } from '../../../remove';
 
 const context = describe;
 
-describe('remove class decorator', () => {
+describe('remove class method param decorator', () => {
   context('file has no class', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const code = removeClassDecoratorInFile(filePath, {
+      const code = removeClassMethodParamDecoratorsInFile(filePath, {
         classId: 'myClass',
-        id: 'Model',
+        methodId: 'myMethod',
+        paramId: 'myParam',
+        remove: {
+          index: 1,
+        },
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -25,9 +29,13 @@ describe('remove class decorator', () => {
         'files',
         'has-no-matching-class.txt',
       );
-      const code = removeClassDecoratorInFile(filePath, {
+      const code = removeClassMethodParamDecoratorsInFile(filePath, {
         classId: 'myClass',
-        id: 'Model',
+        methodId: 'myMethod',
+        paramId: 'myParam',
+        remove: {
+          index: 1,
+        },
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -36,20 +44,21 @@ describe('remove class decorator', () => {
   });
 
   context('file has matching empty class', () => {
-    it('remove decorator before class', () => {
+    it('no remove', () => {
       const filePath = path.join(
         __dirname,
         'files',
         'has-matching-empty-class.txt',
       );
-      const code = removeClassDecoratorInFile(filePath, {
+      const code = removeClassMethodParamDecoratorsInFile(filePath, {
         classId: 'myClass',
-        id: 'Model',
+        methodId: 'myMethod',
+        paramId: 'myParam',
       });
       let modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      // expect(modifiedCode.includes(origCode)).toBeTruthy();
-      // const str = `${escapeRegExp(codeToRemove)}\\s*\\nclass myClass`;
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
+      // const str = `${escapeRegExp(code)}\\s*\\nclass myClass`;
       // const regExp = new RegExp(str);
       // expect(modifiedCode.match(regExp)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();

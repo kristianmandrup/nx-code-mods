@@ -7,8 +7,6 @@ describe('remove class method param', () => {
   context('file has no class', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const code = `myMethod() {}`;
-
       const code = removeClassMethodParamsInFile(filePath, {
         classId: 'myClass',
         methodId: 'myMethod',

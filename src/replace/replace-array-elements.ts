@@ -22,7 +22,10 @@ export function replaceInNamedArrayInSource(
   sourceCode: string,
   opts: ReplaceArrayOptions,
 ) {
-  return removeFromNamedArrayInSource(sourceCode, opts);
+  return removeFromNamedArrayInSource(sourceCode, {
+    remove: opts.replace,
+    ...opts,
+  });
 }
 
 export function replaceInNamedArrayInFile(
