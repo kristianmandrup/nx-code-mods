@@ -7,7 +7,7 @@ import { ensureNewlineClosing } from '../ensure';
 
 export interface ClassDecoratorInsertOptions {
   id: string;
-  codeToInsert: string;
+  code: string;
   indexAdj?: number;
 }
 
@@ -18,7 +18,7 @@ export interface ClassDecoratorInsertTreeOptions
 }
 
 export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
-  const { id, codeToInsert, indexAdj } = opts;
+  const { id, code, indexAdj } = opts;
   const classDecl = findClassDeclaration(node, id);
   if (!classDecl) {
     return;
@@ -34,7 +34,7 @@ export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
   }
 
   const classDeclIndex = classDecl.getStart() + (indexAdj || 0);
-  const code = ensureNewlineClosing(codeToInsert);
+  const code = ensureNewlineClosing(code);
   return insertCode(node, classDeclIndex, code);
 };
 

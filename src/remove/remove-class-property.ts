@@ -11,7 +11,7 @@ import { Node, SourceFile } from 'typescript';
 
 export interface ClassPropertyRemoveOptions {
   classId: string;
-  propId: string;
+  propertyId: string;
 }
 
 export interface ClassPropRemoveTreeOptions extends ClassPropertyRemoveOptions {
@@ -20,11 +20,11 @@ export interface ClassPropRemoveTreeOptions extends ClassPropertyRemoveOptions {
 }
 
 const removeInClassScope = (opts: AnyOpts) => (node: Node) => {
-  const { classId, propId } = opts;
+  const { classId, propertyId } = opts;
 
   const propDecl = findClassPropertyDeclaration(node, {
     classId: classId,
-    propId,
+    propertyId,
   });
   if (!propDecl) return;
   const startPos = propDecl.getStart();

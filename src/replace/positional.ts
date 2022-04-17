@@ -5,5 +5,5 @@ export type CollectionReplace = {
   between?: BetweenPos;
   findElement?: FindElementFn;
   relative?: RelativePos;
-  replacementCode?: string;
+  code?: string;
 };

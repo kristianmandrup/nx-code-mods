@@ -9,7 +9,7 @@ import {
 } from './positional';
 
 export interface RemoveFunctionOptions {
-  id: string;
+  functionId: string;
   remove?: CollectionModifyOpts;
   indexAdj?: number;
 }
@@ -20,10 +20,10 @@ export interface RemoveFunctionTreeOptions extends RemoveFunctionOptions {
 }
 
 export const removeInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
-  let { id, remove, indexAdj } = opts;
+  let { functionId, remove, indexAdj } = opts;
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   remove = remove || {};
-  const funBlock = findFunctionBlock(srcNode, id);
+  const funBlock = findFunctionBlock(srcNode, functionId);
   if (!funBlock) {
     return;
   }
@@ -38,7 +38,8 @@ export function removeInsideFunctionBlockInSource(
   source: string,
   opts: RemoveFunctionOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findFunctionBlock(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findFunctionBlock(node, opts.functionId);
   const allOpts = {
     findNodeFn,
     modifyFn: removeInFunctionBlock,
@@ -51,7 +52,8 @@ export function removeInsideFunctionBlockInFile(
   filePath: string,
   opts: RemoveFunctionOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findFunctionBlock(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findFunctionBlock(node, opts.functionId);
   const allOpts = {
     findNodeFn,
     modifyFn: removeInFunctionBlock,

@@ -6,9 +6,9 @@ import {
 } from '../remove';
 
 export interface ClassPropertyReplaceOptions {
-  replacementCode: string;
+  code: string;
   classId: string;
-  propId: string;
+  propertyId: string;
 }
 
 export interface ClassPropertyReplaceTreeOptions

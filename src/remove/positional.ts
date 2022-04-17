@@ -215,7 +215,7 @@ export type CollectionModifyOpts = {
   between?: BetweenPos;
   findElement?: FindElementFn;
   relative?: RelativePos;
-  replacementCode?: string;
+  code?: string;
 };
 
 export type RemovePosOpts = {
@@ -305,7 +305,7 @@ export const removeFromNode = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { elementsField, node, remove, replacementCode, indexAdj } = opts;
+  let { elementsField, node, remove, code, indexAdj } = opts;
   remove = remove || {};
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node[elementsField];
@@ -323,8 +323,8 @@ export const removeFromNode = (
   positions.startPos += indexAdj.start;
   positions.endPos += indexAdj.end;
 
-  if (replacementCode) {
-    return replaceCode(srcNode, { ...positions, code: replacementCode });
+  if (code) {
+    return replaceCode(srcNode, { ...positions, code: code });
   }
   return removeCode(srcNode, positions);
 };

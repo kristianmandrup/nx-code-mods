@@ -10,7 +10,7 @@ describe('remove from object', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-object.txt');
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -26,7 +26,7 @@ describe('remove from object', () => {
         'has-non-matching-object.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
@@ -42,7 +42,7 @@ describe('remove from object', () => {
         'has-matching-empty-object.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const myNamedObj = {}`;
@@ -59,7 +59,7 @@ describe('remove from object', () => {
           'has-matching-object-with-2-props.txt',
         );
         const code = removeFromNamedObjectInFile(filePath, {
-          id: 'myNamedObj',
+          varId: 'myNamedObj',
         });
         const modifiedCode = code ? code : '';
         expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
@@ -76,7 +76,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           index: 1,
           // default before
@@ -96,7 +96,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           index: 'last',
         },
@@ -115,7 +115,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           relative: 'before',
           index: 'last',
@@ -135,7 +135,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           relative: 'after',
           index: 'last',
@@ -155,7 +155,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           index: 'first',
         },
@@ -174,7 +174,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           relative: 'after',
           index: 'first',
@@ -194,7 +194,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           relative: 'before',
           index: 'first',
@@ -214,7 +214,7 @@ describe('remove from object', () => {
         'has-matching-object-with-4-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           between: {
             startPos: 1,
@@ -238,7 +238,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           relative: 'after',
           findElement: (node: Node) => findIdentifier(node, 'b'),
@@ -258,7 +258,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           relative: 'before',
           findElement: (node: Node) => findIdentifier(node, 'b'),
@@ -278,7 +278,7 @@ describe('remove from object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = removeFromNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         remove: {
           relative: 'after',
           findElement: 'a',

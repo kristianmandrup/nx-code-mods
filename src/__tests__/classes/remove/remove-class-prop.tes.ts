@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { removeClassPropertyInFile } from '../..';
-import { escapeRegExp } from '../../utils';
+import { removeClassPropertyInFile } from '../../..';
+import { escapeRegExp } from '../../../utils';
 
 const context = describe;
 
@@ -11,7 +11,7 @@ describe('remove class property', () => {
       const codeToRemove = `myProp: User`;
       const code = removeClassPropertyInFile(filePath, {
         classId: 'myClass',
-        propId: 'myProp',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -28,7 +28,7 @@ describe('remove class property', () => {
       );
       const code = removeClassPropertyInFile(filePath, {
         classId: 'myClass',
-        propId: 'myProp',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -45,7 +45,7 @@ describe('remove class property', () => {
       );
       const code = removeClassPropertyInFile(filePath, {
         classId: 'myClass',
-        propId: 'myProp',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -62,7 +62,7 @@ describe('remove class property', () => {
       );
       const code = removeClassPropertyInFile(filePath, {
         classId: 'myClass',
-        propId: 'myProp',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -82,7 +82,7 @@ describe('remove class property', () => {
       );
       const code = removeClassPropertyInFile(filePath, {
         classId: 'myClass',
-        propId: 'myProp',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';

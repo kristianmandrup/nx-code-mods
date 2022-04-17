@@ -7,7 +7,7 @@ import { Tree } from '@nrwl/devkit';
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
 export interface InsertArrayOptions {
   id: string;
-  codeToInsert: string;
+  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
 }
@@ -20,7 +20,7 @@ export interface InsertArrayTreeOptions extends InsertArrayOptions {
 export const insertInArray =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id, codeToInsert, insert } = opts;
+    const { id, code, insert } = opts;
     const declaration = findVariableDeclaration(srcNode, id);
     if (!declaration) {
       return;
@@ -29,7 +29,7 @@ export const insertInArray =
     return insertIntoNode(srcNode, {
       elementsField: 'elements',
       node,
-      codeToInsert,
+      code,
       insert,
     });
   };

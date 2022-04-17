@@ -6,7 +6,7 @@ import {
 } from '../remove';
 
 export interface ReplaceImportIdOptions {
-  replacementCode: string;
+  code: string;
   importId: string;
   importFileRef: string;
 }

@@ -8,7 +8,7 @@ import {
 import { IndexAdj } from '../types';
 export interface ReplaceObjectOptions {
   id: string;
-  replacementCode: string;
+  code: string;
   replace?: CollectionModifyOpts;
   indexAdj?: IndexAdj;
 }

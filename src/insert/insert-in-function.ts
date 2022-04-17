@@ -6,7 +6,7 @@ import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
 import { CollectionInsert, insertIntoNode } from './positional';
 
 export interface InsertFunctionOptions {
-  codeToInsert: string;
+  code: string;
   id: string;
   insert?: CollectionInsert;
   indexAdj?: number;
@@ -18,7 +18,7 @@ export interface InsertFunctionTreeOptions extends InsertFunctionOptions {
 }
 
 export const insertInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
-  let { codeToInsert, id, insert } = opts;
+  let { code, id, insert } = opts;
   insert = insert || {};
   const funBlock = findFunctionBlock(srcNode, id);
   if (!funBlock) {
@@ -28,7 +28,7 @@ export const insertInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
     formatCode: ensureStmtClosing,
     elementsField: 'elements',
     node: funBlock,
-    codeToInsert,
+    code,
     insert,
   });
 };

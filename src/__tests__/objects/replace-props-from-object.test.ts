@@ -5,15 +5,13 @@ import { Node } from 'typescript';
 
 const context = describe;
 
-const replacementCode = `x: 99`;
-
 describe('replace props in object', () => {
   context('file with no named object', () => {
     it('no replace', () => {
       const filePath = path.join(__dirname, 'files', 'no-object.txt');
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -30,7 +28,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
       });
       const modifiedCode = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
@@ -47,7 +45,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
       });
       const modifiedCode = code ? code : '';
       const origCode = `const myNamedObj = {}`;
@@ -65,7 +63,7 @@ describe('replace props in object', () => {
         );
         const code = replaceInNamedObjectInFile(filePath, {
           id: 'myNamedObj',
-          replacementCode,
+          code: `x: 99`,
         });
         const modifiedCode = code ? code : '';
         expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
@@ -83,7 +81,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           index: 1,
           // default before
@@ -104,7 +102,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           index: 'last',
         },
@@ -124,7 +122,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           relative: 'before',
           index: 'last',
@@ -145,7 +143,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           relative: 'after',
           index: 'last',
@@ -166,7 +164,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           index: 'first',
         },
@@ -186,7 +184,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           relative: 'after',
           index: 'first',
@@ -207,7 +205,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           relative: 'before',
           index: 'first',
@@ -228,7 +226,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           between: {
             startPos: 1,
@@ -253,7 +251,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           relative: 'after',
           findElement: (node: Node) => findIdentifier(node, 'b'),
@@ -274,7 +272,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           relative: 'before',
           findElement: (node: Node) => findIdentifier(node, 'b'),
@@ -295,7 +293,7 @@ describe('replace props in object', () => {
       );
       const code = replaceInNamedObjectInFile(filePath, {
         id: 'myNamedObj',
-        replacementCode,
+        code: `x: 99`,
         replace: {
           relative: 'after',
           findElement: 'a',

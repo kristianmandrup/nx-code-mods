@@ -6,7 +6,7 @@ import { Tree } from '@nrwl/devkit';
 export interface ClassMethodParamsInsertOptions {
   classId: string;
   methodId: string;
-  codeToInsert: string;
+  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
 }
@@ -19,7 +19,7 @@ export interface ClassMethodParamsInsertTreeOptions
 
 export const insertParametersInClassMethod =
   (opts: AnyOpts) => (srcNode: SourceFile) => {
-    const { classId, methodId, insert, codeToInsert } = opts;
+    const { classId, methodId, insert, code } = opts;
     const node = findClassMethodDeclaration(srcNode, {
       classId: classId,
       methodId,
@@ -28,7 +28,7 @@ export const insertParametersInClassMethod =
     return insertIntoNode(srcNode, {
       elementsField: 'parameters',
       node,
-      codeToInsert,
+      code,
       insert,
       ...opts,
     });

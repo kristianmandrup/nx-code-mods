@@ -7,7 +7,7 @@ import { ObjectLiteralExpression, SourceFile } from 'typescript';
 import { IndexAdj } from '../types';
 
 export interface RemoveObjectOptions {
-  id: string;
+  varId: string;
   remove?: CollectionModifyOpts;
   indexAdj?: IndexAdj;
 }
@@ -26,8 +26,8 @@ export type RemoveInObjectFn = {
 export const removeFromObject =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id } = opts;
-    const declaration = findVariableDeclaration(srcNode, id);
+    const { varId } = opts;
+    const declaration = findVariableDeclaration(srcNode, varId);
     if (!declaration) {
       return;
     }
@@ -44,7 +44,7 @@ export function removeFromNamedObjectInSource(
   opts: RemoveObjectOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInSource(sourceCode, {
     findNodeFn,
     modifyFn: removeFromObject,
@@ -57,7 +57,7 @@ export function removeFromNamedObjectInFile(
   opts: RemoveObjectOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: removeFromObject,

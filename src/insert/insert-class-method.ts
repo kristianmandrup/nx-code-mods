@@ -19,7 +19,7 @@ import { insertInClassScope, endOfIndex, beforeIndex } from './positional';
 export interface ClassMethodInsertOptions {
   classId: string;
   methodId: string;
-  codeToInsert: string;
+  code: string;
   insertPos?: InsertPosition;
   indexAdj?: number;
 }

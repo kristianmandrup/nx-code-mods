@@ -7,8 +7,8 @@ import {
 } from '../remove';
 import { IndexAdj } from '../types';
 export interface ReplaceArrayOptions {
-  id: string;
-  replacementCode: string;
+  varId: string;
+  code: string;
   replace?: CollectionModifyOpts;
   indexAdj?: IndexAdj;
 }

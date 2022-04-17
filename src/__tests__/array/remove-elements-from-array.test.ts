@@ -9,14 +9,13 @@ describe('remove from array', () => {
   context('file with no named array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');
-      const codeToInsert = `'c'`;
       const code = removeFromNamedArrayInFile(filePath, {
-        id: 'myNamedList',
+        varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -28,12 +27,12 @@ describe('remove from array', () => {
         'has-non-matching-array.txt',
       );
       const code = removeFromNamedArrayInFile(filePath, {
-        id: 'myNamedList',
+        varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const anotherList = ['a','b']`;
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      // expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      // expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -45,7 +44,7 @@ describe('remove from array', () => {
         'has-matching-empty-array.txt',
       );
       const code = removeFromNamedArrayInFile(filePath, {
-        id: 'myNamedList',
+        varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
       expect(modifiedCode.includes(`const myNamedList = []`)).toBeTruthy();
@@ -61,7 +60,7 @@ describe('remove from array', () => {
           'has-matching-array-with-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
         });
         const modifiedCode = code ? code : '';
         expect(modifiedCode.includes(`'b'`)).toBeTruthy();
@@ -77,7 +76,7 @@ describe('remove from array', () => {
           'has-matching-array-with-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             index: 1,
           },
@@ -96,7 +95,7 @@ describe('remove from array', () => {
           'has-matching-array-with-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             index: 'last',
           },
@@ -114,7 +113,7 @@ describe('remove from array', () => {
           'has-matching-object-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             relative: 'before',
             index: 'last',
@@ -134,7 +133,7 @@ describe('remove from array', () => {
           'has-matching-object-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             relative: 'after',
             index: 'last',
@@ -154,7 +153,7 @@ describe('remove from array', () => {
           'has-matching-object-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             index: 'first',
           },
@@ -173,7 +172,7 @@ describe('remove from array', () => {
           'has-matching-object-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             relative: 'after',
             index: 'first',
@@ -193,7 +192,7 @@ describe('remove from array', () => {
           'has-matching-object-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             relative: 'before',
             index: 'first',
@@ -213,7 +212,7 @@ describe('remove from array', () => {
           'has-matching-object-with-4-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             between: {
               startPos: 1,
@@ -238,7 +237,7 @@ describe('remove from array', () => {
         );
 
         const code = removeFromNamedArrayInFile(filePath, {
-          id: 'myNamedList',
+          varId: 'myNamedList',
           remove: {
             relative: 'after',
             findElement: (node: Node) => findStringLiteral(node, 'a'),

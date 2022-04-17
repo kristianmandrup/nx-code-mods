@@ -3,12 +3,12 @@ export type InsertPosition = 'start' | 'end';
 export const insertCode = (
   vsNode: any,
   insertPosition: number,
-  codeToInsert: string,
+  code: string,
 ): string => {
   const previousTxt = vsNode.getFullText();
   const prefix = previousTxt.substring(0, insertPosition);
   const suffix = previousTxt.substring(insertPosition);
-  const newTxt = `${prefix}${codeToInsert}${suffix}`;
+  const newTxt = `${prefix}${code}${suffix}`;
   return newTxt;
 };
 

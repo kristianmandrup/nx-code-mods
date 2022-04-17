@@ -40,20 +40,20 @@ In file tree
 ```ts
 appendAfterImportsInTree = (
   tree: Tree,
-  { projectRoot, relTargetFilePath, codeToInsert }: AppendAfterImportsTreeOptions,
+  { projectRoot, relTargetFilePath, code }: AppendAfterImportsTreeOptions,
 );
 ```
 
 ### <a name='Sampleusage'></a>Sample usage
 
 ```ts
-const codeToInsert = `import { x } from 'x'`;
+const code = `import { x } from 'x'`;
 appendAfterImportsInTree(
   tree,
   {
       normalizedOptions.projectRoot,
       relTargetFilePath: '/src/app/app-routing.module.ts',
-      codeToInsert
+      code
   }
 );
 await formatFiles(tree);
@@ -75,7 +75,7 @@ In file tree
 ```ts
 insertImportInTree = (
   tree: Tree,
-  { projectRoot, relTargetFilePath, codeToInsert }: InsertImportTreeOptions,
+  { projectRoot, relTargetFilePath, code }: InsertImportTreeOptions,
 );
 ```
 
@@ -93,9 +93,9 @@ const code = insertImportInFile(filePath, {
 Explicit import code with import alias
 
 ```ts
-const codeToInsert = `x as xman`;
+const code = `x as xman`;
 const code = insertImportInFile(filePath, {
-  codeToInsert,
+  code,
   importId: 'x',
   importFileRef: './my-file',
 });
@@ -114,8 +114,8 @@ type CollectionInsert = {
 };
 
 interface InsertObjectOptions {
-  id: string;
-  codeToInsert: string;
+  varId: string;
+  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
 }
@@ -141,18 +141,17 @@ insertIntoNamedObjectInTree(
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
 
-It takes the `codeToInsert` string and inserts it into a non-empty object with an `Identifier` matching the `targetIdName`. The `insertPos` argument can be either `start`, `end`, an index in the object or a name of a property of the object.
+It takes the `code` string and inserts it into a non-empty object with an `Identifier` matching the `targetIdName`. The `insertPos` argument can be either `start`, `end`, an index in the object or a name of a property of the object.
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-  const codeToInsert = `x: 2`;
   insertIntoNamedObjectInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/route-map.module.ts',
-        id: 'RouteMap',
-        codeToInsert,
+        varId: 'RouteMap',
+        code: `x: 2`,
         // insert code after this property assignment in the object
         insert: {
           relative: 'after',
@@ -206,8 +205,8 @@ type CollectionInsert = {
 };
 
 interface InsertArrayOptions {
-  id: string;
-  codeToInsert: string;
+  varId: string;
+  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
 }
@@ -233,20 +232,17 @@ insertIntoNamedArrayInTree(
 
 The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
 
-It takes the `codeToInsert` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
+It takes the `code` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-  const codeToInsert = `{
-    x: 2
-  }`
   insertIntoNamedArrayInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
-        id: 'Routes',
-        codeToInsert,
+        varId: 'Routes',
+        code: `{ x: 2 }`,
         insert: {
           index: 'end'
         }
@@ -317,9 +313,9 @@ insertInsideFunctionBlockInFile(
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-const code = insertInsideFunctionBlockInFile(filePath, {
-  codeToInsert,
-  id: 'myFun',
+insertInsideFunctionBlockInFile(filePath, {
+  code,
+  functionId: 'myFun',
   insert: {
     index: 'end',
   },
@@ -351,9 +347,8 @@ insertClassMethodInFile(
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-const codeToInsert = `myMethod() {}`;
-const code = insertClassMethodInFile(filePath, {
-  codeToInsert,
+insertClassMethodInFile(filePath, {
+  code: `myMethod() {}`,
   classId: 'myClass',
   methodId: 'myMethod',
 });
@@ -382,11 +377,10 @@ insertClassPropertyInTree(
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-const codeToInsert = `myProp: User`;
-const code = insertClassPropertyInFile(filePath, {
-  codeToInsert,
+insertClassPropertyInFile(filePath, {
+  code: `myProp: User`,
   classId: 'myClass',
-  propId: 'myProp',
+  propertyId: 'myProp',
 });
 ```
 
@@ -413,10 +407,9 @@ insertClassDecoratorInTree(
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-const codeToInsert = `@Model()`;
-const code = insertClassDecoratorInFile(filePath, {
-  codeToInsert,
-  id: 'myClass',
+insertClassDecoratorInFile(filePath, {
+  code: `@Model()`,
+  classId: 'myClass',
 });
 ```
 
@@ -438,9 +431,8 @@ insertClassMethodDecoratorInTree(
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-const codeToInsert = `@Post()`;
 const code = insertClassMethodDecoratorInFile(filePath, {
-  codeToInsert,
+  code: `@Post()`,
   classId: 'myClass',
   methodId: 'myMethod',
 });
@@ -469,9 +461,8 @@ insertClassMethodParamDecoratorInTree(
 ### <a name='Sampleusage-1'></a>Sample usage
 
 ```ts
-const codeToInsert = `@Body() body: string`;
 const code = insertClassMethodParamDecoratorInFile(filePath, {
-  codeToInsert,
+  code: `@Body() body: string`,
   classId: 'myClass',
   methodId: 'myMethod',
 });
@@ -533,17 +524,18 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const { importPath, pageNames } = normalizedOptions
   // code to be pre-pended to array
-  const codeToInsert = `{
+  const code = `{
     path: '${pageNames.fileName}',
     loadChildren: () =>
       import('${importPath}').then((m) => m.${pageNames.classId}PageModule),
   }`;
+
   insertIntoNamedArrayInTree(tree,
     {
         normalizedOptions.projectRoot,
         relTargetFilePath: '/src/app/app-routing.module.ts',
-        id: 'Routes',
-        codeToInsert,
+        varId: 'Routes',
+        code,
         insert: {
           index: 'start'
         }
@@ -604,18 +596,18 @@ const { insert, remove } = chain;
 
 insert
   .classDecorator({
-    codeToInsert: '@Model()',
-    id: 'myClass',
+    code: '@Model()',
+    classId: 'myClass',
   })
   .classMethodDecorator({
-    codeToInsert: '@Post()',
+    code: '@Post()',
     classId: 'myClass',
     methodId: 'myMethod',
   });
 
 remove.fromNamedArray({
-  id: 'Routes',
-  codeToInsert: `{ x: 2 }`,
+  varId: 'Routes',
+  code: `{ x: 2 }`,
   insert: {
     index: 'end',
   },
@@ -632,8 +624,8 @@ Example
 const insert = insertApi(source);
 
 insert.classDecorator({
-  codeToInsert: '@Model()',
-  id: 'myClass',
+  code: '@Model()',
+  classId: 'myClass',
 });
 ```
 
@@ -647,7 +639,7 @@ Example
 const remove = removeApi(source);
 
 remove.fromNamedArray({
-  id: 'Routes',
+  varId: 'Routes',
   remove: {
     index: 'end',
   },
@@ -664,8 +656,8 @@ Example
 const replace = replaceApi(source);
 
 replace.inNamedObject({
-  id: 'Routes',
-  codeToInsert: `{ x: 2 }`,
+  varId: 'Routes',
+  code: `{ x: 2 }`,
   replace: {
     index: 'end',
   },

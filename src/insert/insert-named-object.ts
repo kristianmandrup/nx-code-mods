@@ -7,8 +7,8 @@ import { ObjectLiteralExpression } from 'typescript';
 import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 
 export interface InsertObjectOptions {
-  id: string;
-  codeToInsert: string;
+  varId: string;
+  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
 }
@@ -20,7 +20,7 @@ export interface InsertObjectTreeOptions extends InsertObjectOptions {
 
 export type InsertInObjectFn = {
   id: string;
-  codeToInsert: string;
+  code: string;
   insert: CollectionInsert;
   indexAdj?: number;
 };
@@ -28,8 +28,8 @@ export type InsertInObjectFn = {
 export const insertInObject =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id, codeToInsert, insert } = opts;
-    const declaration = findVariableDeclaration(srcNode, id);
+    const { varId, code, insert } = opts;
+    const declaration = findVariableDeclaration(srcNode, varId);
     if (!declaration) {
       return;
     }
@@ -37,7 +37,7 @@ export const insertInObject =
     return insertIntoNode(srcNode, {
       elementsField: 'properties',
       node,
-      codeToInsert,
+      code,
       insert,
     });
   };
@@ -47,7 +47,7 @@ export function insertIntoNamedObjectInSource(
   opts: InsertObjectOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: insertInObject,
@@ -60,7 +60,7 @@ export function insertIntoNamedObjectInFile(
   opts: InsertObjectOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInFile(filePath, {
     findNodeFn,
     modifyFn: insertInObject,

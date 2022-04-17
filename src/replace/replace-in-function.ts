@@ -7,8 +7,8 @@ import {
 } from '../remove';
 
 export interface ReplaceInsideFunctionBlockOptions {
-  id: string;
-  replacementCode: string;
+  functionId: string;
+  code: string;
   replace?: CollectionModifyOpts;
   indexAdj?: number;
 }

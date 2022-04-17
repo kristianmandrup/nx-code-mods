@@ -11,7 +11,7 @@ describe('remove from function', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-function.txt');
       const code = removeInsideFunctionBlockInFile(filePath, {
-        id: 'myFun',
+        functionId: 'myFun',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -27,7 +27,7 @@ describe('remove from function', () => {
         'has-non-matching-function.txt',
       );
       const code = removeInsideFunctionBlockInFile(filePath, {
-        id: 'myFun',
+        functionId: 'myFun',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const x = 2;`;
@@ -43,11 +43,11 @@ describe('remove from function', () => {
         'has-matching-empty-function.txt',
       );
       const code = removeInsideFunctionBlockInFile(filePath, {
-        id: 'myFun',
+        functionId: 'myFun',
       });
       const origCode = `const x = 2;`;
       const modifiedCode = code ? code : '';
-      // const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
+      // const str = `{\\s*${escapeRegExp(code + ';')}\\s*`;
       // const regExp = new RegExp(str);
       expect(modifiedCode.includes(origCode)).toBeTruthy();
       // expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -63,7 +63,7 @@ describe('remove from function', () => {
           'has-matching-function-with-statements.txt',
         );
         const code = removeInsideFunctionBlockInFile(filePath, {
-          id: 'myFun',
+          functionId: 'myFun',
         });
         const origCode = `const x = 2;`;
         const firstRemainingStmt = `let b = 5`;
@@ -87,14 +87,14 @@ describe('remove from function', () => {
           'has-matching-function-with-statements.txt',
         );
         const code = removeInsideFunctionBlockInFile(filePath, {
-          id: 'myFun',
+          functionId: 'myFun',
           remove: {
             index: 1,
           },
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        // const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*let b = 5;`;
+        // const str = `\\s*${escapeRegExp(code + ';')}\\s*let b = 5;`;
         // const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         // expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -109,14 +109,14 @@ describe('remove from function', () => {
           'has-matching-function-with-statements.txt',
         );
         const code = removeInsideFunctionBlockInFile(filePath, {
-          id: 'myFun',
+          functionId: 'myFun',
           remove: {
             index: 'last',
           },
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        // const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*}`;
+        // const str = `\\s*${escapeRegExp(code + ';')}\\s*}`;
         // const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         // expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -131,7 +131,7 @@ describe('remove from function', () => {
           'has-matching-function-with-statements.txt',
         );
         const code = removeInsideFunctionBlockInFile(filePath, {
-          id: 'myFun',
+          functionId: 'myFun',
           remove: {
             relative: 'after',
             findElement: (node: Node) => findVariableDeclaration(node, 'b'),
@@ -139,7 +139,7 @@ describe('remove from function', () => {
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        // const str = `let b = 5;\\s*${escapeRegExp(codeToInsert + ';')}`;
+        // const str = `let b = 5;\\s*${escapeRegExp(code + ';')}`;
         // const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         // expect(modifiedCode.match(regExp)).toBeTruthy();

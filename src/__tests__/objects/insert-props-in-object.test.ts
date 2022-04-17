@@ -9,15 +9,14 @@ describe('insert object', () => {
   context('file with no named object', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-object.txt');
-      const codeToInsert = `c: 3`;
       const code = insertIntoNamedObjectInFile(filePath, {
-        codeToInsert,
-        id: 'myNamedObj',
+        code: `c: 3`,
+        varId: 'myNamedObj',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -28,15 +27,14 @@ describe('insert object', () => {
         'files',
         'has-non-matching-object.txt',
       );
-      const codeToInsert = `c: 3`;
       const code = insertIntoNamedObjectInFile(filePath, {
-        codeToInsert,
-        id: 'myNamedObj',
+        code: `c: 3`,
+        varId: 'myNamedObj',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -47,10 +45,9 @@ describe('insert object', () => {
         'files',
         'has-matching-empty-object.txt',
       );
-      const codeToInsert = `c: 3`;
       const code = insertIntoNamedObjectInFile(filePath, {
-        codeToInsert,
-        id: 'myNamedObj',
+        code: `c: 3`,
+        varId: 'myNamedObj',
       });
       const modifiedCode = code ? code : '';
       expect(modifiedCode.includes(`const myNamedObj = {c: 3}`)).toBeTruthy();
@@ -65,10 +62,9 @@ describe('insert object', () => {
           'files',
           'has-matching-object-with-props.txt',
         );
-        const codeToInsert = `c: 3`;
         const code = insertIntoNamedObjectInFile(filePath, {
-          codeToInsert,
-          id: 'myNamedObj',
+          code: `c: 3`,
+          varId: 'myNamedObj',
         });
         const modifiedCode = code ? code : '';
         expect(modifiedCode.includes(`c: 3,a: 1,`)).toBeTruthy();
@@ -82,10 +78,9 @@ describe('insert object', () => {
           'files',
           'has-matching-object-with-props.txt',
         );
-        const codeToInsert = `c: 3`;
         const code = insertIntoNamedObjectInFile(filePath, {
-          codeToInsert,
-          id: 'myNamedObj',
+          code: `c: 3`,
+          varId: 'myNamedObj',
           insert: {
             index: 1,
           },
@@ -102,10 +97,9 @@ describe('insert object', () => {
           'files',
           'has-matching-object-with-props.txt',
         );
-        const codeToInsert = `c: 3`;
         const code = insertIntoNamedObjectInFile(filePath, {
-          codeToInsert,
-          id: 'myNamedObj',
+          code: `c: 3`,
+          varId: 'myNamedObj',
           insert: {
             index: 'end',
           },
@@ -122,11 +116,9 @@ describe('insert object', () => {
           'files',
           'has-matching-object-with-props.txt',
         );
-
-        const codeToInsert = `c: 3`;
         const code = insertIntoNamedObjectInFile(filePath, {
-          codeToInsert,
-          id: 'myNamedObj',
+          code: `c: 3`,
+          varId: 'myNamedObj',
           insert: {
             relative: 'after',
             findElement: (node: Node) => findIdentifier(node, 'b'),
@@ -144,11 +136,9 @@ describe('insert object', () => {
           'files',
           'has-matching-object-with-props.txt',
         );
-
-        const codeToInsert = `c: 3`;
         const code = insertIntoNamedObjectInFile(filePath, {
-          codeToInsert,
-          id: 'myNamedObj',
+          code: `c: 3`,
+          varId: 'myNamedObj',
           insert: {
             relative: 'after',
             findElement: 'b',

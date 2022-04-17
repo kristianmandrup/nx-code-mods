@@ -90,16 +90,10 @@ export const classInsertIndex = (classDecl: ClassDeclaration, opts: any) => {
 };
 
 export const insertInClassScope = (srcNode: SourceFile, opts: AnyOpts) => {
-  const {
-    findMatchingNode,
-    classId,
-    codeToInsert,
-    insertPos,
-    propId,
-    indexAdj,
-  } = opts;
+  const { findMatchingNode, classId, code, insertPos, propertyId, indexAdj } =
+    opts;
   const abortIfFound = (node: any) =>
-    findMatchingNode(node, { classId: classId, propId });
+    findMatchingNode(node, { classId: classId, propertyId });
 
   const classDecl = findClassDeclaration(srcNode, classId);
   if (!classDecl) return;
@@ -111,18 +105,17 @@ export const insertInClassScope = (srcNode: SourceFile, opts: AnyOpts) => {
 
   if (insertPos === 'end') {
     const index = endOfIndex(classDecl);
-    return insertClassCode(srcNode, { index, code: codeToInsert, indexAdj });
+    return insertClassCode(srcNode, { index, code: code, indexAdj });
   }
   const index = classInsertIndex(classDecl, opts);
-  return insertClassCode(srcNode, { index, code: codeToInsert, indexAdj });
+  return insertClassCode(srcNode, { index, code: code, indexAdj });
 };
 
 export const insertIntoNode = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { formatCode, elementsField, node, codeToInsert, insert, indexAdj } =
-    opts;
+  let { formatCode, elementsField, node, code, insert, indexAdj } = opts;
   formatCode = formatCode || ensureCommaDelimiters;
   insert = insert || {};
   const { abortIfFound } = insert;
@@ -141,7 +134,7 @@ export const insertIntoNode = (
   if (count === 0) {
     let pos = node.getStart() + 1;
     pos += indexAdj || 0;
-    const code = codeToInsert; // ensureSuffixComma(codeToInsert);
+    const code = code; // ensureSuffixComma(code);
     return insertCode(srcNode, pos, code);
   }
   if (insertPosNum === -1) {
@@ -154,7 +147,7 @@ export const insertIntoNode = (
       ? afterLastElementPos(elements)
       : aroundElementPos(elements, insertPosNum, insert.relative);
 
-  const code = formatCode(codeToInsert, { insert, pos, count });
+  const code = formatCode(code, { insert, pos, count });
   pos += indexAdj || 0;
   return insertCode(srcNode, pos, code);
 };

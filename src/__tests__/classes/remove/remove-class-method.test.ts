@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { removeClassMethodInFile } from '../..';
+import { removeClassMethodInFile } from '../../..';
 
 const context = describe;
 
@@ -7,7 +7,7 @@ describe('remove class method', () => {
   context('file has no class', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const codeToInsert = `myMethod() {}`;
+      const code = `myMethod() {}`;
 
       const code = removeClassMethodInFile(filePath, {
         classId: 'myClass',
@@ -16,7 +16,7 @@ describe('remove class method', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -51,7 +51,7 @@ describe('remove class method', () => {
       let modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      // const str = `${escapeRegExp(codeToInsert)}\\s*\\nclass myClass`;
+      // const str = `${escapeRegExp(code)}\\s*\\nclass myClass`;
       // const regExp = new RegExp(str);
       // expect(modifiedCode.match(regExp)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();

@@ -6,7 +6,7 @@ import { Tree } from '@nrwl/devkit';
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
 import { IndexAdj } from '../types';
 export interface RemoveArrayOptions {
-  id: string;
+  varId: string;
   remove?: CollectionModifyOpts;
   indexAdj?: IndexAdj;
 }
@@ -19,8 +19,8 @@ export interface RemoveArrayTreeOptions extends RemoveArrayOptions {
 export const removeFromArray =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id } = opts;
-    const declaration = findVariableDeclaration(srcNode, id);
+    const { varId } = opts;
+    const declaration = findVariableDeclaration(srcNode, varId);
     if (!declaration) {
       return;
     }
@@ -38,7 +38,7 @@ export function removeFromNamedArrayInSource(
   opts: RemoveArrayOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInSource(source, {
     ...opts,
     findNodeFn,
@@ -51,7 +51,7 @@ export function removeFromNamedArrayInFile(
   opts: RemoveArrayOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInFile(filePath, {
     ...opts,
     findNodeFn,

@@ -1,15 +1,15 @@
-export const ensurePrefixComma = (codeToInsert: string) =>
-  codeToInsert.match(/^\s*,/) ? codeToInsert : ',' + codeToInsert;
+export const ensurePrefixComma = (code: string) =>
+  code.match(/^\s*,/) ? code : ',' + code;
 
-export const ensureSuffixComma = (codeToInsert: string) =>
-  codeToInsert.match(/\s*,$/) ? codeToInsert : codeToInsert + ',';
+export const ensureSuffixComma = (code: string) =>
+  code.match(/\s*,$/) ? code : code + ',';
 
-export const ensureStmtClosing = (codeToInsert: string) => {
-  codeToInsert = codeToInsert.match(/;$/) ? codeToInsert : codeToInsert + ';';
-  return ensureNewlineClosing(codeToInsert);
+export const ensureStmtClosing = (code: string) => {
+  code = code.match(/;$/) ? code : code + ';';
+  return ensureNewlineClosing(code);
 };
-export const ensureNewlineClosing = (codeToInsert: string) =>
-  codeToInsert.match(/\n$/) ? codeToInsert : codeToInsert + '\n';
+export const ensureNewlineClosing = (code: string) =>
+  code.match(/\n$/) ? code : code + '\n';
 
 export const ensureCommaDelimiters = (
   code: string,

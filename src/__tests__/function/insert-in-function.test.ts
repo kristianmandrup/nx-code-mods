@@ -10,15 +10,14 @@ describe('insert function', () => {
   context('file with no named function', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-function.txt');
-      const codeToInsert = `let c = 2`;
       const code = insertInsideFunctionBlockInFile(filePath, {
-        codeToInsert,
+        code: `let c = 2`,
         id: 'myFun',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -29,15 +28,14 @@ describe('insert function', () => {
         'files',
         'has-non-matching-function.txt',
       );
-      const codeToInsert = `let c = 2`;
       const code = insertInsideFunctionBlockInFile(filePath, {
-        codeToInsert,
+        code: `let c = 2`,
         id: 'myFun',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const x = 2;`;
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -48,14 +46,13 @@ describe('insert function', () => {
         'files',
         'has-matching-empty-function.txt',
       );
-      const codeToInsert = `let c = 2`;
       const code = insertInsideFunctionBlockInFile(filePath, {
-        codeToInsert,
+        code: `let c = 2`,
         id: 'myFun',
       });
       const origCode = `const x = 2;`;
       const modifiedCode = code ? code : '';
-      const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
+      const str = `{\\s*${escapeRegExp(code + ';')}\\s*`;
       const regExp = new RegExp(str);
       expect(modifiedCode.includes(origCode)).toBeTruthy();
       expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -70,14 +67,13 @@ describe('insert function', () => {
           'files',
           'has-matching-function-with-statements.txt',
         );
-        const codeToInsert = `let c = 2`;
         const code = insertInsideFunctionBlockInFile(filePath, {
-          codeToInsert,
+          code: `let c = 2`,
           id: 'myFun',
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        const str = `{\\s*${escapeRegExp(codeToInsert + ';')}\\s*`;
+        const str = `{\\s*${escapeRegExp(code + ';')}\\s*`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -91,9 +87,8 @@ describe('insert function', () => {
           'files',
           'has-matching-function-with-statements.txt',
         );
-        const codeToInsert = `let c = 2`;
         const code = insertInsideFunctionBlockInFile(filePath, {
-          codeToInsert,
+          code: `let c = 2`,
           id: 'myFun',
           insert: {
             index: 1,
@@ -101,7 +96,7 @@ describe('insert function', () => {
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*let b = 5;`;
+        const str = `\\s*${escapeRegExp(code + ';')}\\s*let b = 5;`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -115,9 +110,8 @@ describe('insert function', () => {
           'files',
           'has-matching-function-with-statements.txt',
         );
-        const codeToInsert = `let c = 2`;
         const code = insertInsideFunctionBlockInFile(filePath, {
-          codeToInsert,
+          code: `let c = 2`,
           id: 'myFun',
           insert: {
             index: 'end',
@@ -125,7 +119,7 @@ describe('insert function', () => {
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        const str = `\\s*${escapeRegExp(codeToInsert + ';')}\\s*}`;
+        const str = `\\s*${escapeRegExp(code + ';')}\\s*}`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -139,10 +133,8 @@ describe('insert function', () => {
           'files',
           'has-matching-function-with-statements.txt',
         );
-
-        const codeToInsert = `let c = 2`;
         const code = insertInsideFunctionBlockInFile(filePath, {
-          codeToInsert,
+          code: `let c = 2`,
           id: 'myFun',
           insert: {
             relative: 'after',
@@ -151,7 +143,7 @@ describe('insert function', () => {
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        const str = `let b = 5;\\s*${escapeRegExp(codeToInsert + ';')}`;
+        const str = `let b = 5;\\s*${escapeRegExp(code + ';')}`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();

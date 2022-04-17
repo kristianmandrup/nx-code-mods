@@ -9,7 +9,7 @@ import {
 import { modifyTree, AnyOpts, replaceInFile } from '../modify';
 
 export interface AppendAfterImportsOptions {
-  codeToInsert: string;
+  code: string;
   indexAdj?: number;
 }
 
@@ -20,7 +20,7 @@ export interface AppendAfterImportsTreeOptions
 }
 
 export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
-  const { codeToInsert, indexAdj } = opts;
+  const { code, indexAdj } = opts;
   const lastImportDecl = findLastImport(node);
   let importIndex = 0;
   if (!lastImportDecl) {
@@ -28,7 +28,7 @@ export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
   } else {
     importIndex = lastImportDecl.getEnd() + (indexAdj || 0);
   }
-  return insertCode(node, importIndex, codeToInsert);
+  return insertCode(node, importIndex, code);
 };
 
 export function appendAfterImportsInFile(

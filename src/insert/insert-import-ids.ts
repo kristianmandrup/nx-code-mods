@@ -10,7 +10,7 @@ import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
 import { CollectionInsert, insertIntoNode } from './positional';
 
 export interface InsertImportOptions {
-  codeToInsert?: string;
+  code?: string;
   importId: string;
   importFileRef: string;
   insert?: CollectionInsert;
@@ -23,7 +23,7 @@ export interface InsertImportTreeOptions extends InsertImportOptions {
 }
 
 export const insertImport = (opts: AnyOpts) => (srcNode: SourceFile) => {
-  let { codeToInsert, insert, importId, importFileRef } = opts;
+  let { code, insert, importId, importFileRef } = opts;
   const importDecl = findMatchingImportDecl(srcNode, {
     importId,
     importFileRef,
@@ -31,7 +31,7 @@ export const insertImport = (opts: AnyOpts) => (srcNode: SourceFile) => {
   if (!importDecl) {
     return;
   }
-  codeToInsert = codeToInsert || importId;
+  code = code || importId;
   insert = insert || {};
   // const { abortIfFound } = insert;
   const importClause = importDecl.importClause as ImportClause;
@@ -49,7 +49,7 @@ export const insertImport = (opts: AnyOpts) => (srcNode: SourceFile) => {
   return insertIntoNode(srcNode, {
     elementsField: 'elements',
     node,
-    codeToInsert,
+    code,
     insert,
     ...opts,
   });

@@ -1,24 +1,22 @@
 import * as path from 'path';
-import { insertClassMethodInFile } from '../../';
-import { escapeRegExp } from '../../utils';
+import { insertClassPropertyInFile } from '../../..';
+import { escapeRegExp } from '../../../utils';
 
 const context = describe;
 
-describe('insert class method', () => {
+describe('insert class property', () => {
   context('file has no class', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const codeToInsert = `myMethod() {}`;
-
-      const code = insertClassMethodInFile(filePath, {
-        codeToInsert,
+      const code = insertClassPropertyInFile(filePath, {
+        code: `myProp: User`,
         classId: 'myClass',
-        methodId: 'myMethod',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -29,83 +27,74 @@ describe('insert class method', () => {
         'files',
         'has-no-matching-class.txt',
       );
-      const codeToInsert = `myMethod() {}`;
-
-      const code = insertClassMethodInFile(filePath, {
-        codeToInsert,
+      const code = insertClassPropertyInFile(filePath, {
+        code: `myProp: User`,
         classId: 'myClass',
-        methodId: 'myMethod',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
   context('file has matching empty class', () => {
-    it('inserts method', () => {
+    it('inserts prop', () => {
       const filePath = path.join(
         __dirname,
         'files',
         'has-matching-empty-class.txt',
       );
-      const codeToInsert = `myMethod() {}`;
-      const code = insertClassMethodInFile(filePath, {
-        codeToInsert,
+      const code = insertClassPropertyInFile(filePath, {
+        code: `myProp: User`,
         classId: 'myClass',
-        methodId: 'myMethod',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      const str = `${escapeRegExp(codeToInsert + ';')}\\s*}`;
-      const regExp = new RegExp(str);
-      expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.match(regExp)).toBeTruthy();
+      expect(modifiedCode.includes(code)).toBeTruthy();
     });
   });
 
-  context('file has matching class no matching method', () => {
+  context('file has matching class no matching property', () => {
     it('inserts method', () => {
       const filePath = path.join(
         __dirname,
         'files',
-        'has-matching-class-no-matching-method.txt',
+        'has-matching-class-no-matching-property.txt',
       );
-      const codeToInsert = `myMethod() {}`;
-      const code = insertClassMethodInFile(filePath, {
-        codeToInsert,
+      const code = insertClassPropertyInFile(filePath, {
+        code: `myProp: User`,
         classId: 'myClass',
-        methodId: 'myMethod',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      const str = `${escapeRegExp(codeToInsert)}\\s*;\\s*methodA`;
+      const str = `${escapeRegExp(code)}\\s*;\\s*propA`;
       const regExp = new RegExp(str);
       expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
 
-  context('file has matching class and method', () => {
+  context('file has matching class and property', () => {
     it('aborts, no insert', () => {
       const filePath = path.join(
         __dirname,
         'files',
-        'has-matching-class-and-method.txt',
+        'has-matching-class-and-property.txt',
       );
-      const codeToInsert = `myMethod() {}
-  `;
-      const code = insertClassMethodInFile(filePath, {
-        codeToInsert,
+      const code = insertClassPropertyInFile(filePath, {
+        code: `myProp: User`,
         classId: 'myClass',
-        methodId: 'myMethod',
+        propertyId: 'myProp',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 });

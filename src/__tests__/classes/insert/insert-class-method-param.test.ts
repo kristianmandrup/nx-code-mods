@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { insertClassMethodParameterInFile } from '../../';
-import { escapeRegExp } from '../../utils';
+import { insertClassMethodParameterInFile } from '../../../';
+import { escapeRegExp } from '../../../utils';
 
 const context = describe;
 
@@ -8,16 +8,15 @@ describe('insert class method param decorator', () => {
   context('file has no class', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const codeToInsert = `body: string`;
       const code = insertClassMethodParameterInFile(filePath, {
-        codeToInsert,
+        code: `body: string`,
         classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -28,16 +27,15 @@ describe('insert class method param decorator', () => {
         'files',
         'has-no-matching-class.txt',
       );
-      const codeToInsert = `body: string`;
       const code = insertClassMethodParameterInFile(filePath, {
-        codeToInsert,
+        code: `body: string`,
         classId: 'myClass',
         methodId: 'myMethod',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -48,9 +46,8 @@ describe('insert class method param decorator', () => {
         'files',
         'has-matching-empty-class.txt',
       );
-      const codeToInsert = `body: string`;
       const code = insertClassMethodParameterInFile(filePath, {
-        codeToInsert,
+        code: `body: string`,
         classId: 'myClass',
         methodId: 'myMethod',
       });
@@ -67,9 +64,9 @@ describe('insert class method param decorator', () => {
         'files',
         'has-matching-class-and-method.txt',
       );
-      const codeToInsert = `body: string`;
+      const code = `body: string`;
       const code = insertClassMethodParameterInFile(filePath, {
-        codeToInsert,
+        code,
         classId: 'myClass',
         methodId: 'myMethod',
         insert: {
@@ -78,10 +75,10 @@ describe('insert class method param decorator', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      const str = `${escapeRegExp('myMethod(' + codeToInsert)}`;
+      const str = `${escapeRegExp('myMethod(' + code)}`;
       const regExp = new RegExp(str);
       expect(modifiedCode.match(regExp)).toBeTruthy();
-      expect(modifiedCode.includes(codeToInsert)).toBeTruthy();
+      expect(modifiedCode.includes(code)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
@@ -94,11 +91,9 @@ describe('insert class method param decorator', () => {
     );
 
     context('index 1', () => {
-      const codeToInsert = `body: string`;
-
       it('insert param in class method at position 1, between params', () => {
         const code = insertClassMethodParameterInFile(filePath, {
-          codeToInsert,
+          code: `body: string`,
           classId: 'myClass',
           methodId: 'myMethod',
           insert: {
@@ -107,10 +102,10 @@ describe('insert class method param decorator', () => {
         });
         const modifiedCode = code ? code : '';
         const origCode = 'const x = 2;';
-        const str = `${escapeRegExp('myMethod(' + codeToInsert)}`;
+        const str = `${escapeRegExp('myMethod(' + code)}`;
         const regExp = new RegExp(str);
         expect(modifiedCode.match(regExp)).toBeTruthy();
-        expect(modifiedCode.includes(codeToInsert)).toBeTruthy();
+        expect(modifiedCode.includes(code)).toBeTruthy();
         expect(modifiedCode.includes(origCode)).toBeTruthy();
       });
     });
@@ -122,9 +117,8 @@ describe('insert class method param decorator', () => {
           'files',
           'has-matching-class-and-method.txt',
         );
-        const codeToInsert = `body: string`;
         const code = insertClassMethodParameterInFile(filePath, {
-          codeToInsert,
+          code: `body: string`,
           classId: 'myClass',
           methodId: 'myMethod',
           insert: {
@@ -133,10 +127,10 @@ describe('insert class method param decorator', () => {
         });
         const modifiedCode = code ? code : '';
         const origCode = 'const x = 2;';
-        const str = `${escapeRegExp('myMethod(' + codeToInsert)}`;
+        const str = `${escapeRegExp('myMethod(' + code)}`;
         const regExp = new RegExp(str);
         expect(modifiedCode.match(regExp)).toBeTruthy();
-        expect(modifiedCode.includes(codeToInsert)).toBeTruthy();
+        expect(modifiedCode.includes(code)).toBeTruthy();
         expect(modifiedCode.includes(origCode)).toBeTruthy();
       });
     });
@@ -148,9 +142,8 @@ describe('insert class method param decorator', () => {
           'files',
           'has-matching-class-and-method.txt',
         );
-        const codeToInsert = `body: string`;
         const code = insertClassMethodParameterInFile(filePath, {
-          codeToInsert,
+          code: `body: string`,
           classId: 'myClass',
           methodId: 'myMethod',
           insert: {
@@ -159,10 +152,10 @@ describe('insert class method param decorator', () => {
         });
         const modifiedCode = code ? code : '';
         const origCode = 'const x = 2;';
-        const str = `${escapeRegExp('myMethod(' + codeToInsert)}`;
+        const str = `${escapeRegExp('myMethod(' + code)}`;
         const regExp = new RegExp(str);
         expect(modifiedCode.match(regExp)).toBeTruthy();
-        expect(modifiedCode.includes(codeToInsert)).toBeTruthy();
+        expect(modifiedCode.includes(code)).toBeTruthy();
         expect(modifiedCode.includes(origCode)).toBeTruthy();
       });
     });

@@ -11,8 +11,8 @@ import { insertInClassScope, startOfIndex, afterIndex } from './positional';
 
 export interface ClassPropertyInsertOptions {
   classId: string;
-  propId: string;
-  codeToInsert: string;
+  propertyId: string;
+  code: string;
   insertPos?: InsertPosition;
   indexAdj?: number;
 }

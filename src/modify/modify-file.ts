@@ -11,7 +11,7 @@ export type FindNodeFn = (node: SourceFile) => Node | Node[] | undefined;
 export type CheckFn = (node: SourceFile) => boolean;
 
 export interface ModifyFileOptions {
-  codeToInsert?: string;
+  code?: string;
   selector?: string;
   checkFn?: CheckFn;
   findNodeFn?: FindNodeFn;

@@ -6,7 +6,7 @@ import {
 } from '../remove';
 
 export interface ClassMethodReplaceOptions {
-  replacementCode: string;
+  code: string;
   classId: string;
   methodId: string;
 }

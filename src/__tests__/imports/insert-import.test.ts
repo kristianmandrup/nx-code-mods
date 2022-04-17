@@ -8,15 +8,14 @@ describe('insertImport', () => {
   context('file with imports', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'has-imports.txt');
-      const codeToInsert = `x`;
       const code = insertImportInFile(filePath, {
-        codeToInsert,
+        code: `x`,
         importId: 'x',
         importFileRef: './my-file',
       });
       const modifiedCode = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(modifiedCode.match(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.match(code)).toBeFalsy();
       expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
@@ -28,9 +27,8 @@ describe('insertImport', () => {
         'files',
         'has-x-import-from-other-file.txt',
       );
-      const codeToInsert = `x`;
       const code = insertImportInFile(filePath, {
-        codeToInsert,
+        code: `x`,
         importId: 'x',
         importFileRef: './my-file',
       });
@@ -47,9 +45,8 @@ describe('insertImport', () => {
         'files',
         'has-x-import-from-file.txt',
       );
-      const codeToInsert = `x`;
       const code = insertImportInFile(filePath, {
-        codeToInsert,
+        code: `x`,
         importId: 'x',
         importFileRef: './my-file',
       });
@@ -66,20 +63,17 @@ describe('insertImport', () => {
         'files',
         'has-no-x-import-from-file.txt',
       );
-      const codeToInsert = `a`;
       const code = insertImportInFile(filePath, {
-        codeToInsert,
+        code: `a`,
         importId: 'a',
         importFileRef: './my-file',
       });
       const modifiedCode = code ? code : '';
       const origCode = `import { x, y } from './my-file';`;
-      const str = `${escapeRegExp(
-        'import { ' + codeToInsert + ',x, y } from',
-      )}`;
+      const str = `${escapeRegExp('import { ' + code + ',x, y } from')}`;
       const regExp = new RegExp(str);
       expect(modifiedCode.match(regExp)).toBeTruthy();
-      expect(modifiedCode.match(codeToInsert)).toBeTruthy();
+      expect(modifiedCode.match(code)).toBeTruthy();
       expect(modifiedCode.match(origCode)).toBeFalsy();
     });
   });
@@ -87,15 +81,14 @@ describe('insertImport', () => {
   context('file with no imports', () => {
     it('insert import at top of file', () => {
       const filePath = path.join(__dirname, 'files', 'no-imports.txt');
-      const codeToInsert = `y`;
       const code = insertImportInFile(filePath, {
-        codeToInsert,
+        code: `y`,
         importId: 'x',
         importFileRef: './my-file',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(modifiedCode.match(codeToInsert)).toBeFalsy();
+      expect(modifiedCode.match(code)).toBeFalsy();
       expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });

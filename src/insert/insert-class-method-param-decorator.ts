@@ -11,7 +11,7 @@ export interface ClassMethodDecParamDecoratorInsertOptions {
   classId: string;
   methodId: string;
   id: string;
-  codeToInsert: string;
+  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
 }
@@ -24,7 +24,7 @@ export interface ClassMethodDecParamDecoratorInsertTreeOptions
 
 export const insertParamDecorator =
   (opts: AnyOpts) => (srcNode: SourceFile) => {
-    const { classId, methodId, id, insert, codeToInsert } = opts;
+    const { classId, methodId, id, insert, code } = opts;
     const node = findClassMethodParameterDeclaration(srcNode, {
       classId: classId,
       methodId,
@@ -34,7 +34,7 @@ export const insertParamDecorator =
     return insertIntoNode(srcNode, {
       elementsField: 'decorators',
       node,
-      codeToInsert,
+      code,
       insert,
       ...opts,
     });
