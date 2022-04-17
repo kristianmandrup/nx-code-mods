@@ -590,6 +590,7 @@ Requires testing and further refinement to be completed.
 - Insert API
 - Remove API
 - Replace API
+- Transform API
 
 #### Chain API
 
@@ -669,4 +670,33 @@ replace.inNamedObject({
     index: 'end',
   },
 });
+```
+
+### Transform API
+
+- `async transformInTree(tree, opts)`
+- `transformInFile(filePath, opts)`
+
+Example
+
+```ts
+const opts = {
+  normalizedOptions.projectRoot,
+  relTargetFilePath: '/src/app/app-routing.module.ts',
+  format: true,
+  transform: (source) => {
+    const chain = chainApi(source).setDefaultOpts({ classId: 'myClass' });
+    const { insert, remove } = chain;
+    insert
+      .classDecorator({
+        code: '@Model()',
+      })
+      .classMethodDecorator({
+        code: '@Post()',
+        methodId: 'myMethod',
+      });
+    return chain.source;
+  },
+};
+await transformInTree(tree, opts);
 ```

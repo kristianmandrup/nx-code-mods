@@ -3,7 +3,7 @@ import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { formatFiles, Tree } from '@nrwl/devkit';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { replaceOne } from './replace';
+import { replaceOne, replaceSource, TSQuerySourceTransformer } from './replace';
 import { Node, SourceFile } from 'typescript';
 
 export type GetDefaultNodeFn = (node: SourceFile) => Node;
@@ -16,6 +16,8 @@ export interface ModifyFileOptions {
   checkFn?: CheckFn;
   findNodeFn?: FindNodeFn;
   getDefaultNodeFn?: GetDefaultNodeFn;
+  modifyFn?: ModifyFn;
+  modifySrcFn?: ModifySrcFn;
   [key: string]: any;
 }
 
@@ -30,50 +32,65 @@ export type AnyOpts = {
 };
 
 export type ModifyFn = (opts: AnyOpts) => TSQueryStringTransformer;
-
-export function replaceFileContents(
-  targetFile: string,
-  opts: ModifyFileOptions,
-) {
-  const { modifyFn, selector } = opts;
-  if (targetFile == '') {
-    return;
-  }
-  const replaceFn = modifyFn({ ...opts });
-  if (!selector) return targetFile;
-  return tsquery.replace(targetFile, selector, replaceFn);
-}
+export type ModifySrcFn = (opts: AnyOpts) => TSQuerySourceTransformer;
 
 export function replaceNodeContents(
-  targetFile: string,
+  source: string,
   node: Node,
   opts: ModifyFileOptions,
 ) {
   const { modifyFn } = opts;
-  if (targetFile == '') {
+  if (!modifyFn) {
+    throw new Error('replaceNodeContents must take either a modifyFn function');
+  }
+  if (source == '') {
     return;
   }
-  const replaceFn = modifyFn({ ...opts });
-  return replaceOne(targetFile, node, replaceFn);
+  if (modifyFn) {
+    const replaceFn = modifyFn({ ...opts });
+    return replaceOne(source, node, replaceFn);
+  }
 }
 
-export function replaceContentInSrc(
+export function replaceSrcContents(source: string, opts: ModifyFileOptions) {
+  const { modifySrcFn } = opts;
+  if (!modifySrcFn) {
+    throw new Error(
+      'replaceSrcContents must take either a modifySrcFn function',
+    );
+  }
+  if (source == '') {
+    return;
+  }
+  if (modifySrcFn) {
+    const replaceFn = modifySrcFn({ ...opts });
+    return replaceSource(source, replaceFn);
+  }
+}
+
+export function findAndReplaceNodeContents(
   targetFile: string,
   ast: SourceFile,
   opts: ModifyFileOptions,
 ) {
-  const { selector, findNodeFn } = opts;
-  if (findNodeFn) {
-    const node = findNodeFn(ast);
-    if (!node || (node as Node[]).length === 0) {
-      return targetFile;
-    }
-    return replaceNodeContents(targetFile, ast, opts);
-  }
-  if (!selector) {
+  const { findNodeFn } = opts;
+  if (!findNodeFn) return;
+  const node = findNodeFn(ast);
+  if (!node || (node as Node[]).length === 0) {
     return targetFile;
   }
-  return replaceFileContents(targetFile, opts);
+  return replaceNodeContents(targetFile, ast, opts);
+}
+
+export function replaceContentInSrc(
+  source: string,
+  ast: SourceFile,
+  opts: ModifyFileOptions,
+) {
+  return (
+    findAndReplaceNodeContents(source, ast, opts) ||
+    replaceSrcContents(source, opts)
+  );
 }
 
 export function replaceInFile(targetFilePath: string, opts: ModifyFileOptions) {

@@ -1,8 +1,5 @@
 import { Node } from 'typescript';
-import {
-  TSQueryOptions,
-  TSQueryStringTransformer,
-} from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
+import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 
 export function replaceOne(
   source: string,
@@ -19,4 +16,15 @@ export function replaceOne(
     )}${replacement}${result.substring(match.getEnd())}`;
   }
   return result;
+}
+
+export declare type TSQuerySourceTransformer = (
+  source: string,
+) => string | undefined;
+
+export function replaceSource(
+  source: string,
+  stringTransformer: TSQuerySourceTransformer,
+): string | undefined {
+  return stringTransformer(source);
 }

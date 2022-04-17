@@ -3,6 +3,7 @@ import { Node, NodeArray, SourceFile, ClassDeclaration } from 'typescript';
 import { FindElementFn, CheckUnderNode, findElementNode } from '../find';
 import { AnyOpts, insertCode } from '../modify';
 import { ensureCommaDelimiters, ensureStmtClosing } from '../ensure';
+import { beforeIndex, endOfIndex } from '../positional';
 
 type ElementsType = any[] | NodeArray<any>;
 
@@ -58,22 +59,6 @@ export const insertClassCode = (
   index += indexAdj || 0;
   code = ensureStmtClosing(code);
   return insertCode(srcNode, index, code);
-};
-
-export const endOfIndex = (node: Node) => {
-  return node.getEnd() - 1;
-};
-
-export const startOfIndex = (node: Node) => {
-  return node.getStart() + 1;
-};
-
-export const beforeIndex = (node: Node) => {
-  return node.getStart() - 1;
-};
-
-export const afterIndex = (node: Node) => {
-  return node.getEnd() + 1;
 };
 
 export const alternativeClassInsertIndex = (

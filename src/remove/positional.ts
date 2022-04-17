@@ -1,10 +1,6 @@
+import { endOfIndex, startOfIndex, swapPositions } from './../positional';
 import { AnyOpts, removeCode, replaceCode } from '../modify';
-import {
-  findElementNode,
-  findStringLiteral,
-  findIdentifier,
-  FindElementFn,
-} from '../find';
+import { findElementNode, FindElementFn } from '../find';
 import { Node, NodeArray, SourceFile } from 'typescript';
 import { BetweenPos, CollectionIndex, IndexAdj, RelativePos } from '../types';
 
@@ -55,23 +51,36 @@ export interface RemovePosRange extends ResolveOpts {
   remove: RemovePosOpts;
 }
 
-export const getPositions = (opts: AnyOpts) => {
-  const { type, node, elements, remove, count, indexAdj } = opts;
+export const createEnsureValidPositions =
+  (bounds: BetweenPos) => (positions: BetweenPos) => {
+    if (positions.startPos > positions.endPos) {
+      positions = swapPositions(positions);
+    }
+
+    if (positions.startPos > bounds.endPos) {
+      positions.startPos = bounds.endPos;
+    }
+    if (positions.endPos > bounds.endPos) {
+      positions.startPos = bounds.endPos;
+    }
+    if (positions.startPos < bounds.startPos) {
+      positions.startPos = bounds.startPos;
+    }
+
+    if (positions.endPos < bounds.startPos) {
+      positions.endPos = bounds.startPos;
+    }
+  };
+
+const getPositionsInElements = ({
+  pos,
+  remove,
+  count,
+  elements,
+  bounds,
+  ensureValidPositions,
+}: any) => {
   const { relative } = remove;
-  let pos =
-    getRemovePosNum({
-      node,
-      elements,
-      remove,
-      count,
-    }) || 0;
-  if (count === 0) {
-    const positions = {
-      startPos: node.getStart() + 1 + indexAdj.start,
-      endPos: node.getEnd() - 1 + indexAdj.end,
-    };
-    return positions;
-  }
   if (pos === -1) {
     pos = 0;
     remove.relative = 'at';
@@ -87,13 +96,64 @@ export const getPositions = (opts: AnyOpts) => {
     firstElementRemovePos(removeOpts);
 
   if (!positions.startPos) {
-    positions.startPos = node.getStart() + 1;
+    positions.startPos = bounds.startPos;
   }
 
   if (!positions.endPos) {
-    positions.endPos = node.getEnd() - 1;
+    positions.endPos = bounds.endPos;
   }
+  ensureValidPositions(positions);
   return positions;
+};
+
+const getPositionsNoElements = ({
+  bounds,
+  indexAdj,
+  ensureValidPositions,
+}: any) => {
+  return ensureValidPositions({
+    startPos: bounds.startPos + indexAdj.start,
+    endPos: bounds.endPos + indexAdj.end,
+  });
+};
+
+export const getPositions = (options: AnyOpts) => {
+  const { node, elements, remove, count, indexAdj } = options;
+
+  const bounds = {
+    startPos: startOfIndex(node),
+    endPos: endOfIndex(node),
+  };
+  const ensureValidPositions = createEnsureValidPositions(bounds);
+
+  let opts: any = {
+    node,
+    remove,
+    count,
+    elements,
+    bounds,
+    indexAdj,
+    ensureValidPositions,
+  };
+
+  let pos =
+    getRemovePosNum({
+      node,
+      elements,
+      remove,
+      count,
+    }) || 0;
+
+  const noElements = count === 0;
+
+  opts = {
+    ...opts,
+    pos,
+  };
+
+  return noElements
+    ? getPositionsNoElements(opts)
+    : getPositionsInElements(opts);
 };
 
 export const getRemovePosRange = (opts: AnyOpts) => {
@@ -110,7 +170,14 @@ export const getRemovePosRange = (opts: AnyOpts) => {
   const posOpts = { node, elements };
   startPos = resolveRangePos(startPos, posOpts);
   endPos = resolveRangePos(endPos, posOpts);
-  return { startPos, endPos };
+  let positions = {
+    startPos,
+    endPos,
+  };
+  if (startPos > endPos) {
+    positions = swapPositions(positions);
+  }
+  return positions;
 };
 
 export const getRemovePosNum = ({
