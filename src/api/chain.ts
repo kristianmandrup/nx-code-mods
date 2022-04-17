@@ -6,18 +6,22 @@ export const chainApi = (source: string) => {
   return new ChainApi(source);
 };
 
-export class ChainApi {
+export interface Chainable {
+  source: string;
+}
+
+export class ChainApi implements Chainable {
   constructor(public source: string) {}
 
   get insert(): InsertApi {
-    return insertApi(this.source);
+    return insertApi(this);
   }
 
   get remove(): RemoveApi {
-    return removeApi(this.source);
+    return removeApi(this);
   }
 
   get replace(): ReplaceApi {
-    return replaceApi(this.source);
+    return replaceApi(this);
   }
 }

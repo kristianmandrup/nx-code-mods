@@ -1,4 +1,4 @@
-import { BaseApi } from '../api';
+import { BaseApi, Chainable } from '../api';
 import {
   replaceInNamedObjectInSource,
   ReplaceObjectOptions,
@@ -18,13 +18,13 @@ import {
   ReplaceInsideFunctionBlockOptions,
 } from './functions';
 
-export const replaceApi = (source: string) => {
-  return new ReplaceApi(source);
+export const replaceApi = (chain: Chainable): ReplaceApi => {
+  return new ReplaceApi(chain);
 };
 
 export class ReplaceApi extends BaseApi {
-  constructor(source: string) {
-    super(source);
+  constructor(chain: Chainable) {
+    super(chain);
   }
 
   inArray(opts: ReplaceArrayOptions): ReplaceApi {

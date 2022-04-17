@@ -112,19 +112,25 @@ export const saveTree = ({
   tree.write(targetFilePath, newContents);
 };
 
+export const saveAndFormatTree = async (opts: any) => {
+  const { format, tree } = opts;
+  saveTree(opts);
+  if (format) {
+    await formatFiles(tree);
+  }
+};
+
 export async function modifyTree(tree: Tree, opts: ModifyTreeOptions) {
-  const { projectRoot, relTargetFilePath, format } = opts;
+  const { projectRoot, relTargetFilePath } = opts;
   const targetFilePath = path.join(projectRoot, relTargetFilePath);
   const targetFile = readFileIfExisting(targetFilePath);
   const newContents = replaceInFile(targetFilePath, opts);
-  saveTree({
+  await saveAndFormatTree({
     tree,
     targetFile,
     targetFilePath,
     newContents,
+    ...opts,
   });
-  if (format) {
-    await formatFiles(tree);
-  }
   return newContents;
 }

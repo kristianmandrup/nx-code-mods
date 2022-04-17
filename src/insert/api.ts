@@ -1,3 +1,4 @@
+import { Chainable } from './../api/chain';
 import {
   insertClassMethodDecoratorInSource,
   insertClassDecoratorInSource,
@@ -20,13 +21,13 @@ import {
 } from './functions';
 import { BaseApi } from '../api';
 
-export const insertApi = (source: string) => {
-  return new InsertApi(source);
+export const insertApi = (chain: Chainable): InsertApi => {
+  return new InsertApi(chain);
 };
 
 export class InsertApi extends BaseApi {
-  constructor(source: string) {
-    super(source);
+  constructor(chain: Chainable) {
+    super(chain);
   }
 
   classDecorator(opts: ClassDecoratorInsertOptions): InsertApi {

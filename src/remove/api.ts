@@ -1,4 +1,4 @@
-import { BaseApi } from '../api';
+import { BaseApi, Chainable } from '../api';
 import {
   removeFromNamedArrayInSource,
   RemoveArrayOptions,
@@ -22,13 +22,13 @@ import {
   removeImportInSource,
 } from './functions';
 
-export const removeApi = (source: string) => {
-  return new RemoveApi(source);
+export const removeApi = (chain: Chainable): RemoveApi => {
+  return new RemoveApi(chain);
 };
 
 export class RemoveApi extends BaseApi {
-  constructor(source: string) {
-    super(source);
+  constructor(chain: Chainable) {
+    super(chain);
   }
 
   fromArray(opts: RemoveArrayOptions): RemoveApi {
