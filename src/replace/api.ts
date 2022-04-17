@@ -1,4 +1,5 @@
 import { BaseApi, Chainable } from '../api';
+import { AnyOpts } from '../modify';
 import {
   replaceInNamedObjectInSource,
   ReplaceObjectOptions,
@@ -27,35 +28,35 @@ export class ReplaceApi extends BaseApi {
     super(chain);
   }
 
-  inArray(opts: ReplaceArrayOptions): ReplaceApi {
+  inArray(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceInNamedArrayInSource, opts);
   }
 
-  classDecorator(opts: ClassDecoratorReplaceOptions): ReplaceApi {
+  classDecorator(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceClassDecoratorInSource, opts);
   }
 
-  classMethodParams(opts: ClassMethodParamReplaceOptions): ReplaceApi {
+  classMethodParams(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceClassMethodParamsInSource, opts);
   }
 
-  classMethod(opts: ClassMethodReplaceOptions): ReplaceApi {
+  classMethod(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceClassMethodInSource, opts);
   }
 
-  classProperty(opts: ClassPropertyReplaceOptions): ReplaceApi {
+  classProperty(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceClassPropertyInSource, opts);
   }
 
-  importIds(opts: ReplaceImportIdOptions): ReplaceApi {
+  importIds(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceImportIdInSource, opts);
   }
 
-  inFunction(opts: ReplaceInsideFunctionBlockOptions): ReplaceApi {
+  inFunction(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceInsideFunctionBlockInSource, opts);
   }
 
-  inObject(opts: ReplaceObjectOptions): ReplaceApi {
+  inObject(opts: AnyOpts): ReplaceApi {
     return this.apply(replaceInNamedObjectInSource, opts);
   }
 }

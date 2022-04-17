@@ -1,24 +1,15 @@
 import { BaseApi, Chainable } from '../api';
+import { AnyOpts } from '../modify';
 import {
   removeFromNamedArrayInSource,
-  RemoveArrayOptions,
-  RemoveObjectOptions,
   removeFromNamedObjectInSource,
   removeClassDecoratorInSource,
-  ClassDecoratorRemoveOptions,
   removeClassMethodParamDecoratorsInSource,
-  ClassMethodParamDecoratorRemoveOptions,
   removeClassMethodParamsInSource,
-  ClassMethodParamRemoveOptions,
   removeClassMethodInSource,
-  ClassMethodRemoveOptions,
   removeClassPropertyInSource,
-  ClassPropertyRemoveOptions,
-  RemoveFunctionOptions,
   removeInsideFunctionBlockInSource,
   removeImportIdInSource,
-  RemoveImportIdOptions,
-  RemoveImportOptions,
   removeImportInSource,
 } from './functions';
 
@@ -31,40 +22,38 @@ export class RemoveApi extends BaseApi {
     super(chain);
   }
 
-  fromArray(opts: RemoveArrayOptions): RemoveApi {
+  fromArray(opts: AnyOpts): RemoveApi {
     return this.apply(removeFromNamedArrayInSource, opts);
   }
 
-  fromClassDecorator(opts: ClassDecoratorRemoveOptions): RemoveApi {
+  fromClassDecorator(opts: AnyOpts): RemoveApi {
     return this.apply(removeClassDecoratorInSource, opts);
   }
 
-  fromClassMethodParamDecorator(
-    opts: ClassMethodParamDecoratorRemoveOptions,
-  ): RemoveApi {
+  fromClassMethodParamDecorator(opts: AnyOpts): RemoveApi {
     return this.apply(removeClassMethodParamDecoratorsInSource, opts);
   }
 
-  fromClassMethodParams(opts: ClassMethodParamRemoveOptions): RemoveApi {
+  fromClassMethodParams(opts: AnyOpts): RemoveApi {
     return this.apply(removeClassMethodParamsInSource, opts);
   }
 
-  fromClassMethods(opts: ClassMethodRemoveOptions): RemoveApi {
+  fromClassMethods(opts: AnyOpts): RemoveApi {
     return this.apply(removeClassMethodInSource, opts);
   }
-  fromClassProperties(opts: ClassPropertyRemoveOptions): RemoveApi {
+  fromClassProperties(opts: AnyOpts): RemoveApi {
     return this.apply(removeClassPropertyInSource, opts);
   }
-  fromFunction(opts: RemoveFunctionOptions): RemoveApi {
+  fromFunction(opts: AnyOpts): RemoveApi {
     return this.apply(removeInsideFunctionBlockInSource, opts);
   }
-  fromImport(opts: RemoveImportIdOptions): RemoveApi {
+  fromImport(opts: AnyOpts): RemoveApi {
     return this.apply(removeImportIdInSource, opts);
   }
-  import(opts: RemoveImportOptions): RemoveApi {
+  import(opts: AnyOpts): RemoveApi {
     return this.apply(removeImportInSource, opts);
   }
-  fromObject(opts: RemoveObjectOptions): RemoveApi {
+  fromObject(opts: AnyOpts): RemoveApi {
     return this.apply(removeFromNamedObjectInSource, opts);
   }
 }

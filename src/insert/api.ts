@@ -2,24 +2,16 @@ import { Chainable } from './../api/chain';
 import {
   insertClassMethodDecoratorInSource,
   insertClassDecoratorInSource,
-  ClassDecoratorInsertOptions,
-  ClassMethodDecInsertOptions,
-  InsertObjectOptions,
-  InsertArrayOptions,
-  InsertFunctionOptions,
-  InsertImportOptions,
-  ClassMethodInsertOptions,
   insertClassMethodParamDecoratorInSource,
-  ClassMethodDecParamDecoratorInsertOptions,
   insertClassMethodInSource,
   insertImportInSource,
   insertInsideFunctionBlockInSource,
   insertIntoNamedArrayInSource,
   insertIntoNamedObjectInSource,
   insertClassPropertyInSource,
-  ClassPropertyInsertOptions,
 } from './functions';
 import { BaseApi } from '../api';
+import { AnyOpts } from '../modify';
 
 export const insertApi = (chain: Chainable): InsertApi => {
   return new InsertApi(chain);
@@ -30,41 +22,39 @@ export class InsertApi extends BaseApi {
     super(chain);
   }
 
-  classDecorator(opts: ClassDecoratorInsertOptions): InsertApi {
+  classDecorator(opts: AnyOpts): InsertApi {
     return this.apply(insertClassDecoratorInSource, opts);
   }
 
-  classMethodDecorator(opts: ClassMethodDecInsertOptions): InsertApi {
+  classMethodDecorator(opts: AnyOpts): InsertApi {
     return this.apply(insertClassMethodDecoratorInSource, opts);
   }
 
-  classMethodParamDecorator(
-    opts: ClassMethodDecParamDecoratorInsertOptions,
-  ): InsertApi {
+  classMethodParamDecorator(opts: AnyOpts): InsertApi {
     return this.apply(insertClassMethodParamDecoratorInSource, opts);
   }
 
-  classMethod(opts: ClassMethodInsertOptions): InsertApi {
+  classMethod(opts: AnyOpts): InsertApi {
     return this.apply(insertClassMethodInSource, opts);
   }
 
-  classProperty(opts: ClassPropertyInsertOptions): InsertApi {
+  classProperty(opts: AnyOpts): InsertApi {
     return this.apply(insertClassPropertyInSource, opts);
   }
 
-  import(opts: InsertImportOptions): InsertApi {
+  import(opts: AnyOpts): InsertApi {
     return this.apply(insertImportInSource, opts);
   }
 
-  inFunction(opts: InsertFunctionOptions): InsertApi {
+  inFunction(opts: AnyOpts): InsertApi {
     return this.apply(insertInsideFunctionBlockInSource, opts);
   }
 
-  inArray(opts: InsertArrayOptions): InsertApi {
+  inArray(opts: AnyOpts): InsertApi {
     return this.apply(insertIntoNamedArrayInSource, opts);
   }
 
-  inObject(opts: InsertObjectOptions): InsertApi {
+  inObject(opts: AnyOpts): InsertApi {
     return this.apply(insertIntoNamedObjectInSource, opts);
   }
 }
