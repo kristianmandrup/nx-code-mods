@@ -16,6 +16,11 @@ export interface ClassMethodParamRemoveOptions {
   remove?: CollectionModifyOpts;
 }
 
+export interface ApiClassMethodParamRemoveOptions {
+  classId?: string;
+  methodId?: string;
+  remove?: CollectionModifyOpts;
+}
 export interface ClassMethodParamRemoveTreeOptions
   extends ClassMethodParamRemoveOptions {
   projectRoot: string;

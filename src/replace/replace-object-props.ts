@@ -7,12 +7,18 @@ import {
 } from '../remove';
 import { IndexAdj } from '../types';
 export interface ReplaceObjectOptions {
-  id: string;
-  code: string;
+  varId: string;
   replace?: CollectionModifyOpts;
   indexAdj?: IndexAdj;
+  code: string;
 }
 
+export interface ApiReplaceObjectOptions {
+  varId?: string;
+  replace?: CollectionModifyOpts;
+  indexAdj?: IndexAdj;
+  code: string;
+}
 export interface ReplaceObjectTreeOptions extends ReplaceObjectOptions {
   projectRoot: string;
   relTargetFilePath: string;

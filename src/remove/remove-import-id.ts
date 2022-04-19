@@ -20,6 +20,10 @@ export interface RemoveImportIdOptions {
   importFileRef: string;
 }
 
+export interface ApiRemoveImportIdOptions {
+  importId?: string;
+  importFileRef?: string;
+}
 export interface RemoveImportIdTreeOptions extends RemoveImportIdOptions {
   projectRoot: string;
   relTargetFilePath: string;

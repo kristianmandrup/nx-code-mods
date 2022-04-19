@@ -14,6 +14,11 @@ export interface ClassDecoratorRemoveOptions {
   decoratorId: string;
 }
 
+export interface ApiClassDecoratorRemoveOptions {
+  classId?: string;
+  decoratorId?: string;
+}
+
 export interface ClassDecoratorRemoveTreeOptions
   extends ClassDecoratorRemoveOptions {
   projectRoot: string;

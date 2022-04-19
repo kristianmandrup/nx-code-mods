@@ -10,6 +10,12 @@ export interface ClassDecoratorReplaceOptions {
   decoratorId: string;
 }
 
+export interface ApiClassDecoratorReplaceOptions {
+  classId?: string;
+  decoratorId?: string;
+  code: string;
+}
+
 export interface ClassDecoratorReplaceTreeOptions
   extends ClassDecoratorReplaceOptions {
   projectRoot: string;

@@ -11,6 +11,14 @@ export interface ClassMethodParamDecoratorReplaceOptions {
   replace?: CollectionModifyOpts;
 }
 
+export interface ApiClassMethodParamDecoratorReplaceOptions {
+  classId?: string;
+  methodId?: string;
+  paramId?: string;
+  replace?: CollectionModifyOpts;
+  code: string;
+}
+
 export interface ClassMethodParamDecoratorReplaceTreeOptions
   extends ClassMethodParamDecoratorReplaceOptions {
   projectRoot: string;

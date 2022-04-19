@@ -8,9 +8,16 @@ import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 
 export interface InsertObjectOptions {
   varId: string;
-  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
+  code: string;
+}
+
+export interface ApiInsertObjectOptions {
+  varId?: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+  code: string;
 }
 
 export interface InsertObjectTreeOptions extends InsertObjectOptions {
@@ -19,10 +26,17 @@ export interface InsertObjectTreeOptions extends InsertObjectOptions {
 }
 
 export type InsertInObjectFn = {
-  id: string;
-  code: string;
-  insert: CollectionInsert;
+  varId: string;
+  insert?: CollectionInsert;
   indexAdj?: number;
+  code: string;
+};
+
+export type ApiInsertInObjectFn = {
+  varId?: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+  code: string;
 };
 
 export const insertInObject =

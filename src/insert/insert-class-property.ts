@@ -7,16 +7,24 @@ import {
 } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
-import { insertInClassScope, startOfIndex, afterIndex } from './positional';
+import { startOfIndex, afterIndex } from '../positional';
+import { insertInClassScope } from './positional';
 
 export interface ClassPropertyInsertOptions {
   classId: string;
   propertyId: string;
-  code: string;
   insertPos?: InsertPosition;
   indexAdj?: number;
+  code: string;
 }
 
+export interface ApiClassPropertyInsertOptions {
+  classId?: string;
+  propertyId?: string;
+  insertPos?: InsertPosition;
+  indexAdj?: number;
+  code: string;
+}
 export interface ClassPropertyInsertTreeOptions
   extends ClassPropertyInsertOptions {
   projectRoot: string;
@@ -31,7 +39,7 @@ const functionsMap = {
   findAltPivotNode: findFirstMethodDeclaration,
 };
 
-const insertClassProperty = (opts: AnyOpts) => (srcNode: SourceFile) => {
+const insertClassProperty = (opts: AnyOpts) => (srcNode: any) => {
   return insertInClassScope(srcNode, { ...functionsMap, ...opts });
 };
 

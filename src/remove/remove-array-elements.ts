@@ -11,6 +11,12 @@ export interface RemoveArrayOptions {
   indexAdj?: IndexAdj;
 }
 
+export interface ApiRemoveArrayOptions {
+  varId?: string;
+  remove?: CollectionModifyOpts;
+  indexAdj?: IndexAdj;
+}
+
 export interface RemoveArrayTreeOptions extends RemoveArrayOptions {
   projectRoot: string;
   relTargetFilePath: string;

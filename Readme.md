@@ -28,21 +28,9 @@ The library includes a number of utility functions which should greatly simplify
 
 Appends an import statement to the end of import declarations.
 
-```ts
-appendAfterImportsInFile(
-  filePath: string,
-  opts: AppendAfterImportsOptions,
-)
-```
-
-In file tree
-
-```ts
-appendAfterImportsInTree = (
-  tree: Tree,
-  { projectRoot, relTargetFilePath, code }: AppendAfterImportsTreeOptions,
-);
-```
+- `appendAfterImportsInSource`
+- `appendAfterImportsInFile`
+- `appendAfterImportsInTree`
 
 ### <a name='Sampleusage'></a>Sample usage
 
@@ -61,23 +49,11 @@ await formatFiles(tree);
 
 ## <a name='InsertintoImport'></a>Insert into import
 
-Inserts an identifier to be imported into an existing import declaration
+Inserts an identifier to import into an existing import declaration
 
-```ts
-insertImportInFile(
-  filePath: string,
-  opts: InsertImportOptions,
-)
-```
-
-In file tree
-
-```ts
-insertImportInTree = (
-  tree: Tree,
-  { projectRoot, relTargetFilePath, code }: InsertImportTreeOptions,
-);
-```
+- `insertImportInSource`
+- `insertImportInFile`
+- `insertImportInTree`
 
 ### <a name='Sampleusage'></a>Sample usage
 
@@ -103,7 +79,7 @@ const code = insertImportInFile(filePath, {
 
 ## <a name='InsertintonamedObject'></a>Insert into named Object
 
-Insert code into a named array
+Insert code into a named object
 
 ```ts
 type CollectionInsert = {
@@ -121,27 +97,11 @@ interface InsertObjectOptions {
 }
 ```
 
-Insert into src loaded from file
+- `insertIntoNamedObjectInSource`
+- `insertIntoNamedObjectInFile`
+- `insertIntoNamedObjectInTree`
 
-```ts
-insertIntoNamedObjectInFile(
-  filePath: string,
-  opts: InsertObjectOptions,
-)
-```
-
-In file tree
-
-```ts
-insertIntoNamedObjectInTree(
-  tree: Tree,
-  opts: InsertObjectTreeOptions,
-)
-```
-
-The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
-
-It takes the `code` string and inserts it into a non-empty object with an `Identifier` matching the `targetIdName`. The `insertPos` argument can be either `start`, `end`, an index in the object or a name of a property of the object.
+Inserts the `code` in the object named `varId`.
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
@@ -214,25 +174,11 @@ interface InsertArrayOptions {
 
 Insert into src loaded from file
 
-```ts
-insertIntoNamedArrayInFile(
-  filePath: string,
-  opts: InsertArrayOptions,
-)
-```
+- `insertIntoNamedArrayInSource`
+- `insertIntoNamedArrayInFile`
+- `insertIntoNamedArrayInTree`
 
-In file tree
-
-```ts
-insertIntoNamedArrayInTree(
-  tree: Tree,
-  opts: InsertArrayTreeOptions,
-)
-```
-
-The function finds the file located at `relTargetFilePath` relative to the `projectRoot` path.
-
-It takes the `code` string and inserts it to a non-empty array with an Identifier matching the `targetIdName`. The `insertPos` argument can be either `start`, `end` or an index in the array.
+Inserts the `code` in the array named `varId`.
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
@@ -294,21 +240,9 @@ insert: {
 
 Insert code into a function block
 
-```ts
-insertInsideFunctionBlockInTree(
-  tree: Tree,
-  opts: InsertFunctionTreeOptions
-)
-```
-
-In file tree
-
-```ts
-insertInsideFunctionBlockInFile(
-  filePath: string,
-  opts: InsertFunctionOptions
-)
-```
+- `insertInsideFunctionBlockInSource`
+- `insertInsideFunctionBlockInFile`
+- `insertInsideFunctionBlockInTree`
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
@@ -328,21 +262,9 @@ insertInsideFunctionBlockInFile(filePath, {
 
 Add a class method to a class
 
-```ts
-insertClassMethodInTree(
-  tree: Tree,
-  opts: ClassMethodInsertTreeOptions
-)
-```
-
-In file tree
-
-```ts
-insertClassMethodInFile(
-  filePath: string,
-  opts: ClassMethodInsertOptions
-)
-```
+- `insertClassMethodInSource`
+- `insertClassMethodInFile`
+- `insertClassMethodInTree`
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
@@ -358,21 +280,9 @@ insertClassMethodInFile(filePath, {
 
 Add class property to a class
 
-```ts
-insertClassPropertyInFile(
-  filePath: string,
-  opts: ClassPropInsertOptions,
-)
-```
-
-In file tree
-
-```ts
-insertClassPropertyInTree(
-  tree: Tree,
-  opts: ClassPropInsertOptions
-)
-```
+- `insertClassPropertyInSource`
+- `insertClassPropertyInFile`
+- `insertClassPropertyInTree`
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
@@ -388,21 +298,9 @@ insertClassPropertyInFile(filePath, {
 
 Add decorator to a class
 
-```ts
-insertClassDecoratorInFile(
-  filePath: string,
-  opts: ClassDecoratorInsertOptions,
-)
-```
-
-In file tree
-
-```ts
-insertClassDecoratorInTree(
-  tree: Tree,
-  opts: ClassDecoratorInsertTreeOptions,
-)
-```
+- `insertClassDecoratorInSource`
+- `insertClassDecoratorInFile`
+- `insertClassDecoratorInTree`
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
@@ -417,16 +315,9 @@ insertClassDecoratorInFile(filePath, {
 
 Add class method decorator (such as for NestJS)
 
-```ts
-insertBeforeMatchingMethod = (opts: AnyOpts) => (node: Node)
-```
-
-```ts
-insertClassMethodDecoratorInTree(
-  tree: Tree,
-  opts: ClassMethodDecInsertOptions,
-)
-```
+- `insertClassMethodDecoratorInSource`
+- `insertClassMethodDecoratorInFile`
+- `insertClassMethodDecoratorInTree`
 
 ### <a name='Sampleusage-1'></a>Sample usage
 
@@ -442,21 +333,9 @@ const code = insertClassMethodDecoratorInFile(filePath, {
 
 Add parameter decorator to a class method
 
-```ts
-insertClassMethodParamDecoratorInFile(
-  filePath: string,
-  opts: ClassMethodDecParamInsertOptions,
-)
-```
-
-In file tree
-
-```ts
-insertClassMethodParamDecoratorInTree(
-  tree: Tree,
-  opts: ClassMethodDecParamInsertTreeOptions,
-)
-```
+- `insertClassMethodParamDecoratorInSource`
+- `insertClassMethodParamDecoratorInFile`
+- `insertClassMethodParamDecoratorInTree`
 
 ### <a name='Sampleusage-1'></a>Sample usage
 

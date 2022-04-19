@@ -7,42 +7,50 @@ import {
 import { AnyOpts, modifyTree, replaceInFile, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
 
-export interface ClassMethodDecParamDecoratorInsertOptions {
+export interface ClassMethodParamDecoratorInsertOptions {
   classId: string;
   methodId: string;
-  id: string;
+  paramId: string;
   code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
 }
 
-export interface ClassMethodDecParamDecoratorInsertTreeOptions
-  extends ClassMethodDecParamDecoratorInsertOptions {
+export interface ApiClassMethodParamDecoratorInsertOptions {
+  classId?: string;
+  methodId?: string;
+  paramId?: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+  code: string;
+}
+
+export interface ClassMethodParamDecoratorInsertTreeOptions
+  extends ClassMethodParamDecoratorInsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
 
-export const insertParamDecorator =
-  (opts: AnyOpts) => (srcNode: SourceFile) => {
-    const { classId, methodId, id, insert, code } = opts;
-    const node = findClassMethodParameterDeclaration(srcNode, {
-      classId: classId,
-      methodId,
-      paramId: id,
-    });
-    if (!node) return;
-    return insertIntoNode(srcNode, {
-      elementsField: 'decorators',
-      node,
-      code,
-      insert,
-      ...opts,
-    });
-  };
+export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
+  const { classId, methodId, paramId, insert, code } = opts;
+  const node = findClassMethodParameterDeclaration(srcNode, {
+    classId: classId,
+    methodId,
+    paramId,
+  });
+  if (!node) return;
+  return insertIntoNode(srcNode, {
+    elementsField: 'decorators',
+    node,
+    code,
+    insert,
+    ...opts,
+  });
+};
 
 export function insertClassMethodParamDecoratorInSource(
   source: string,
-  opts: ClassMethodDecParamDecoratorInsertOptions,
+  opts: ClassMethodParamDecoratorInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.classId);
@@ -55,7 +63,7 @@ export function insertClassMethodParamDecoratorInSource(
 
 export function insertClassMethodParamDecoratorInFile(
   filePath: string,
-  opts: ClassMethodDecParamDecoratorInsertOptions,
+  opts: ClassMethodParamDecoratorInsertOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.classId);
@@ -68,7 +76,7 @@ export function insertClassMethodParamDecoratorInFile(
 
 export async function insertClassMethodParamDecoratorInTree(
   tree: Tree,
-  opts: ClassMethodDecParamDecoratorInsertTreeOptions,
+  opts: ClassMethodParamDecoratorInsertTreeOptions,
 ) {
   return await modifyTree(tree, opts);
 }

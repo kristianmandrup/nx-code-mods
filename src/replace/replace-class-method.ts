@@ -11,6 +11,12 @@ export interface ClassMethodReplaceOptions {
   methodId: string;
 }
 
+export interface ApiClassMethodReplaceOptions {
+  classId?: string;
+  methodId?: string;
+  code: string;
+}
+
 export interface ClassMethodReplaceTreeOptions
   extends ClassMethodReplaceOptions {
   projectRoot: string;

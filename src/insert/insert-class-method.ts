@@ -1,11 +1,4 @@
-import { ensureStmtClosing } from '../ensure';
-import {
-  insertCode,
-  AnyOpts,
-  replaceInFile,
-  modifyTree,
-  replaceInSource,
-} from '../modify';
+import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
@@ -13,17 +6,25 @@ import {
   findLastPropertyDeclaration,
   findMethodDeclaration,
 } from '../find';
-import { Node, SourceFile } from 'typescript';
-import { insertInClassScope, endOfIndex, beforeIndex } from './positional';
+import { SourceFile } from 'typescript';
+import { insertInClassScope } from './positional';
+import { endOfIndex, beforeIndex } from '../positional';
 
 export interface ClassMethodInsertOptions {
   classId: string;
   methodId: string;
-  code: string;
   insertPos?: InsertPosition;
   indexAdj?: number;
+  code: string;
 }
 
+export interface ApiClassMethodInsertOptions {
+  classId?: string;
+  methodId?: string;
+  insertPos?: InsertPosition;
+  indexAdj?: number;
+  code: string;
+}
 export interface ClassMethodInsertTreeOptions extends ClassMethodInsertOptions {
   projectRoot: string;
   relTargetFilePath: string;
@@ -37,7 +38,7 @@ const functionsMap = {
   findAltPivotNode: findLastPropertyDeclaration,
 };
 
-export const insertClassMethod = (opts: AnyOpts) => (srcNode: SourceFile) => {
+export const insertClassMethod = (opts: AnyOpts) => (srcNode: any) => {
   return insertInClassScope(srcNode, { ...functionsMap, ...opts });
 };
 

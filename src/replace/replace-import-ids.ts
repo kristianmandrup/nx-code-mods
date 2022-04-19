@@ -11,6 +11,12 @@ export interface ReplaceImportIdOptions {
   importFileRef: string;
 }
 
+export interface ApiReplaceImportIdOptions {
+  importId?: string;
+  importFileRef?: string;
+  code: string;
+}
+
 export interface ReplaceImportIdTreeOptions extends ReplaceImportIdOptions {
   projectRoot: string;
   relTargetFilePath: string;

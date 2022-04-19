@@ -14,6 +14,10 @@ export interface ClassMethodRemoveOptions {
   methodId: string;
 }
 
+export interface ApiClassMethodRemoveOptions {
+  classId?: string;
+  methodId?: string;
+}
 export interface ClassMethodRemoveTreeOptions extends ClassMethodRemoveOptions {
   projectRoot: string;
   relTargetFilePath: string;

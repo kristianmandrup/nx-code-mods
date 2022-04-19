@@ -13,6 +13,13 @@ export interface ReplaceInsideFunctionBlockOptions {
   indexAdj?: number;
 }
 
+export interface ApiReplaceInsideFunctionBlockOptions {
+  functionId?: string;
+  replace?: CollectionModifyOpts;
+  indexAdj?: number;
+  code: string;
+}
+
 export interface ReplaceInsideFunctionBlockTreeOptions
   extends ReplaceInsideFunctionBlockOptions {
   projectRoot: string;

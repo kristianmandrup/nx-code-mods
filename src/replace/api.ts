@@ -1,24 +1,28 @@
+import {} from './replace-array-elements';
 import { BaseApi, Chainable } from '../api';
 import { AnyOpts } from '../modify';
 import {
   replaceInNamedObjectInSource,
-  ReplaceObjectOptions,
-  ClassDecoratorReplaceOptions,
+  ApiReplaceObjectOptions,
+  ApiClassDecoratorReplaceOptions,
   replaceClassDecoratorInSource,
-  ReplaceArrayOptions,
+  ApiReplaceArrayOptions,
   replaceInNamedArrayInSource,
   replaceClassMethodInSource,
-  ClassMethodReplaceOptions,
+  ApiClassMethodReplaceOptions,
   replaceClassMethodParamsInSource,
-  ClassMethodParamReplaceOptions,
+  ApiClassMethodParamReplaceOptions,
   replaceClassPropertyInSource,
-  ClassPropertyReplaceOptions,
+  ApiClassPropertyReplaceOptions,
   replaceImportIdInSource,
-  ReplaceImportIdOptions,
+  ApiReplaceImportIdOptions,
   replaceInsideFunctionBlockInSource,
-  ReplaceInsideFunctionBlockOptions,
+  ApiReplaceInsideFunctionBlockOptions,
 } from './functions';
-import { replaceClassMethodParamDecoratorsInSource } from './replace-class-method-param-decorator';
+import {
+  replaceClassMethodParamDecoratorsInSource,
+  ApiClassMethodParamDecoratorReplaceOptions,
+} from './replace-class-method-param-decorator';
 
 export const replaceApi = (chain: Chainable): ReplaceApi => {
   return new ReplaceApi(chain);
@@ -29,31 +33,33 @@ export class ReplaceApi extends BaseApi {
     super(chain);
   }
 
-  inArray(opts: AnyOpts): ReplaceApi {
+  inArray(opts: ApiReplaceArrayOptions): ReplaceApi {
     return this.apply(replaceInNamedArrayInSource, opts);
   }
 
-  classDecorator(opts: AnyOpts): ReplaceApi {
+  classDecorator(opts: ApiClassDecoratorReplaceOptions): ReplaceApi {
     return this.apply(replaceClassDecoratorInSource, opts);
   }
 
-  classMethodParams(opts: AnyOpts): ReplaceApi {
+  classMethodParams(opts: ApiClassMethodParamReplaceOptions): ReplaceApi {
     return this.apply(replaceClassMethodParamsInSource, opts);
   }
 
-  classMethodParamDecorators(opts: AnyOpts): ReplaceApi {
+  classMethodParamDecorators(
+    opts: ApiClassMethodParamDecoratorReplaceOptions,
+  ): ReplaceApi {
     return this.apply(replaceClassMethodParamDecoratorsInSource, opts);
   }
 
-  classMethod(opts: AnyOpts): ReplaceApi {
+  classMethod(opts: ApiClassMethodReplaceOptions): ReplaceApi {
     return this.apply(replaceClassMethodInSource, opts);
   }
 
-  classProperty(opts: AnyOpts): ReplaceApi {
+  classProperty(opts: ApiClassPropertyReplaceOptions): ReplaceApi {
     return this.apply(replaceClassPropertyInSource, opts);
   }
 
-  importIds(opts: AnyOpts): ReplaceApi {
+  importIds(opts: ApiReplaceImportIdOptions): ReplaceApi {
     return this.apply(replaceImportIdInSource, opts);
   }
 
@@ -61,7 +67,7 @@ export class ReplaceApi extends BaseApi {
     return this.apply(replaceInsideFunctionBlockInSource, opts);
   }
 
-  inObject(opts: AnyOpts): ReplaceApi {
+  inObject(opts: ApiReplaceObjectOptions): ReplaceApi {
     return this.apply(replaceInNamedObjectInSource, opts);
   }
 }

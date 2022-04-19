@@ -11,6 +11,12 @@ export interface ClassPropertyReplaceOptions {
   propertyId: string;
 }
 
+export interface ApiClassPropertyReplaceOptions {
+  code: string;
+  classId?: string;
+  propertyId?: string;
+}
+
 export interface ClassPropertyReplaceTreeOptions
   extends ClassPropertyReplaceOptions {
   projectRoot: string;

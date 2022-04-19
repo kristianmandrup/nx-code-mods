@@ -15,6 +15,10 @@ export interface ClassPropertyRemoveOptions {
   propertyId: string;
 }
 
+export interface ApiClassPropertyRemoveOptions {
+  classId?: string;
+  propertyId?: string;
+}
 export interface ClassPropRemoveTreeOptions extends ClassPropertyRemoveOptions {
   projectRoot: string;
   relTargetFilePath: string;

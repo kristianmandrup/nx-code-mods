@@ -13,6 +13,13 @@ export interface ClassMethodParamReplaceOptions {
   replace?: CollectionReplace;
 }
 
+export interface ApiClassMethodParamReplaceOptions {
+  classId?: string;
+  methodId?: string;
+  replace?: CollectionReplace;
+  code: string;
+}
+
 export interface ClassMethodParamReplaceTreeOptions
   extends ClassMethodParamReplaceOptions {
   projectRoot: string;

@@ -1,14 +1,22 @@
 import { CollectionInsert, insertIntoNode } from './positional';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
-import { replaceInFile, AnyOpts, modifyTree } from '../modify';
+import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
 import { Tree } from '@nrwl/devkit';
 export interface ClassMethodParamsInsertOptions {
   classId: string;
   methodId: string;
-  code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
+  code: string;
+}
+
+export interface ApiClassMethodParamsInsertOptions {
+  classId?: string;
+  methodId?: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+  code: string;
 }
 
 export interface ClassMethodParamsInsertTreeOptions
@@ -18,7 +26,7 @@ export interface ClassMethodParamsInsertTreeOptions
 }
 
 export const insertParametersInClassMethod =
-  (opts: AnyOpts) => (srcNode: SourceFile) => {
+  (opts: AnyOpts) => (srcNode: any) => {
     const { classId, methodId, insert, code } = opts;
     const node = findClassMethodDeclaration(srcNode, {
       classId: classId,
@@ -33,6 +41,19 @@ export const insertParametersInClassMethod =
       ...opts,
     });
   };
+
+export function insertClassMethodParameterInSource(
+  filePath: string,
+  opts: ClassMethodParamsInsertOptions,
+) {
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.classId);
+  return replaceInSource(filePath, {
+    findNodeFn,
+    modifyFn: insertParametersInClassMethod,
+    ...opts,
+  });
+}
 
 export function insertClassMethodParameterInFile(
   filePath: string,

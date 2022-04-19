@@ -6,21 +6,27 @@ import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
 import { CollectionInsert, insertIntoNode } from './positional';
 
 export interface InsertFunctionOptions {
-  code: string;
-  id: string;
+  functionId: string;
   insert?: CollectionInsert;
   indexAdj?: number;
+  code: string;
 }
 
+export interface ApiInsertFunctionOptions {
+  functionId?: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+  code: string;
+}
 export interface InsertFunctionTreeOptions extends InsertFunctionOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
 
 export const insertInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
-  let { code, id, insert } = opts;
+  let { code, functionId, insert } = opts;
   insert = insert || {};
-  const funBlock = findFunctionBlock(srcNode, id);
+  const funBlock = findFunctionBlock(srcNode, functionId);
   if (!funBlock) {
     return;
   }
@@ -37,7 +43,8 @@ export function insertInsideFunctionBlockInSource(
   source: string,
   opts: InsertFunctionOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findFunctionBlock(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findFunctionBlock(node, opts.functionId);
   const allOpts = {
     findNodeFn,
     modifyFn: insertInFunctionBlock,
@@ -50,7 +57,8 @@ export function insertInsideFunctionBlockInFile(
   filePath: string,
   opts: InsertFunctionOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findFunctionBlock(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findFunctionBlock(node, opts.functionId);
   const allOpts = {
     findNodeFn,
     modifyFn: insertInFunctionBlock,

@@ -10,19 +10,26 @@ import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
 import { CollectionInsert, insertIntoNode } from './positional';
 
 export interface InsertImportOptions {
-  code?: string;
   importId: string;
   importFileRef: string;
   insert?: CollectionInsert;
   indexAdj?: number;
+  code: string;
 }
 
+export interface ApiInsertImportOptions {
+  importId?: string;
+  importFileRef?: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+  code: string;
+}
 export interface InsertImportTreeOptions extends InsertImportOptions {
   projectRoot: string;
   relTargetFilePath: string;
 }
 
-export const insertImport = (opts: AnyOpts) => (srcNode: SourceFile) => {
+export const insertImport = (opts: AnyOpts) => (srcNode: any) => {
   let { code, insert, importId, importFileRef } = opts;
   const importDecl = findMatchingImportDecl(srcNode, {
     importId,

@@ -4,11 +4,18 @@ import { findClassDeclaration, findDecorator } from '../find/find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';
 import { ensureNewlineClosing } from '../ensure';
+import { beforeIndex, startOfIndex } from '../positional';
 
 export interface ClassDecoratorInsertOptions {
-  id: string;
-  code: string;
+  classId: string;
   indexAdj?: number;
+  code: string;
+}
+
+export interface ApiClassDecoratorInsertOptions {
+  classId?: string;
+  indexAdj?: number;
+  code: string;
 }
 
 export interface ClassDecoratorInsertTreeOptions
@@ -18,13 +25,13 @@ export interface ClassDecoratorInsertTreeOptions
 }
 
 export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
-  const { id, code, indexAdj } = opts;
-  const classDecl = findClassDeclaration(node, id);
+  let { classId, code, indexAdj } = opts;
+  const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) {
     return;
   }
   // abort if class decorator already present
-  const abortIfFound = (node: Node) => findDecorator(node, id);
+  const abortIfFound = (node: Node) => findDecorator(node, classId);
 
   if (abortIfFound) {
     const found = abortIfFound(classDecl);
@@ -33,8 +40,8 @@ export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
     }
   }
 
-  const classDeclIndex = classDecl.getStart() + (indexAdj || 0);
-  const code = ensureNewlineClosing(code);
+  const classDeclIndex = beforeIndex(classDecl) + (indexAdj || 0);
+  code = ensureNewlineClosing(code);
   return insertCode(node, classDeclIndex, code);
 };
 
@@ -42,7 +49,8 @@ export function insertClassDecoratorInSource(
   source: string,
   opts: ClassDecoratorInsertOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.classId);
 
   return replaceInSource(source, {
     findNodeFn,
@@ -55,7 +63,8 @@ export function insertClassDecoratorInFile(
   filePath: string,
   opts: ClassDecoratorInsertOptions,
 ) {
-  const findNodeFn = (node: SourceFile) => findClassDeclaration(node, opts.id);
+  const findNodeFn = (node: SourceFile) =>
+    findClassDeclaration(node, opts.classId);
 
   return replaceInFile(filePath, {
     findNodeFn,

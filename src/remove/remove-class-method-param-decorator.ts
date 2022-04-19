@@ -18,6 +18,12 @@ export interface ClassMethodParamDecoratorRemoveOptions {
   remove?: CollectionModifyOpts;
 }
 
+export interface ApiClassMethodParamDecoratorRemoveOptions {
+  classId?: string;
+  methodId?: string;
+  paramId?: string;
+  remove?: CollectionModifyOpts;
+}
 export interface ClassMethodParamDecoratorRemoveTreeOptions
   extends ClassMethodParamDecoratorRemoveOptions {
   projectRoot: string;

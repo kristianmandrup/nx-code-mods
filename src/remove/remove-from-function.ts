@@ -13,6 +13,11 @@ export interface RemoveFunctionOptions {
   remove?: CollectionModifyOpts;
   indexAdj?: number;
 }
+export interface ApiRemoveFunctionOptions {
+  functionId?: string;
+  remove?: CollectionModifyOpts;
+  indexAdj?: number;
+}
 
 export interface RemoveFunctionTreeOptions extends RemoveFunctionOptions {
   projectRoot: string;

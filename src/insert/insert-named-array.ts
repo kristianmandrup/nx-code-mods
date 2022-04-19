@@ -6,12 +6,18 @@ import { Tree } from '@nrwl/devkit';
 
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
 export interface InsertArrayOptions {
-  id: string;
-  code: string;
+  varId: string;
   insert?: CollectionInsert;
   indexAdj?: number;
+  code: string;
 }
 
+export interface ApiInsertArrayOptions {
+  varId?: string;
+  insert?: CollectionInsert;
+  indexAdj?: number;
+  code: string;
+}
 export interface InsertArrayTreeOptions extends InsertArrayOptions {
   projectRoot: string;
   relTargetFilePath: string;
@@ -39,7 +45,7 @@ export function insertIntoNamedArrayInSource(
   opts: InsertArrayOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInSource(source, {
     ...opts,
     findNodeFn,
@@ -52,7 +58,7 @@ export function insertIntoNamedArrayInFile(
   opts: InsertArrayOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
-    findVariableDeclaration(node, opts.id);
+    findVariableDeclaration(node, opts.varId);
   return replaceInFile(filePath, {
     ...opts,
     findNodeFn,

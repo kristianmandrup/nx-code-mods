@@ -13,6 +13,13 @@ export interface ReplaceArrayOptions {
   indexAdj?: IndexAdj;
 }
 
+export interface ApiReplaceArrayOptions {
+  varId?: string;
+  indexAdj?: IndexAdj;
+  replace?: CollectionModifyOpts;
+  code: string;
+}
+
 export interface ReplaceArrayTreeOptions extends ReplaceArrayOptions {
   projectRoot: string;
   relTargetFilePath: string;
