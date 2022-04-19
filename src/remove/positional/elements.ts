@@ -1,9 +1,14 @@
 import { createEnsureValidPositions } from '../../ensure';
 import { findElementNode } from '../../find';
-import { AnyOpts } from '../../modify';
 import { endOfIndex, startOfIndex } from '../../positional';
-import { ElementsType } from '../../types';
+import { BetweenPos, ElementsType } from '../../types';
 import { RemovePosArgs, RemovePosOpts } from './types';
+
+const hasValidBetween = (between?: BetweenPos) => {
+  if (!between) return false;
+  if (!(between.startPos && between.endPos)) return false;
+  return true;
+};
 
 export const getRemovePosNum = ({
   node,
@@ -49,6 +54,14 @@ export const lastElementRemovePos = (opts: RemovePosOpts) => {
   const element = elements[elements.length - 1];
   const prevElemPos = prevElement.getEnd();
   const elemPos = element.getEnd();
+
+  console.log('lastElementRemovePos', {
+    relative,
+    firstElementPos,
+    prevElemPos,
+    elemPos,
+  });
+
   if (relative === 'at') {
     return {
       startPos: prevElemPos,
@@ -67,7 +80,8 @@ export const lastElementRemovePos = (opts: RemovePosOpts) => {
 };
 
 export const firstElementRemovePos = (opts: RemovePosOpts) => {
-  const { elements, pos, remove } = opts;
+  let { elements, pos, remove } = opts;
+  remove = remove || {};
   const { relative } = remove;
   if (pos > 0) {
     return;
@@ -77,6 +91,13 @@ export const firstElementRemovePos = (opts: RemovePosOpts) => {
   const firstElementPos = firstElement.getStart();
   const nextElement = elements[nextElementIndex];
   const nextElemPos = nextElement.getStart();
+
+  console.log('firstElementRemovePos', {
+    relative,
+    firstElementPos,
+    nextElemPos,
+  });
+
   if (relative === 'at') {
     return {
       startPos: firstElementPos,
@@ -101,6 +122,13 @@ export const midElementRemovePos = (opts: RemovePosOpts) => {
   const nextElement = getNextElem(elements, pos);
   const startPos = element.getEnd();
   const endPos = nextElement.getStart();
+
+  console.log('midElementRemovePos', {
+    relative,
+    element,
+    nextElement,
+  });
+
   if (relative === 'at') {
     return { startPos, endPos };
   }
@@ -133,8 +161,8 @@ const getPositionsInElements = ({
   const removeOpts = { ...remove, elements, count, pos };
   let positions =
     lastElementRemovePos(removeOpts) ||
-    midElementRemovePos(removeOpts) ||
-    firstElementRemovePos(removeOpts);
+    firstElementRemovePos(removeOpts) ||
+    midElementRemovePos(removeOpts);
 
   if (!positions.startPos) {
     positions.startPos = bounds.startPos;
@@ -144,6 +172,7 @@ const getPositionsInElements = ({
     positions.endPos = bounds.endPos;
   }
   ensureValidPositions(positions);
+  console.log('getPositionsInElements', { positions });
   return positions;
 };
 
@@ -159,7 +188,10 @@ const getPositionsNoElements = ({
 };
 
 export const getIndexPositions = (options: RemovePosArgs) => {
-  const { node, elements, remove, count, indexAdj } = options;
+  let { node, elements, remove, count, indexAdj } = options;
+  remove = remove || {};
+  const { between } = remove;
+  if (hasValidBetween(between)) return;
 
   const bounds = {
     startPos: startOfIndex(node),
@@ -185,6 +217,8 @@ export const getIndexPositions = (options: RemovePosArgs) => {
       count,
     }) || 0;
 
+  console.log({ pos });
+
   const noElements = count === 0;
 
   opts = {
@@ -192,7 +226,10 @@ export const getIndexPositions = (options: RemovePosArgs) => {
     pos,
   };
 
-  return noElements
+  const positions = noElements
     ? getPositionsNoElements(opts)
     : getPositionsInElements(opts);
+
+  console.log('index', { positions });
+  return positions;
 };

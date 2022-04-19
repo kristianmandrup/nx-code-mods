@@ -111,7 +111,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -131,7 +131,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -151,7 +151,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -170,7 +170,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -190,7 +190,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -206,11 +206,11 @@ describe('remove from array', () => {
     });
 
     context('between', () => {
-      it('remove middle 2 elements', () => {
+      it.only('remove middle 2 elements', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-4-elements.txt',
+          'has-matching-array-with-4-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -222,6 +222,7 @@ describe('remove from array', () => {
           },
         });
         const modifiedCode = code ? code : '';
+        console.log({ modifiedCode });
         expect(modifiedCode.includes(`'a'`)).toBeTruthy();
         expect(modifiedCode.includes(`'b'`)).toBeFalsy();
         expect(modifiedCode.includes(`'c'`)).toBeFalsy();
@@ -229,8 +230,8 @@ describe('remove from array', () => {
       });
     });
 
-    context('after b string literal', () => {
-      it('remove after b string literal', () => {
+    context('after a string literal', () => {
+      it('remove b element after a string literal', () => {
         const filePath = path.join(
           __dirname,
           'files',

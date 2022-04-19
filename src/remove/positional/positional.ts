@@ -2,7 +2,7 @@ import { AnyOpts, removeCode, replaceCode } from '../../modify';
 import { Node, SourceFile } from 'typescript';
 import { IndexAdj } from '../../types';
 import { getIndexPositions } from './elements';
-import { getRemovePosRange } from './range';
+import { getRangePositions } from './range';
 import { RemovePosArgs } from './types';
 
 export const normalizeRemoveIndexAdj = (indexAdj: IndexAdj) => {
@@ -13,7 +13,7 @@ export const normalizeRemoveIndexAdj = (indexAdj: IndexAdj) => {
 };
 
 export const getPositions = (posOpts: RemovePosArgs) =>
-  getIndexPositions(posOpts) || getRemovePosRange(posOpts);
+  getIndexPositions(posOpts) || getRangePositions(posOpts);
 
 export const removeFromNode = (
   srcNode: Node | SourceFile,
@@ -27,19 +27,17 @@ export const removeFromNode = (
 
   const posOpts = {
     ...opts,
-    node: srcNode,
+    node,
     elements,
     count,
     indexAdj,
   };
   const positions = getPositions(posOpts);
+  console.log({ positions });
   if (!positions) return;
 
   positions.startPos += indexAdj.start;
   positions.endPos += indexAdj.end;
-
-  if (code) {
-    return replaceCode(srcNode, { ...positions, code: code });
-  }
-  return removeCode(srcNode, positions);
+  const options = { ...positions, code: code };
+  return code ? replaceCode(srcNode, options) : removeCode(srcNode, options);
 };

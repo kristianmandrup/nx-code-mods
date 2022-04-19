@@ -1,5 +1,5 @@
 import { FindElementFn, findElementNode } from '../../find';
-import { swapPositions } from '../../positional';
+import { afterIndex, beforeIndex, swapPositions } from '../../positional';
 import { RemovePosArgs, ResolveOpts } from './types';
 
 export const createCheckOutOfBounds =
@@ -29,7 +29,7 @@ export const resolveRangePos = (
   }
 };
 
-export const getRemovePosRange = (opts: RemovePosArgs) => {
+export const getRangePositions = (opts: RemovePosArgs) => {
   const { count, remove, node, elements } = opts;
   let { index, between } = remove || {};
   if (index && !between) {
@@ -43,9 +43,15 @@ export const getRemovePosRange = (opts: RemovePosArgs) => {
   const posOpts = { node, elements };
   startPos = resolveRangePos(startPos, posOpts);
   endPos = resolveRangePos(endPos, posOpts);
+  console.log('getRangePositions', { startPos, endPos });
+  const rangeFromElement = elements[startPos];
+  const rangeToElement = elements[endPos];
+  const startElemIndex = beforeIndex(rangeFromElement);
+  const endElemIndex = afterIndex(rangeToElement);
+
   let positions = {
-    startPos,
-    endPos,
+    startPos: startElemIndex,
+    endPos: endElemIndex,
   };
   if (startPos > endPos) {
     positions = swapPositions(positions);
