@@ -11,7 +11,7 @@ describe('insert array', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');
       const code = insertIntoNamedArrayInFile(filePath, {
         code: `'c'`,
-        id: 'myNamedList',
+        varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -29,7 +29,7 @@ describe('insert array', () => {
       );
       const code = insertIntoNamedArrayInFile(filePath, {
         code: `'c'`,
-        id: 'myNamedList',
+        varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const anotherList = ['a','b']`;
@@ -47,7 +47,7 @@ describe('insert array', () => {
       );
       const code = insertIntoNamedArrayInFile(filePath, {
         code: `'c'`,
-        id: 'myNamedList',
+        varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
       expect(modifiedCode.includes(`const myNamedList = ['c'`)).toBeTruthy();
@@ -64,7 +64,7 @@ describe('insert array', () => {
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,
-          id: 'myNamedList',
+          varId: 'myNamedList',
         });
         const modifiedCode = code ? code : '';
         expect(modifiedCode.includes(`'c','a'`)).toBeTruthy();
@@ -80,7 +80,7 @@ describe('insert array', () => {
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,
-          id: 'myNamedList',
+          varId: 'myNamedList',
           insert: {
             index: 1,
           },
@@ -99,7 +99,7 @@ describe('insert array', () => {
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,
-          id: 'myNamedList',
+          varId: 'myNamedList',
           insert: {
             index: 'end',
           },
@@ -118,7 +118,7 @@ describe('insert array', () => {
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,
-          id: 'myNamedList',
+          varId: 'myNamedList',
           insert: {
             relative: 'after',
             findElement: (node: Node) => findStringLiteral(node, 'b'),

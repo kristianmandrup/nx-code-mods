@@ -4,16 +4,18 @@ import { Chainable } from './chain';
 export type ModifyApiFn = (src: string, opts: any) => string | undefined;
 
 export class BaseApi implements Chainable {
-  defaultOps: AnyOpts = {};
+  defaultOpts: AnyOpts = {};
 
-  constructor(public chain: Chainable) {}
+  constructor(public chain: Chainable, opts: AnyOpts = {}) {
+    this.defaultOpts = opts;
+  }
 
   get source() {
     return this.chain.source;
   }
 
   setDefaultOpts(opts: AnyOpts = {}) {
-    this.defaultOps = opts;
+    this.defaultOpts = opts;
   }
 
   set source(src: string) {
@@ -22,7 +24,7 @@ export class BaseApi implements Chainable {
 
   apply(modifyFn: ModifyApiFn, opts: any) {
     const src = modifyFn(this.source, {
-      ...this.defaultOps,
+      ...this.defaultOpts,
       ...opts,
     });
     if (src) {

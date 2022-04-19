@@ -547,6 +547,7 @@ replace.inNamedObject({
 
 - `async transformInTree(tree, opts)`
 - `transformInFile(filePath, opts)`
+- `transformInSource(filePath, opts)`
 
 Example
 

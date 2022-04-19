@@ -22,13 +22,13 @@ import {
 import { ApiClassMethodParamDecoratorRemoveOptions } from './remove-class-method-param-decorator';
 import { ApiClassMethodRemoveOptions } from './remove-class-method';
 
-export const removeApi = (chain: Chainable): RemoveApi => {
-  return new RemoveApi(chain);
+export const removeApi = (chain: Chainable, opts: AnyOpts = {}): RemoveApi => {
+  return new RemoveApi(chain, opts);
 };
 
 export class RemoveApi extends BaseApi {
-  constructor(chain: Chainable) {
-    super(chain);
+  constructor(chain: Chainable, opts: AnyOpts = {}) {
+    super(chain, opts);
   }
 
   fromArray(opts: ApiRemoveArrayOptions): RemoveApi {

@@ -24,13 +24,16 @@ import { BaseApi } from '../api';
 import { AnyOpts } from '../modify';
 import { ApiInsertImportOptions } from './insert-import-ids';
 
-export const insertApi = (chain: Chainable): InsertApi => {
-  return new InsertApi(chain);
+export const insertApi = (chain: Chainable, opts: AnyOpts = {}): InsertApi => {
+  return new InsertApi(chain, {
+    ...(chain.defaultOpts || {}),
+    ...(opts || {}),
+  });
 };
 
 export class InsertApi extends BaseApi {
-  constructor(chain: Chainable) {
-    super(chain);
+  constructor(chain: Chainable, opts: AnyOpts = {}) {
+    super(chain, opts);
   }
 
   classDecorator(opts: ApiClassDecoratorInsertOptions): InsertApi {

@@ -1,5 +1,5 @@
 import { Tree } from '@nrwl/devkit';
-import { modifyTree, replaceInFile } from './modify-file';
+import { modifyTree, replaceInFile, replaceInSource } from './modify-file';
 import { TSQuerySourceTransformer } from './replace';
 
 interface TransformOpts {
@@ -11,6 +11,13 @@ export const applyTransform =
   (source: any): string | undefined => {
     return opts.transform(source);
   };
+
+export function transformInSource(source: string, opts: any) {
+  return replaceInSource(source, {
+    ...opts,
+    modifySrcFn: applyTransform,
+  });
+}
 
 export function transformInFile(filePath: string, opts: any) {
   return replaceInFile(filePath, {

@@ -24,13 +24,16 @@ import {
   ApiClassMethodParamDecoratorReplaceOptions,
 } from './replace-class-method-param-decorator';
 
-export const replaceApi = (chain: Chainable): ReplaceApi => {
-  return new ReplaceApi(chain);
+export const replaceApi = (
+  chain: Chainable,
+  opts: AnyOpts = {},
+): ReplaceApi => {
+  return new ReplaceApi(chain, opts);
 };
 
 export class ReplaceApi extends BaseApi {
-  constructor(chain: Chainable) {
-    super(chain);
+  constructor(chain: Chainable, opts: AnyOpts = {}) {
+    super(chain, opts);
   }
 
   inArray(opts: ApiReplaceArrayOptions): ReplaceApi {
@@ -63,7 +66,7 @@ export class ReplaceApi extends BaseApi {
     return this.apply(replaceImportIdInSource, opts);
   }
 
-  inFunction(opts: AnyOpts): ReplaceApi {
+  inFunction(opts: ApiReplaceInsideFunctionBlockOptions): ReplaceApi {
     return this.apply(replaceInsideFunctionBlockInSource, opts);
   }
 
