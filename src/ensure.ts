@@ -31,6 +31,7 @@ export const createEnsureValidPositions =
     if (positions.endPos < bounds.startPos) {
       positions.endPos = bounds.startPos;
     }
+    return positions;
   };
 
 export const ensurePrefixComma = (code: string) =>

@@ -1,3 +1,4 @@
+import { ensureCommaDelimiters } from './../../ensure';
 import { AnyOpts, removeCode, replaceCode } from '../../modify';
 import { Node, SourceFile } from 'typescript';
 import { IndexAdj } from '../../types';
@@ -19,25 +20,32 @@ export const removeFromNode = (
   srcNode: Node | SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { elementsField, node, remove, code, indexAdj } = opts;
+  let { elementsField, node, remove, code, indexAdj, comma } = opts;
   remove = remove || {};
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node[elementsField];
   const count = elements.length;
 
+  if (!remove.relative) {
+    remove.relative = 'at';
+  }
+
   const posOpts = {
     ...opts,
+    remove,
     node,
     elements,
     count,
     indexAdj,
   };
-  const positions = getPositions(posOpts);
-  console.log({ positions });
+  let { positions, pos } = getPositions(posOpts) || {};
   if (!positions) return;
 
   positions.startPos += indexAdj.start;
   positions.endPos += indexAdj.end;
+  if (comma && code) {
+    code = ensureCommaDelimiters(code, { insert: remove, pos, count });
+  }
   const options = { ...positions, code: code };
   return code ? replaceCode(srcNode, options) : removeCode(srcNode, options);
 };

@@ -47,7 +47,6 @@ describe('remove from array', () => {
       });
       const modifiedCode = code ? code : '';
       const regExp = new RegExp(`myNamedList\\s*=\\s*\[\\s*\]`);
-      console.log({ modifiedCode, regExp });
       expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
@@ -64,8 +63,8 @@ describe('remove from array', () => {
           varId: 'myNamedList',
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
         expect(modifiedCode.includes(`'a'`)).toBeFalsy();
+        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
       });
     });
 
@@ -102,7 +101,8 @@ describe('remove from array', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'b','c'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'a'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeFalsy();
       });
     });
 
@@ -147,7 +147,7 @@ describe('remove from array', () => {
     });
 
     context('first pos', () => {
-      it('removes first prop of object', () => {
+      it('removes first element', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -206,7 +206,7 @@ describe('remove from array', () => {
     });
 
     context('between', () => {
-      it.only('remove middle 2 elements', () => {
+      it('remove middle 2 elements', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -222,7 +222,6 @@ describe('remove from array', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        console.log({ modifiedCode });
         expect(modifiedCode.includes(`'a'`)).toBeTruthy();
         expect(modifiedCode.includes(`'b'`)).toBeFalsy();
         expect(modifiedCode.includes(`'c'`)).toBeFalsy();

@@ -39,7 +39,7 @@ describe('replace from array', () => {
   });
 
   context('file with named empty array', () => {
-    it.skip('no replace', () => {
+    it('no replace', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -50,13 +50,14 @@ describe('replace from array', () => {
         varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
-      expect(modifiedCode.includes(`const myNamedList = []`)).toBeTruthy();
+      const regExp = new RegExp(`\[\\s*\]`);
+      expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
 
   context('file with named array with 2 elements', () => {
     context('default pos', () => {
-      it.skip('replaces first element of array', () => {
+      it('replaces first element of array', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -107,7 +108,8 @@ describe('replace from array', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'b','c'`)).toBeTruthy();
+        const regExp = new RegExp(`\[\\s*'a',\\s*'xx'\\s*\]`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -116,7 +118,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -137,7 +139,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -158,7 +160,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -178,7 +180,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -199,7 +201,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-2-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -220,7 +222,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-4-elements.txt',
+          'has-matching-array-with-4-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -233,10 +235,13 @@ describe('replace from array', () => {
           },
         });
         const modifiedCode = code ? code : '';
+        const regExp = new RegExp(`\[\\s*'a',\\s*'xx',\\s*'d'\]`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
         expect(modifiedCode.includes(`'a'`)).toBeTruthy();
         expect(modifiedCode.includes(`'b'`)).toBeFalsy();
         expect(modifiedCode.includes(`'c'`)).toBeFalsy();
         expect(modifiedCode.includes(`'d'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'xx'`)).toBeTruthy();
       });
     });
 
@@ -257,7 +262,6 @@ describe('replace from array', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        console.log({ modifiedCode });
         expect(modifiedCode.includes(`'a'`)).toBeTruthy();
         expect(modifiedCode.includes(`'b'`)).toBeFalsy();
       });

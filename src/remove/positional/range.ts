@@ -43,7 +43,6 @@ export const getRangePositions = (opts: RemovePosArgs) => {
   const posOpts = { node, elements };
   startPos = resolveRangePos(startPos, posOpts);
   endPos = resolveRangePos(endPos, posOpts);
-  console.log('getRangePositions', { startPos, endPos });
   const rangeFromElement = elements[startPos];
   const rangeToElement = elements[endPos];
   const startElemIndex = beforeIndex(rangeFromElement);
@@ -56,5 +55,5 @@ export const getRangePositions = (opts: RemovePosArgs) => {
   if (startPos > endPos) {
     positions = swapPositions(positions);
   }
-  return positions;
+  return { positions, pos: between.startPos };
 };

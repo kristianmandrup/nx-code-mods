@@ -55,13 +55,6 @@ export const lastElementRemovePos = (opts: RemovePosOpts) => {
   const prevElemPos = prevElement.getEnd();
   const elemPos = element.getEnd();
 
-  console.log('lastElementRemovePos', {
-    relative,
-    firstElementPos,
-    prevElemPos,
-    elemPos,
-  });
-
   if (relative === 'at') {
     return {
       startPos: prevElemPos,
@@ -92,12 +85,6 @@ export const firstElementRemovePos = (opts: RemovePosOpts) => {
   const nextElement = elements[nextElementIndex];
   const nextElemPos = nextElement.getStart();
 
-  console.log('firstElementRemovePos', {
-    relative,
-    firstElementPos,
-    nextElemPos,
-  });
-
   if (relative === 'at') {
     return {
       startPos: firstElementPos,
@@ -120,14 +107,14 @@ export const midElementRemovePos = (opts: RemovePosOpts) => {
   const { relative } = remove;
   const element = elements[pos];
   const nextElement = getNextElem(elements, pos);
-  const startPos = element.getEnd();
-  const endPos = nextElement.getStart();
 
-  console.log('midElementRemovePos', {
-    relative,
-    element,
-    nextElement,
-  });
+  let startPos = element.getEnd();
+  let endPos = nextElement.getStart();
+
+  if (nextElement === element) {
+    startPos = element.getStart();
+    endPos = element.getEnd();
+  }
 
   if (relative === 'at') {
     return { startPos, endPos };
@@ -158,7 +145,7 @@ const getPositionsInElements = ({
   if (pos >= count) {
     remove.relative = relative || 'at';
   }
-  const removeOpts = { ...remove, elements, count, pos };
+  const removeOpts = { remove, elements, count, pos };
   let positions =
     lastElementRemovePos(removeOpts) ||
     firstElementRemovePos(removeOpts) ||
@@ -172,7 +159,6 @@ const getPositionsInElements = ({
     positions.endPos = bounds.endPos;
   }
   ensureValidPositions(positions);
-  console.log('getPositionsInElements', { positions });
   return positions;
 };
 
@@ -217,8 +203,6 @@ export const getIndexPositions = (options: RemovePosArgs) => {
       count,
     }) || 0;
 
-  console.log({ pos });
-
   const noElements = count === 0;
 
   opts = {
@@ -226,10 +210,10 @@ export const getIndexPositions = (options: RemovePosArgs) => {
     pos,
   };
 
-  const positions = noElements
+  let positions = noElements
     ? getPositionsNoElements(opts)
     : getPositionsInElements(opts);
 
-  console.log('index', { positions });
-  return positions;
+  ensureValidPositions(positions);
+  return { positions, pos };
 };

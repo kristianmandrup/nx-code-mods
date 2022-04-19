@@ -39,16 +39,22 @@ export const removeFromArray =
     return newTxt;
   };
 
+const defaultOpts = {
+  comma: true,
+  modifyFn: removeFromArray,
+};
+
 export function removeFromNamedArrayInSource(
   source: string,
   opts: RemoveArrayOptions,
 ) {
   const findNodeFn = (node: SourceFile) =>
     findVariableDeclaration(node, opts.varId);
+
   return replaceInSource(source, {
     ...opts,
+    ...defaultOpts,
     findNodeFn,
-    modifyFn: removeFromArray,
   });
 }
 
@@ -60,8 +66,8 @@ export function removeFromNamedArrayInFile(
     findVariableDeclaration(node, opts.varId);
   return replaceInFile(filePath, {
     ...opts,
+    ...defaultOpts,
     findNodeFn,
-    modifyFn: removeFromArray,
   });
 }
 

@@ -51,7 +51,8 @@ export function replaceNodeContents(
 ) {
   const { modifyFn } = opts;
   if (!modifyFn) {
-    throw new Error('replaceNodeContents must take either a modifyFn function');
+    console.error('replaceNodeContents', opts);
+    throw new Error('replaceNodeContents must take a modifyFn function');
   }
   if (source == '') {
     return;
