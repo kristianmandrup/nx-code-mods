@@ -1,13 +1,7 @@
 import { findClassMethodParameterDeclaration } from './../find/find';
-import {
-  removeCode,
-  AnyOpts,
-  replaceInFile,
-  modifyTree,
-  replaceInSource,
-} from '../modify';
+import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration, findClassMethodDeclaration } from '../find';
+import { findClassDeclaration } from '../find';
 import { SourceFile } from 'typescript';
 import { CollectionModifyOpts, removeFromNode } from './positional';
 

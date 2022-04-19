@@ -1,10 +1,10 @@
 import { CollectionModifyOpts, removeFromNode } from './positional';
-import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { findVariableDeclaration } from '../find';
 import { Tree } from '@nrwl/devkit';
 import { ArrayLiteralExpression, SourceFile } from 'typescript';
 import { IndexAdj } from '../types';
+
 export interface RemoveArrayOptions {
   varId: string;
   remove?: CollectionModifyOpts;

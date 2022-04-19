@@ -2,6 +2,7 @@ import { removeFromNamedArrayInFile } from '../..';
 import * as path from 'path';
 import { findStringLiteral } from '../../find';
 import { Node } from 'typescript';
+import { escapeRegExp } from '../../utils';
 
 const context = describe;
 
@@ -35,7 +36,7 @@ describe('remove from array', () => {
   });
 
   context('file with named empty array', () => {
-    it.skip('no remove', () => {
+    it('no remove', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -45,13 +46,15 @@ describe('remove from array', () => {
         varId: 'myNamedList',
       });
       const modifiedCode = code ? code : '';
-      expect(modifiedCode.includes(`const myNamedList = []`)).toBeTruthy();
+      const regExp = new RegExp(`myNamedList\\s*=\\s*\[\\s*\]`);
+      console.log({ modifiedCode, regExp });
+      expect(modifiedCode.match(regExp)).toBeTruthy();
     });
   });
 
   context('file with named array with 2 elements', () => {
     context('default pos', () => {
-      it.skip('removes first element of array', () => {
+      it('removes first element of array', () => {
         const filePath = path.join(
           __dirname,
           'files',

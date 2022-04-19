@@ -1,5 +1,5 @@
 import { findClassDeclaration } from './../find/find';
-import { Node, NodeArray, SourceFile, ClassDeclaration } from 'typescript';
+import { Node, SourceFile, ClassDeclaration } from 'typescript';
 import { FindElementFn, CheckUnderNode, findElementNode } from '../find';
 import { AnyOpts, insertCode } from '../modify';
 import {
@@ -8,8 +8,7 @@ import {
   ensureStmtClosing,
 } from '../ensure';
 import { beforeIndex, endOfIndex, startOfIndex } from '../positional';
-
-type ElementsType = any[] | NodeArray<any>;
+import { ElementsType } from '../types';
 
 export type InsertPosNumParams = {
   node: Node;

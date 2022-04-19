@@ -1,5 +1,5 @@
 import { findStringLiteral, findIdentifier } from './find';
-import { Node, NodeArray } from 'typescript';
+import { Node } from 'typescript';
 import { ElementsType } from '../types';
 
 export const createFindStrLit = (id: string) => (node: Node) =>

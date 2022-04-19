@@ -136,7 +136,6 @@ const checkAndReplaceContent = ({ ast, sourceCode, opts }: ReplaceOpts) => {
 
 export function replaceInSource(sourceCode: string, opts: ModifyFileOptions) {
   const ast = tsquery.ast(sourceCode);
-  console.log('replaceInSource', sourceCode);
   return (
     checkAndReplaceContent({ sourceCode, ast, opts }) ||
     replaceContentInSrc(sourceCode, ast, opts)

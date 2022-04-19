@@ -16,7 +16,7 @@ describe('replace from array', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(`'xx'`)).toBeFalsy();
     });
   });
 
@@ -257,6 +257,7 @@ describe('replace from array', () => {
           },
         });
         const modifiedCode = code ? code : '';
+        console.log({ modifiedCode });
         expect(modifiedCode.includes(`'a'`)).toBeTruthy();
         expect(modifiedCode.includes(`'b'`)).toBeFalsy();
       });
