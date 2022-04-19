@@ -30,6 +30,11 @@ export const findMatchingImportDeclarationsByFileRef = (
   node: SourceFile,
   importFileRef: string,
 ): ImportDeclaration[] | undefined => {
+  if (!importFileRef) {
+    throw Error(
+      'findMatchingImportDeclarationsByFileRef: missing importFileRef',
+    );
+  }
   const selector = `ImportDeclaration > StringLiteral[value='${importFileRef}']`;
   const matches = tsquery(node, selector);
   return matches.map((m) => m.parent) as ImportDeclaration[];
@@ -39,6 +44,9 @@ export const findImportSpecifier = (
   node: any,
   importId: string,
 ): ImportSpecifier | undefined => {
+  if (!importId) {
+    throw Error('findImportSpecifier: missing importId');
+  }
   const selector = `ImportSpecifier > Identifier[name='${importId}']`;
   const ids = tsquery(node, selector);
   const matches = ids.map((m) => m.parent) as ImportSpecifier[];
@@ -50,6 +58,9 @@ export const findMatchingImportDecl = (
   { importId, importFileRef }: { importId: string; importFileRef: string },
 ): ImportDeclaration | undefined => {
   try {
+    if (!importFileRef) {
+      throw Error('findMatchingImportDecl: missing importFileRef');
+    }
     const matchingImportFileNodes = findMatchingImportDeclarationsByFileRef(
       node,
       importFileRef,
@@ -57,6 +68,9 @@ export const findMatchingImportDecl = (
     if (!matchingImportFileNodes || matchingImportFileNodes.length === 0) {
       // console.log('no import match');
       return;
+    }
+    if (!importId) {
+      throw Error('findMatchingImportDecl: missing importId');
     }
     const importIdSelector = `ImportDeclaration Identifier[name='${importId}']`;
     let found;
@@ -88,12 +102,15 @@ export const findLastImport = (
 
 export const findClassDeclaration = (
   vsNode: Node,
-  targetIdName: string,
+  classId: string,
   where?: WhereFn,
 ): ClassDeclaration | undefined => {
+  if (!classId) {
+    throw Error('findClassDeclaration: missing classId');
+  }
   const result = tsquery(
     vsNode,
-    `ClassDeclaration > Identifier[name='${targetIdName}']`,
+    `ClassDeclaration > Identifier[name='${classId}']`,
   );
   if (!result || result.length === 0) return;
   const found = result[0].parent as ClassDeclaration;
@@ -145,6 +162,9 @@ export const findPropertyDeclaration = (
   propertyId: string,
   where?: WhereFn,
 ): PropertyDeclaration | undefined => {
+  if (!propertyId) {
+    throw Error('findPropertyDeclaration: missing propertyId');
+  }
   const result = tsquery(
     node,
     `PropertyDeclaration > Identifier[name='${propertyId}']`,
@@ -162,6 +182,9 @@ export const findClassMethodDeclaration = (
   { classId, methodId }: { classId: string; methodId: string },
   where?: WhereFn,
 ): MethodDeclaration | undefined => {
+  if (!classId) {
+    throw Error('findClassMethodDeclaration: missing decoratorId');
+  }
   const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) return;
   return findMethodDeclaration(classDecl, methodId);
@@ -172,6 +195,9 @@ export const findMethodDeclaration = (
   methodId: string,
   where?: WhereFn,
 ): MethodDeclaration | undefined => {
+  if (!methodId) {
+    throw Error('findMethodDeclaration: missing decoratorId');
+  }
   const result = tsquery(
     node,
     `MethodDeclaration > Identifier[name='${methodId}']`,
@@ -197,9 +223,12 @@ export const findClassMethodParameterDeclaration = (
 
 export const findStringLiteral = (
   node: Node,
-  id: string,
+  value: string,
 ): StringLiteralLike | undefined => {
-  const selector = `StringLiteral[value='${id}']`;
+  if (!value) {
+    throw Error('findStringLiteral: missing value');
+  }
+  const selector = `StringLiteral[value='${value}']`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
     return;
@@ -211,6 +240,9 @@ export const findIdentifier = (
   node: Node,
   id: string,
 ): Identifier | undefined => {
+  if (!id) {
+    throw Error('findIdentifier: missing id');
+  }
   const selector = `Identifier[name='${id}']`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
@@ -223,6 +255,9 @@ export const findDecorator = (
   node: Node,
   decoratorId: string,
 ): Decorator | undefined => {
+  if (!decoratorId) {
+    throw Error('findDecorator: missing decoratorId');
+  }
   const selector = `Decorator[name='${decoratorId}']`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
@@ -253,9 +288,7 @@ export const findClassMethodDecorator = (
     decoratorId,
   }: { classId: string; methodId: string; decoratorId: string },
 ): Decorator | undefined => {
-  const classDecl = findClassDeclaration(node, classId);
-  if (!classDecl) return;
-  const methodDecl = findMethodDeclaration(classDecl, decoratorId);
+  const methodDecl = findClassMethodDeclaration(node, { classId, methodId });
   if (!methodDecl) return;
   const dec = findDecorator(methodDecl, decoratorId);
   if (!dec) return;
@@ -266,6 +299,9 @@ export const findParamWithDecorator = (
   node: Node,
   decoratorId: string,
 ): ParameterDeclaration | undefined => {
+  if (!decoratorId) {
+    throw Error('findParamWithDecorator: missing decoratorId');
+  }
   const selector = `Parameter > Decorator[name='${decoratorId}']`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
@@ -278,6 +314,9 @@ export const findParameter = (
   node: Node,
   paramId: string,
 ): ParameterDeclaration | undefined => {
+  if (!paramId) {
+    throw Error('findParameter: missing paramId');
+  }
   const selector = `Parameter > Identifier[name='${paramId}']`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
@@ -291,6 +330,9 @@ export const findVariableDeclaration = (
   varId: string,
   where?: WhereFn,
 ): VariableDeclaration | undefined => {
+  if (!varId) {
+    throw Error('findVariableDeclaration: missing varId');
+  }
   const selector = `VariableDeclaration > Identifier[name='${varId}']`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
@@ -307,6 +349,9 @@ export const findFunctionDeclaration = (
   node: Node,
   functionId: string,
 ): FunctionDeclaration | undefined => {
+  if (!functionId) {
+    throw Error('findFunctionDeclaration: missing functionId');
+  }
   const result = tsquery(
     node,
     `FunctionDeclaration > Identifier[name='${functionId}']`,

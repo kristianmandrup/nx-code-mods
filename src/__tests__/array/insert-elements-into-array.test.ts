@@ -1,7 +1,7 @@
 import { insertIntoNamedArrayInFile } from '../..';
 import * as path from 'path';
 import { findStringLiteral } from '../../find';
-import { Node } from 'typescript';
+import { createModuleResolutionCache, Node } from 'typescript';
 
 const context = describe;
 
@@ -16,7 +16,7 @@ describe('insert array', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(`'c'`)).toBeFalsy();
     });
   });
 
@@ -34,7 +34,7 @@ describe('insert array', () => {
       const modifiedCode = code ? code : '';
       const origCode = `const anotherList = ['a','b']`;
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(`'c'`)).toBeFalsy();
     });
   });
 
@@ -67,7 +67,8 @@ describe('insert array', () => {
           varId: 'myNamedList',
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'c','a'`)).toBeTruthy();
+        const regExp = new RegExp(`'c'\\s*,\\s*'a'\\s*,\\s*'b'\\s*\]`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -86,7 +87,8 @@ describe('insert array', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'c','b'`)).toBeTruthy();
+        const regExp = new RegExp(`'c'\\s*,\\s*'b'\\s*\]`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -105,12 +107,13 @@ describe('insert array', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'b','c'`)).toBeTruthy();
+        const regExp = new RegExp(`'b'\\s*,\\s*'c'\\s*\]`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
     context('after b string literal', () => {
-      it('inserts after b string literal', () => {
+      it('inserts c after b string literal', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -125,7 +128,10 @@ describe('insert array', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'b','c'`)).toBeTruthy();
+        const regExp = new RegExp(`\[\\s*'b',\\s*'xx',\\s*'c'\]`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(`'b'`)).toBeTruthy();
+        expect(modifiedCode.includes(`'c'`)).toBeTruthy();
       });
     });
   });

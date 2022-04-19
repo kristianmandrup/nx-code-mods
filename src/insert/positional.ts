@@ -7,7 +7,12 @@ import {
   ensureCommaDelimiters,
   ensureStmtClosing,
 } from '../ensure';
-import { beforeIndex, endOfIndex, startOfIndex } from '../positional';
+import {
+  afterIndex,
+  beforeIndex,
+  endOfIndex,
+  startOfIndex,
+} from '../positional';
 import { ElementsType } from '../types';
 
 export type InsertPosNumParams = {
@@ -125,6 +130,9 @@ export const insertIntoNode = (
   };
   const ensureValidPosition = createEnsureValidPosition(bounds);
   insert = insert || {};
+  if (!insert.relative) {
+    insert.relative = 'before';
+  }
 
   const { abortIfFound } = insert;
   if (abortIfFound && abortIfFound(node)) {
@@ -134,14 +142,6 @@ export const insertIntoNode = (
   const elements = node[elementsField];
   const count = elements.length;
 
-  let insertPosNum =
-    getInsertPosNum({
-      node,
-      elements,
-      insert,
-      count,
-    }) || 0;
-
   if (count === 0) {
     let pos = bounds.startPos;
     pos += indexAdj || 0;
@@ -149,25 +149,36 @@ export const insertIntoNode = (
     return insertCode(srcNode, pos, code);
   }
 
+  let elemPos =
+    getInsertPosNum({
+      node,
+      elements,
+      insert,
+      count,
+    }) || 0;
+
   formatCode = formatCode || ensureCommaDelimiters;
-  if (insertPosNum === -1) {
-    insertPosNum = 0;
-    insert.relative = 'before';
+
+  if (elemPos === -1) {
+    elemPos = 0;
   }
 
-  let pos =
-    insertPosNum >= count
+  let insertPos =
+    elemPos >= count
       ? afterLastElementPos(elements)
-      : aroundElementPos(elements, insertPosNum, insert.relative);
+      : aroundElementPos(elements, elemPos, insert.relative);
 
-  const formattedCode = formatCode(code, { insert, pos, count });
-  pos += indexAdj || 0;
-  pos = ensureValidPosition(pos);
-  return insertCode(srcNode, pos, formattedCode);
+  const formattedCode = formatCode(code, { insert, pos: elemPos, count });
+
+  insertPos += indexAdj || 0;
+  insertPos = ensureValidPosition(insertPos);
+  return insertCode(srcNode, insertPos, formattedCode);
 };
 
-export const afterLastElementPos = (elements: ElementsType) =>
-  elements[elements.length - 1].getEnd();
+export const afterLastElementPos = (elements: ElementsType) => {
+  const lastElem = elements[elements.length - 1];
+  return afterIndex(lastElem);
+};
 
 export const aroundElementPos = (
   elements: ElementsType,
@@ -175,7 +186,7 @@ export const aroundElementPos = (
   relativePos: InsertRelativePos,
 ) => {
   const element = elements[pos];
-  return relativePos === 'after' ? element.getEnd() : element.getStart();
+  return relativePos === 'after' ? afterIndex(element) : beforeIndex(element);
 };
 
 export const getNextElem = (elements: ElementsType, pos: number) => {

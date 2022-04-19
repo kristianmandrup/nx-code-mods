@@ -26,8 +26,8 @@ export interface InsertArrayTreeOptions extends InsertArrayOptions {
 export const insertInArray =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { id, code, insert } = opts;
-    const declaration = findVariableDeclaration(srcNode, id);
+    const { varId, code, insert } = opts;
+    const declaration = findVariableDeclaration(srcNode, varId);
     if (!declaration) {
       return;
     }
