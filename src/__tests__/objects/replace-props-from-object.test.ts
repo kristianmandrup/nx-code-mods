@@ -10,7 +10,7 @@ describe('replace props in object', () => {
     it('no replace', () => {
       const filePath = path.join(__dirname, 'files', 'no-object.txt');
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
       });
       const modifiedCode = code ? code : '';
@@ -27,7 +27,7 @@ describe('replace props in object', () => {
         'has-non-matching-object.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
       });
       const modifiedCode = code ? code : '';
@@ -44,7 +44,7 @@ describe('replace props in object', () => {
         'has-matching-empty-object.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
       });
       const modifiedCode = code ? code : '';
@@ -62,7 +62,7 @@ describe('replace props in object', () => {
           'has-matching-object-with-2-props.txt',
         );
         const code = replaceInNamedObjectInFile(filePath, {
-          id: 'myNamedObj',
+          varId: 'myNamedObj',
           code: `x: 99`,
         });
         const modifiedCode = code ? code : '';
@@ -80,7 +80,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           index: 1,
@@ -101,7 +101,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           index: 'last',
@@ -121,7 +121,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           relative: 'before',
@@ -142,7 +142,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           relative: 'after',
@@ -163,7 +163,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           index: 'first',
@@ -183,7 +183,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           relative: 'after',
@@ -204,7 +204,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           relative: 'before',
@@ -225,7 +225,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-4-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           between: {
@@ -250,7 +250,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           relative: 'after',
@@ -271,7 +271,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           relative: 'before',
@@ -292,7 +292,7 @@ describe('replace props in object', () => {
         'has-matching-object-with-2-props.txt',
       );
       const code = replaceInNamedObjectInFile(filePath, {
-        id: 'myNamedObj',
+        varId: 'myNamedObj',
         code: `x: 99`,
         replace: {
           relative: 'after',

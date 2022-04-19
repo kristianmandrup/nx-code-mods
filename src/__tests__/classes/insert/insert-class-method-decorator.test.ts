@@ -12,7 +12,7 @@ describe('insert class decorator', () => {
         code: `@Post()`,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Post',
+        decoratorId: 'Post',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -32,7 +32,7 @@ describe('insert class decorator', () => {
         code: `@Post()`,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Post',
+        decoratorId: 'Post',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -52,7 +52,7 @@ describe('insert class decorator', () => {
         code: `@Post()`,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Post',
+        decoratorId: 'Post',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -71,7 +71,7 @@ describe('insert class decorator', () => {
         code: `@Post()`,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Post',
+        decoratorId: 'Post',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';

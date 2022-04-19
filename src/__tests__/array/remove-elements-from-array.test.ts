@@ -57,7 +57,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -73,7 +73,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -92,7 +92,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = removeFromNamedArrayInFile(filePath, {
           varId: 'myNamedList',
@@ -233,7 +233,7 @@ describe('remove from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
 
         const code = removeFromNamedArrayInFile(filePath, {

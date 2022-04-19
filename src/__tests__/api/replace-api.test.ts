@@ -29,7 +29,7 @@ describe('replace api', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const source = readFileIfExisting(filePath);
         const api = replaceApi({ source });

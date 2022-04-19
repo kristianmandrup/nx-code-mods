@@ -26,7 +26,7 @@ describe('chain api', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const api = chainApiFromFile(filePath);
         api.insert.inArray({

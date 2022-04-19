@@ -10,7 +10,7 @@ describe('remove class decorator', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const code = removeClassDecoratorInFile(filePath, {
         classId: 'myClass',
-        id: 'Model',
+        decoratorId: 'Model',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -27,7 +27,7 @@ describe('remove class decorator', () => {
       );
       const code = removeClassDecoratorInFile(filePath, {
         classId: 'myClass',
-        id: 'Model',
+        decoratorId: 'Model',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -44,7 +44,7 @@ describe('remove class decorator', () => {
       );
       const code = removeClassDecoratorInFile(filePath, {
         classId: 'myClass',
-        id: 'Model',
+        decoratorId: 'Model',
       });
       let modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';

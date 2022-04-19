@@ -8,7 +8,6 @@ describe('remove class property', () => {
   context('file has no class', () => {
     it('no remove', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const codeToRemove = `myProp: User`;
       const code = removeClassPropertyInFile(filePath, {
         classId: 'myClass',
         propertyId: 'myProp',

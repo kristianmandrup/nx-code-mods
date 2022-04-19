@@ -60,7 +60,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -77,7 +77,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -97,7 +97,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = replaceInNamedArrayInFile(filePath, {
           code: `'xx'`,
@@ -245,7 +245,7 @@ describe('replace from array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
 
         const code = replaceInNamedArrayInFile(filePath, {

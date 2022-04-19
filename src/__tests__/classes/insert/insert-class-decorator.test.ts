@@ -8,10 +8,9 @@ describe('insert class decorator', () => {
   context('file has no class', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
-      const code = `@Model()`;
       const code = insertClassDecoratorInFile(filePath, {
-        code,
-        id: 'myClass',
+        code: `@Model()`,
+        classId: 'myClass',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -27,10 +26,9 @@ describe('insert class decorator', () => {
         'files',
         'has-no-matching-class.txt',
       );
-      const code = `@Model()`;
       const code = insertClassDecoratorInFile(filePath, {
-        code,
-        id: 'myClass',
+        code: `@Model()`,
+        classId: 'myClass',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -46,10 +44,9 @@ describe('insert class decorator', () => {
         'files',
         'has-matching-empty-class.txt',
       );
-      const code = `@Model()`;
       const code = insertClassDecoratorInFile(filePath, {
-        code,
-        id: 'myClass',
+        code: `@Model()`,
+        classId: 'myClass',
       });
       let modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';

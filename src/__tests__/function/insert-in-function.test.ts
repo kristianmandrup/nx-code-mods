@@ -12,7 +12,7 @@ describe('insert function', () => {
       const filePath = path.join(__dirname, 'files', 'no-function.txt');
       const code = insertInsideFunctionBlockInFile(filePath, {
         code: `let c = 2`,
-        id: 'myFun',
+        functionId: 'myFun',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -30,7 +30,7 @@ describe('insert function', () => {
       );
       const code = insertInsideFunctionBlockInFile(filePath, {
         code: `let c = 2`,
-        id: 'myFun',
+        functionId: 'myFun',
       });
       const modifiedCode = code ? code : '';
       const origCode = `const x = 2;`;
@@ -48,7 +48,7 @@ describe('insert function', () => {
       );
       const code = insertInsideFunctionBlockInFile(filePath, {
         code: `let c = 2`,
-        id: 'myFun',
+        functionId: 'myFun',
       });
       const origCode = `const x = 2;`;
       const modifiedCode = code ? code : '';
@@ -69,7 +69,7 @@ describe('insert function', () => {
         );
         const code = insertInsideFunctionBlockInFile(filePath, {
           code: `let c = 2`,
-          id: 'myFun',
+          functionId: 'myFun',
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
@@ -89,7 +89,7 @@ describe('insert function', () => {
         );
         const code = insertInsideFunctionBlockInFile(filePath, {
           code: `let c = 2`,
-          id: 'myFun',
+          functionId: 'myFun',
           insert: {
             index: 1,
           },
@@ -112,7 +112,7 @@ describe('insert function', () => {
         );
         const code = insertInsideFunctionBlockInFile(filePath, {
           code: `let c = 2`,
-          id: 'myFun',
+          functionId: 'myFun',
           insert: {
             index: 'end',
           },
@@ -135,7 +135,7 @@ describe('insert function', () => {
         );
         const code = insertInsideFunctionBlockInFile(filePath, {
           code: `let c = 2`,
-          id: 'myFun',
+          functionId: 'myFun',
           insert: {
             relative: 'after',
             findElement: (node: Node) => findVariableDeclaration(node, 'b'),

@@ -60,7 +60,7 @@ describe('insert array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,
@@ -76,7 +76,7 @@ describe('insert array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,
@@ -95,7 +95,7 @@ describe('insert array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,
@@ -114,7 +114,7 @@ describe('insert array', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-array-with-elements.txt',
+          'has-matching-array-with-2-elements.txt',
         );
         const code = insertIntoNamedArrayInFile(filePath, {
           code: `'c'`,

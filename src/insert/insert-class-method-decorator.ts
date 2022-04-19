@@ -67,7 +67,7 @@ export function insertClassMethodDecoratorInSource(
   });
 }
 
-export function insertClassMethodDecoratororatorInFile(
+export function insertClassMethodDecoratorInFile(
   filePath: string,
   opts: ClassMethodDecoratorInsertOptions,
 ) {
