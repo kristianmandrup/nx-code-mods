@@ -103,43 +103,68 @@ export function replaceContentInSrc(
   );
 }
 
-export function replaceInFile(targetFilePath: string, opts: ModifyFileOptions) {
-  const targetFile = readFileIfExisting(targetFilePath);
-  if (!targetFile || targetFile === '') {
-    console.log('no such file', targetFilePath);
+export function replaceInFile(filePath: string, opts: ModifyFileOptions) {
+  const source = readFileIfExisting(filePath);
+  if (!source || source === '') {
+    console.log('no such file', filePath);
     return;
   }
-  return replaceInSource(targetFile, opts);
+  return replaceInSource(source, opts);
 }
+
+export interface ReplaceOpts {
+  ast: SourceFile;
+  sourceCode: string;
+  opts: ModifyFileOptions;
+}
+
+const getNodeAndReplace = ({ ast, sourceCode, opts }: ReplaceOpts) => {
+  const { getDefaultNodeFn } = opts;
+  if (!getDefaultNodeFn) return;
+  const node = getDefaultNodeFn(ast);
+  return replaceNodeContents(sourceCode, node, opts);
+};
+
+const checkAndReplaceContent = ({ ast, sourceCode, opts }: ReplaceOpts) => {
+  const { checkFn } = opts;
+  if (!checkFn) return;
+  const checkResult = checkFn(ast);
+  return checkResult
+    ? replaceContentInSrc(sourceCode, ast, opts)
+    : getNodeAndReplace({ ast, sourceCode, opts });
+};
 
 export function replaceInSource(sourceCode: string, opts: ModifyFileOptions) {
   const ast = tsquery.ast(sourceCode);
-  const { checkFn, getDefaultNodeFn } = opts;
-  if (checkFn) {
-    const checkResult = checkFn(ast);
-    if (checkResult) {
-      return replaceContentInSrc(sourceCode, ast, opts);
-    } else {
-      if (getDefaultNodeFn) {
-        const node = getDefaultNodeFn(ast);
-        return replaceNodeContents(sourceCode, node, opts);
-      }
-    }
-  }
-  return replaceContentInSrc(sourceCode, ast, opts);
+  console.log('replaceInSource', sourceCode);
+  return (
+    checkAndReplaceContent({ sourceCode, ast, opts }) ||
+    replaceContentInSrc(sourceCode, ast, opts)
+  );
+}
+
+type SaveTreeOpts = {
+  tree: Tree;
+  source: string;
+  filePath: string;
+  newContents: string;
+};
+
+interface SaveAndFormatTreeOpts extends SaveTreeOpts {
+  format?: boolean;
 }
 
 export const saveTree = ({
   tree,
-  targetFile,
-  targetFilePath,
+  source,
+  filePath,
   newContents,
-}: any) => {
-  if (!newContents || newContents == targetFile) return;
-  tree.write(targetFilePath, newContents);
+}: SaveTreeOpts) => {
+  if (!newContents || newContents == source) return;
+  tree.write(filePath, newContents);
 };
 
-export const saveAndFormatTree = async (opts: any) => {
+export const saveAndFormatTree = async (opts: SaveAndFormatTreeOpts) => {
   const { format, tree } = opts;
   saveTree(opts);
   if (format) {
@@ -149,13 +174,15 @@ export const saveAndFormatTree = async (opts: any) => {
 
 export async function modifyTree(tree: Tree, opts: ModifyTreeOptions) {
   const { projectRoot, relTargetFilePath } = opts;
-  const targetFilePath = path.join(projectRoot, relTargetFilePath);
-  const targetFile = readFileIfExisting(targetFilePath);
-  const newContents = replaceInFile(targetFilePath, opts);
+  const filePath = path.join(projectRoot, relTargetFilePath);
+  const source = readFileIfExisting(filePath);
+  const newContents = replaceInFile(filePath, opts);
+  if (!newContents) return;
+
   await saveAndFormatTree({
     tree,
-    targetFile,
-    targetFilePath,
+    source,
+    filePath,
     newContents,
     ...opts,
   });

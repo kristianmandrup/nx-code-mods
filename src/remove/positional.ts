@@ -3,6 +3,7 @@ import { AnyOpts, removeCode, replaceCode } from '../modify';
 import { findElementNode, FindElementFn } from '../find';
 import { Node, NodeArray, SourceFile } from 'typescript';
 import { BetweenPos, CollectionIndex, IndexAdj, RelativePos } from '../types';
+import { createEnsureValidPositions } from '../ensure';
 
 type ElementsType = any[] | NodeArray<any>;
 
@@ -50,27 +51,6 @@ export interface RemovePosRange extends ResolveOpts {
   count: number;
   remove: RemovePosOpts;
 }
-
-export const createEnsureValidPositions =
-  (bounds: BetweenPos) => (positions: BetweenPos) => {
-    if (positions.startPos > positions.endPos) {
-      positions = swapPositions(positions);
-    }
-
-    if (positions.startPos > bounds.endPos) {
-      positions.startPos = bounds.endPos;
-    }
-    if (positions.endPos > bounds.endPos) {
-      positions.startPos = bounds.endPos;
-    }
-    if (positions.startPos < bounds.startPos) {
-      positions.startPos = bounds.startPos;
-    }
-
-    if (positions.endPos < bounds.startPos) {
-      positions.endPos = bounds.startPos;
-    }
-  };
 
 const getPositionsInElements = ({
   pos,
@@ -226,7 +206,8 @@ export type RemovePosOpts = {
 };
 
 export const lastElementRemovePos = (opts: RemovePosOpts) => {
-  const { elements, count, pos, remove } = opts;
+  let { elements, count, pos, remove } = opts;
+  remove = remove || {};
   const { relative } = remove;
   if (pos < count) {
     return;
@@ -289,7 +270,8 @@ const getNextElem = (elements: ElementsType, pos: number) => {
 
 // TODO: add support for 'at'
 export const midElementRemovePos = (opts: RemovePosOpts) => {
-  const { elements, pos, remove } = opts;
+  let { elements, pos, remove } = opts;
+  remove = remove || {};
   const { relative } = remove;
   const element = elements[pos];
   const nextElement = getNextElem(elements, pos);

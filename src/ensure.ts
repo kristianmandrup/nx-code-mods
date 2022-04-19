@@ -1,3 +1,38 @@
+import { swapPositions } from './positional';
+import { BetweenPos } from './types';
+
+export const createEnsureValidPosition =
+  (bounds: BetweenPos) => (index: number) => {
+    if (index > bounds.endPos) {
+      return bounds.endPos;
+    }
+    if (index < bounds.startPos) {
+      return bounds.startPos;
+    }
+    return index;
+  };
+
+export const createEnsureValidPositions =
+  (bounds: BetweenPos) => (positions: BetweenPos) => {
+    if (positions.startPos > positions.endPos) {
+      positions = swapPositions(positions);
+    }
+
+    if (positions.startPos > bounds.endPos) {
+      positions.startPos = bounds.endPos;
+    }
+    if (positions.endPos > bounds.endPos) {
+      positions.startPos = bounds.endPos;
+    }
+    if (positions.startPos < bounds.startPos) {
+      positions.startPos = bounds.startPos;
+    }
+
+    if (positions.endPos < bounds.startPos) {
+      positions.endPos = bounds.startPos;
+    }
+  };
+
 export const ensurePrefixComma = (code: string) =>
   code.match(/^\s*,/) ? code : ',' + code;
 

@@ -15,7 +15,6 @@ describe('remove from array', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -32,7 +31,6 @@ describe('remove from array', () => {
       const modifiedCode = code ? code : '';
       const origCode = `const anotherList = ['a','b']`;
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      // expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 

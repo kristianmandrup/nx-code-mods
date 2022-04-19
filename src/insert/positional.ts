@@ -2,8 +2,12 @@ import { findClassDeclaration } from './../find/find';
 import { Node, NodeArray, SourceFile, ClassDeclaration } from 'typescript';
 import { FindElementFn, CheckUnderNode, findElementNode } from '../find';
 import { AnyOpts, insertCode } from '../modify';
-import { ensureCommaDelimiters, ensureStmtClosing } from '../ensure';
-import { beforeIndex, endOfIndex } from '../positional';
+import {
+  createEnsureValidPosition,
+  ensureCommaDelimiters,
+  ensureStmtClosing,
+} from '../ensure';
+import { beforeIndex, endOfIndex, startOfIndex } from '../positional';
 
 type ElementsType = any[] | NodeArray<any>;
 
@@ -116,14 +120,21 @@ export const insertIntoNode = (
   opts: AnyOpts,
 ): string | undefined => {
   let { formatCode, elementsField, node, code, insert, indexAdj } = opts;
-  formatCode = formatCode || ensureCommaDelimiters;
+  const bounds = {
+    startPos: startOfIndex(node),
+    endPos: endOfIndex(node),
+  };
+  const ensureValidPosition = createEnsureValidPosition(bounds);
   insert = insert || {};
+
   const { abortIfFound } = insert;
   if (abortIfFound && abortIfFound(node)) {
     return;
   }
+
   const elements = node[elementsField];
   const count = elements.length;
+
   let insertPosNum =
     getInsertPosNum({
       node,
@@ -131,12 +142,15 @@ export const insertIntoNode = (
       insert,
       count,
     }) || 0;
+
   if (count === 0) {
-    let pos = node.getStart() + 1;
+    let pos = bounds.startPos;
     pos += indexAdj || 0;
-    const code = code; // ensureSuffixComma(code);
+    pos = ensureValidPosition(pos);
     return insertCode(srcNode, pos, code);
   }
+
+  formatCode = formatCode || ensureCommaDelimiters;
   if (insertPosNum === -1) {
     insertPosNum = 0;
     insert.relative = 'before';
@@ -147,9 +161,10 @@ export const insertIntoNode = (
       ? afterLastElementPos(elements)
       : aroundElementPos(elements, insertPosNum, insert.relative);
 
-  const code = formatCode(code, { insert, pos, count });
+  const formattedCode = formatCode(code, { insert, pos, count });
   pos += indexAdj || 0;
-  return insertCode(srcNode, pos, code);
+  pos = ensureValidPosition(pos);
+  return insertCode(srcNode, pos, formattedCode);
 };
 
 export const afterLastElementPos = (elements: ElementsType) =>
