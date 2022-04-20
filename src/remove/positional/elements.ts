@@ -44,14 +44,17 @@ export const lastElementRemovePos = (opts: RemovePosOpts) => {
   let { elements, count, pos, remove } = opts;
   remove = remove || {};
   const { relative } = remove;
-  if (pos < count) {
+  if (pos < count - 1) {
     return;
   }
-  const prevElementIndex = elements.length >= 2 ? elements.length - 2 : 0;
+  const lastIndex = elements.length - 1;
+  const prevElementIndex = lastIndex >= 1 ? lastIndex - 1 : 0;
+
   const firstElement = elements[0];
-  const firstElementPos = firstElement.getStart();
   const prevElement = elements[prevElementIndex];
-  const element = elements[elements.length - 1];
+  const element = elements[lastIndex];
+
+  const firstElementPos = firstElement.getStart();
   const prevElemPos = prevElement.getEnd();
   const elemPos = element.getEnd();
 
@@ -141,10 +144,10 @@ const getPositionsInElements = ({
     pos = 0;
     remove.relative = 'at';
   }
-
   if (pos >= count) {
     remove.relative = relative || 'at';
   }
+
   const removeOpts = { remove, elements, count, pos };
   let positions =
     lastElementRemovePos(removeOpts) ||

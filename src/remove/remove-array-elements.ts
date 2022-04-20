@@ -52,9 +52,9 @@ export function removeFromNamedArrayInSource(
     findVariableDeclaration(node, opts.varId);
 
   return replaceInSource(source, {
-    ...opts,
     ...defaultOpts,
     findNodeFn,
+    ...opts,
   });
 }
 
@@ -65,9 +65,9 @@ export function removeFromNamedArrayInFile(
   const findNodeFn = (node: SourceFile) =>
     findVariableDeclaration(node, opts.varId);
   return replaceInFile(filePath, {
-    ...opts,
     ...defaultOpts,
     findNodeFn,
+    ...opts,
   });
 }
 

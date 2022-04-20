@@ -84,12 +84,15 @@ describe('replace props in object', () => {
         code: `x: 99`,
         replace: {
           index: 1,
-          // default before
+          // default at
         },
       });
       const modifiedCode = code ? code : '';
-      expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
-      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`x: 99`)).toBeTruthy();
+      const regExp = new RegExp(`\\s*a: 1\\s*,\\s*x: 99`);
+      expect(modifiedCode.match(regExp)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeFalsy();
     });
   });
 

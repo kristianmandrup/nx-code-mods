@@ -1,4 +1,4 @@
-import { ensureCommaDelimiters } from './../../ensure';
+import { ensureCommaDelimiters, ensurePrefixComma } from './../../ensure';
 import { AnyOpts, removeCode, replaceCode } from '../../modify';
 import { Node, SourceFile } from 'typescript';
 import { IndexAdj } from '../../types';
@@ -24,10 +24,24 @@ export const removeFromNode = (
   remove = remove || {};
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node[elementsField];
+  if (!elements) {
+    console.error('removeFromNode', { node, elementsField });
+    throw new Error(
+      `removeFromNode: invalid elements field ${elementsField} for node`,
+    );
+  }
   const count = elements.length;
 
   if (!remove.relative) {
     remove.relative = 'at';
+  }
+
+  // TODO: ensure index within bound
+  if (remove.index < 0) {
+    remove.index = 0;
+  }
+  if (remove.index >= count) {
+    remove.index = count - 1;
   }
 
   const posOpts = {
@@ -45,6 +59,9 @@ export const removeFromNode = (
   positions.endPos += indexAdj.end;
   if (comma && code) {
     code = ensureCommaDelimiters(code, { insert: remove, pos, count });
+    if (pos && pos > 0) {
+      code = ensurePrefixComma(code);
+    }
   }
   const options = { ...positions, code: code };
   return code ? replaceCode(srcNode, options) : removeCode(srcNode, options);

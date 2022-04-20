@@ -27,7 +27,6 @@ export const removeCode = (vsNode: any, opts: RemoveCodeOpts): string => {
   const beforeCode = startPos ? previousTxt.substring(0, startPos) : '';
   const afterCode = endPos ? previousTxt.substring(endPos) : '';
   const newTxt = `${beforeCode}${afterCode}`;
-  console.log({ beforeCode, afterCode, newTxt });
   return newTxt;
 };
 

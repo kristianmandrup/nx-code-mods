@@ -38,11 +38,16 @@ export const removeFromObject =
     }
     const node = declaration.initializer as ObjectLiteralExpression;
     return removeFromNode(srcNode, {
-      elementsField: 'elements',
+      elementsField: 'properties',
       node,
       ...opts,
     });
   };
+
+const defaultOpts = {
+  comma: true,
+  modifyFn: removeFromObject,
+};
 
 export function removeFromNamedObjectInSource(
   sourceCode: string,
@@ -51,8 +56,8 @@ export function removeFromNamedObjectInSource(
   const findNodeFn = (node: SourceFile) =>
     findVariableDeclaration(node, opts.varId);
   return replaceInSource(sourceCode, {
+    ...defaultOpts,
     findNodeFn,
-    modifyFn: removeFromObject,
     ...opts,
   });
 }
@@ -64,8 +69,8 @@ export function removeFromNamedObjectInFile(
   const findNodeFn = (node: SourceFile) =>
     findVariableDeclaration(node, opts.varId);
   return replaceInFile(filePath, {
+    ...defaultOpts,
     findNodeFn,
-    modifyFn: removeFromObject,
     ...opts,
   });
 }

@@ -16,7 +16,7 @@ describe('insert object', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(`c: 3`)).toBeFalsy();
     });
   });
 
@@ -34,7 +34,7 @@ describe('insert object', () => {
       const modifiedCode = code ? code : '';
       const origCode = `const anotherObj = {a: 1,b: 2}`;
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(`c: 3`)).toBeFalsy();
     });
   });
 
@@ -50,7 +50,7 @@ describe('insert object', () => {
         varId: 'myNamedObj',
       });
       const modifiedCode = code ? code : '';
-      expect(modifiedCode.includes(`const myNamedObj = {c: 3}`)).toBeTruthy();
+      expect(modifiedCode.includes(`c: 3`)).toBeTruthy();
     });
   });
 
@@ -60,14 +60,15 @@ describe('insert object', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-props.txt',
+          'has-matching-object-with-2-props.txt',
         );
         const code = insertIntoNamedObjectInFile(filePath, {
           code: `c: 3`,
           varId: 'myNamedObj',
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`c: 3,a: 1,`)).toBeTruthy();
+        const regExp = new RegExp(`c: 3\\s*,\\s*a: 1,`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -76,7 +77,7 @@ describe('insert object', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-props.txt',
+          'has-matching-object-with-2-props.txt',
         );
         const code = insertIntoNamedObjectInFile(filePath, {
           code: `c: 3`,
@@ -86,7 +87,8 @@ describe('insert object', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`c: 3,b: 2`)).toBeTruthy();
+        const regExp = new RegExp(`c: 3\\s*,\\s*b: 2`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -95,7 +97,7 @@ describe('insert object', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-props.txt',
+          'has-matching-object-with-2-props.txt',
         );
         const code = insertIntoNamedObjectInFile(filePath, {
           code: `c: 3`,
@@ -105,7 +107,8 @@ describe('insert object', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`b: 2,c: 3`)).toBeTruthy();
+        const regExp = new RegExp(`b: 2\\s*,\\s*c: 3`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -114,7 +117,7 @@ describe('insert object', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-props.txt',
+          'has-matching-object-with-2-props.txt',
         );
         const code = insertIntoNamedObjectInFile(filePath, {
           code: `c: 3`,
@@ -125,7 +128,8 @@ describe('insert object', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`b: 2,c: 3`)).toBeTruthy();
+        const regExp = new RegExp(`\\s*b: 2\\s*,\\s*c: 3`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
 
@@ -134,7 +138,7 @@ describe('insert object', () => {
         const filePath = path.join(
           __dirname,
           'files',
-          'has-matching-object-with-props.txt',
+          'has-matching-object-with-2-props.txt',
         );
         const code = insertIntoNamedObjectInFile(filePath, {
           code: `c: 3`,
@@ -145,7 +149,8 @@ describe('insert object', () => {
           },
         });
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`b: 2,c: 3`)).toBeTruthy();
+        const regExp = new RegExp(`\\s*b: 2\\s*,\\s*c: 3`);
+        expect(modifiedCode.match(regExp)).toBeTruthy();
       });
     });
   });

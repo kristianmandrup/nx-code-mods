@@ -79,12 +79,12 @@ describe('remove from object', () => {
         varId: 'myNamedObj',
         remove: {
           index: 1,
-          // default before
+          // default at
         },
       });
       const modifiedCode = code ? code : '';
-      expect(modifiedCode.includes(`a: 1`)).toBeFalsy();
-      expect(modifiedCode.includes(`b: 2`)).toBeTruthy();
+      expect(modifiedCode.includes(`a: 1`)).toBeTruthy();
+      expect(modifiedCode.includes(`b: 2`)).toBeFalsy();
     });
   });
 
