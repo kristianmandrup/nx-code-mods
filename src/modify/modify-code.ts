@@ -14,18 +14,22 @@ export const insertCode = (
 
 export type RemoveCodeOpts = { startPos?: number; endPos?: number };
 
+export const isPresent = (val: any) => val !== undefined && val !== null;
+
 export const removeCode = (vsNode: any, opts: RemoveCodeOpts): string => {
   const { startPos, endPos } = opts;
   const previousTxt = vsNode.getFullText();
-  if (!startPos && !endPos) {
+  if (!isPresent(startPos) && !isPresent(endPos)) {
     console.error(opts);
     throw new Error(
       `removeCode must be called with a startPos or endPos or both`,
     );
   }
   if (startPos === endPos) return previousTxt;
-  const beforeCode = startPos ? previousTxt.substring(0, startPos) : '';
-  const afterCode = endPos ? previousTxt.substring(endPos) : '';
+  const beforeCode = isPresent(startPos)
+    ? previousTxt.substring(0, startPos)
+    : '';
+  const afterCode = isPresent(endPos) ? previousTxt.substring(endPos) : '';
   const newTxt = `${beforeCode}${afterCode}`;
   return newTxt;
 };
@@ -44,15 +48,17 @@ export const replaceCode = (vsNode: any, opts: ReplaceCodeOpts): string => {
     );
   }
 
-  if (!startPos && !endPos) {
+  if (!isPresent(startPos) && !isPresent(endPos)) {
     console.error(opts);
     throw new Error(
       `replaceCode must be called with a startPos: or endPos: option or both`,
     );
   }
   if (startPos === endPos) return previousTxt;
-  const beforeCode = startPos ? previousTxt.substring(0, startPos) : '';
-  const afterCode = endPos ? previousTxt.substring(endPos) : '';
+  const beforeCode = isPresent(startPos)
+    ? previousTxt.substring(0, startPos)
+    : '';
+  const afterCode = isPresent(endPos) ? previousTxt.substring(endPos) : '';
   const newTxt = `${beforeCode}${code}${afterCode}`;
   return newTxt;
 };

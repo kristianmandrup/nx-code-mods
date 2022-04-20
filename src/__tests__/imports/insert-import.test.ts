@@ -15,7 +15,7 @@ describe('insertImport', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(modifiedCode.match(code)).toBeFalsy();
+      expect(modifiedCode.match(`x`)).toBeFalsy();
       expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
@@ -34,7 +34,7 @@ describe('insertImport', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = `import { y, x } from './other-file';`;
-      expect(modifiedCode.match(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -69,11 +69,11 @@ describe('insertImport', () => {
         importFileRef: './my-file',
       });
       const modifiedCode = code ? code : '';
-      const origCode = `import { x, y } from './my-file';`;
-      const str = `${escapeRegExp('import { ' + code + ',x, y } from')}`;
+      const origCode = `import { y } from './my-file';`;
+      const str = `import {\\s*a\\s*,\\s*y\\s*`;
       const regExp = new RegExp(str);
       expect(modifiedCode.match(regExp)).toBeTruthy();
-      expect(modifiedCode.match(code)).toBeTruthy();
+      expect(modifiedCode.match(`a`)).toBeTruthy();
       expect(modifiedCode.match(origCode)).toBeFalsy();
     });
   });
@@ -88,7 +88,7 @@ describe('insertImport', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(modifiedCode.match(code)).toBeFalsy();
+      expect(modifiedCode.match(`y`)).toBeFalsy();
       expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });

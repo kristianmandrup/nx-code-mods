@@ -10,10 +10,9 @@ export function replaceOne(
   const replacement = stringTransformer(node);
   let result = source;
   if (replacement != null) {
-    result = `${result.substring(
-      0,
-      match.getStart(),
-    )}${replacement}${result.substring(match.getEnd())}`;
+    const startStr = result.substring(0, match.getStart());
+    const endStr = result.substring(match.getEnd());
+    result = `${startStr}${replacement}${endStr}`;
   }
   return result;
 }

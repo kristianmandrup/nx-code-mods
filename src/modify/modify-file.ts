@@ -1,3 +1,4 @@
+import { isPresent } from './modify-code';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
@@ -66,12 +67,11 @@ export function replaceNodeContents(
 export function replaceSrcContents(source: string, opts: ModifySrcOptions) {
   const { modifySrcFn } = opts;
   if (!modifySrcFn) {
-    throw new Error(
-      'replaceSrcContents must take either a modifySrcFn function',
-    );
+    // throw new Error('replaceSrcContents must take a modifySrcFn function');
+    return source;
   }
   if (source == '') {
-    return;
+    return source;
   }
   if (modifySrcFn) {
     const replaceFn = modifySrcFn({ ...opts });
@@ -98,10 +98,9 @@ export function replaceContentInSrc(
   ast: SourceFile,
   opts: ModifyFileOptions,
 ) {
-  return (
-    findAndReplaceNodeContents(source, ast, opts) ||
-    replaceSrcContents(source, opts)
-  );
+  const frSrc = findAndReplaceNodeContents(source, ast, opts);
+  if (isPresent(frSrc)) return frSrc;
+  return replaceSrcContents(source, opts);
 }
 
 export function replaceInFile(filePath: string, opts: ModifyFileOptions) {
@@ -137,10 +136,9 @@ const checkAndReplaceContent = ({ ast, sourceCode, opts }: ReplaceOpts) => {
 
 export function replaceInSource(sourceCode: string, opts: ModifyFileOptions) {
   const ast = tsquery.ast(sourceCode);
-  return (
-    checkAndReplaceContent({ sourceCode, ast, opts }) ||
-    replaceContentInSrc(sourceCode, ast, opts)
-  );
+  const crSrc = checkAndReplaceContent({ sourceCode, ast, opts });
+  if (isPresent(crSrc)) return crSrc;
+  return replaceContentInSrc(sourceCode, ast, opts);
 }
 
 type SaveTreeOpts = {

@@ -14,7 +14,7 @@ describe('insertImport', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(modifiedCode.match(code)).toBeFalsy();
+      expect(modifiedCode.match('x')).toBeFalsy();
       expect(modifiedCode.match(origCode)).toBeTruthy();
     });
   });
@@ -50,8 +50,7 @@ describe('insertImport', () => {
       const modifiedCode = code ? code : '';
       const origCode = `import { x, y } from './my-file';`;
       expect(modifiedCode.match(origCode)).toBeFalsy();
-
-      const str = escapeRegExp(`{ y }`);
+      const str = `{\\s*y\\s*}`;
       const regExp = new RegExp(str);
       expect(modifiedCode.match(regExp)).toBeTruthy();
     });
@@ -69,12 +68,9 @@ describe('insertImport', () => {
         importFileRef: './my-file',
       });
       const modifiedCode = code ? code : '';
-      const origCode = `import { x, y } from './my-file';`;
-      expect(modifiedCode.match(origCode)).toBeFalsy();
-
-      const str = escapeRegExp(`{ y }`);
-      const regExp = new RegExp(str);
-      expect(modifiedCode.match(regExp)).toBeFalsy();
+      const origCode = `import { y } from './my-file';`;
+      expect(modifiedCode.match(origCode)).toBeTruthy();
+      expect(modifiedCode.match('x')).toBeFalsy();
     });
   });
 });

@@ -75,7 +75,6 @@ describe('replace from function', () => {
         const replacedStmt = `console.log('hello', a)`;
         const replacedStmtExp = escapeRegExp(replacedStmt);
         const remainStmtExp = `{\\s*${escapeRegExp(firstRemainingStmt)}`;
-        console.log({ firstRemainingStmt, remainStmtExp, modifiedCode });
         expect(modifiedCode.match(replacedStmtExp)).toBeFalsy();
         expect(modifiedCode.match(remainStmtExp)).toBeTruthy();
         expect(modifiedCode.includes(origCode)).toBeTruthy();

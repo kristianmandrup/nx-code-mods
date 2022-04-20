@@ -12,8 +12,8 @@ describe('appendAfterImports', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = `import { y } from './my';`;
-      expect(modifiedCode.match(code)).toBeTruthy();
-      expect(modifiedCode.match(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(`import { x } from 'x';`)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 
@@ -25,8 +25,8 @@ describe('appendAfterImports', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(modifiedCode.match(code)).toBeTruthy();
-      expect(modifiedCode.match(origCode)).toBeTruthy();
+      expect(modifiedCode.includes(`import { x } from 'x';`)).toBeTruthy();
+      expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
 });

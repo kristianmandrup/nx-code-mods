@@ -12,6 +12,7 @@ import {
   replaceInFile,
   replaceInSource,
 } from '../modify';
+import { afterIndex, beforeIndex } from '../positional';
 
 export interface RemoveImportOptions {
   importId: string;
@@ -35,7 +36,11 @@ export const removeImport = (opts: AnyOpts) => (node: any) => {
   }
   const startPos = importDecl.getStart();
   const endPos = importDecl.getEnd();
-  return removeCode(node, { startPos, endPos });
+  const positions = {
+    startPos,
+    endPos,
+  };
+  return removeCode(node, positions);
 };
 
 export function removeImportInSource(
