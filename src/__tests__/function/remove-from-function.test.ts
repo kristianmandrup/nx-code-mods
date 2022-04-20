@@ -71,7 +71,6 @@ describe('remove from function', () => {
         const removedStmt = `console.log('hello', a)`;
         const removedStmtExp = escapeRegExp(removedStmt);
         const remainStmtExp = `{\\s*${escapeRegExp(firstRemainingStmt)}`;
-        console.log({ firstRemainingStmt, remainStmtExp, modifiedCode });
         expect(modifiedCode.match(removedStmtExp)).toBeFalsy();
         expect(modifiedCode.match(remainStmtExp)).toBeTruthy();
         expect(modifiedCode.includes(origCode)).toBeTruthy();
@@ -80,7 +79,7 @@ describe('remove from function', () => {
     });
 
     context('numeric pos 1', () => {
-      it.skip('removes at statement position in function', () => {
+      it('removes at statement position in function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -102,7 +101,7 @@ describe('remove from function', () => {
     });
 
     context('last pos', () => {
-      it.skip('removes last element of function', () => {
+      it('removes last element of function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -124,7 +123,7 @@ describe('remove from function', () => {
     });
 
     context('find specific statement for remove position', () => {
-      it.skip('removes after specific statement', () => {
+      it('removes after specific statement', () => {
         const filePath = path.join(
           __dirname,
           'files',

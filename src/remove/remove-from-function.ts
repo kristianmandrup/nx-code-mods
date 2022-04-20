@@ -7,6 +7,7 @@ import {
   normalizeRemoveIndexAdj,
   removeFromNode,
 } from './positional';
+import { ensureStmtClosing } from '../ensure';
 
 export interface RemoveFunctionOptions {
   functionId: string;
@@ -33,7 +34,8 @@ export const removeInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
     return;
   }
   return removeFromNode(srcNode, {
-    elementsField: 'properties',
+    formatCode: ensureStmtClosing,
+    elementsField: 'statements',
     node: funBlock,
     ...opts,
   });
@@ -47,6 +49,7 @@ export function removeInsideFunctionBlockInSource(
     findFunctionBlock(node, opts.functionId);
   const allOpts = {
     findNodeFn,
+    formatCode: ensureStmtClosing,
     modifyFn: removeInFunctionBlock,
     ...opts,
   };
@@ -61,6 +64,7 @@ export function removeInsideFunctionBlockInFile(
     findFunctionBlock(node, opts.functionId);
   const allOpts = {
     findNodeFn,
+    formatCode: ensureStmtClosing,
     modifyFn: removeInFunctionBlock,
     ...opts,
   };

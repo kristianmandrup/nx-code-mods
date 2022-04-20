@@ -32,7 +32,7 @@ export const insertInFunctionBlock = (opts: AnyOpts) => (srcNode: any) => {
   }
   return insertIntoNode(srcNode, {
     formatCode: ensureStmtClosing,
-    elementsField: 'elements',
+    elementsField: 'statements',
     node: funBlock,
     code,
     insert,

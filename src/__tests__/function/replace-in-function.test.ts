@@ -74,16 +74,14 @@ describe('replace from function', () => {
         const modifiedCode = code ? code : '';
         const replacedStmt = `console.log('hello', a)`;
         const replacedStmtExp = escapeRegExp(replacedStmt);
-        const remainStmtExp = `{\\s*${escapeRegExp(firstRemainingStmt)}`;
         expect(modifiedCode.match(replacedStmtExp)).toBeFalsy();
-        expect(modifiedCode.match(remainStmtExp)).toBeTruthy();
         expect(modifiedCode.includes(origCode)).toBeTruthy();
-        // expect(modifiedCode.match(regExp)).toBeTruthy();
+        expect(modifiedCode.includes(firstRemainingStmt)).toBeTruthy();
       });
     });
 
     context('numeric pos 1', () => {
-      it.skip('replaces at statement position in function', () => {
+      it('replaces at statement position in function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -106,7 +104,7 @@ describe('replace from function', () => {
     });
 
     context('last pos', () => {
-      it.skip('replaces last element of function', () => {
+      it('replaces last element of function', () => {
         const filePath = path.join(
           __dirname,
           'files',
@@ -129,7 +127,7 @@ describe('replace from function', () => {
     });
 
     context('find specific statement for replace position', () => {
-      it.skip('replaces after specific statement', () => {
+      it('replaces after specific statement', () => {
         const filePath = path.join(
           __dirname,
           'files',

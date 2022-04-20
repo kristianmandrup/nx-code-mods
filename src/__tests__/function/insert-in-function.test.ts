@@ -5,19 +5,20 @@ import { Node } from 'typescript';
 import { escapeRegExp } from '../../utils';
 
 const context = describe;
+const insertCode = `let c = 2`;
 
 describe('insert function', () => {
   context('file with no named function', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-function.txt');
       const code = insertInsideFunctionBlockInFile(filePath, {
-        code: `let c = 2`,
+        code: insertCode,
         functionId: 'myFun',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(insertCode)).toBeFalsy();
     });
   });
 
@@ -35,7 +36,7 @@ describe('insert function', () => {
       const modifiedCode = code ? code : '';
       const origCode = `const x = 2;`;
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(insertCode)).toBeFalsy();
     });
   });
 
@@ -47,12 +48,12 @@ describe('insert function', () => {
         'has-matching-empty-function.txt',
       );
       const code = insertInsideFunctionBlockInFile(filePath, {
-        code: `let c = 2`,
+        code: insertCode,
         functionId: 'myFun',
       });
       const origCode = `const x = 2;`;
       const modifiedCode = code ? code : '';
-      const str = `{\\s*${escapeRegExp(code + ';')}\\s*`;
+      const str = `{\\s*${escapeRegExp(insertCode)}\\s*;\\s*}`;
       const regExp = new RegExp(str);
       expect(modifiedCode.includes(origCode)).toBeTruthy();
       expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -68,12 +69,12 @@ describe('insert function', () => {
           'has-matching-function-with-statements.txt',
         );
         const code = insertInsideFunctionBlockInFile(filePath, {
-          code: `let c = 2`,
+          code: insertCode,
           functionId: 'myFun',
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        const str = `{\\s*${escapeRegExp(code + ';')}\\s*`;
+        const str = `{\\s*${escapeRegExp(insertCode + ';')}\\s*`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -96,7 +97,7 @@ describe('insert function', () => {
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        const str = `\\s*${escapeRegExp(code + ';')}\\s*let b = 5;`;
+        const str = `\\s*${escapeRegExp(insertCode + ';')}\\s*let b = 5;`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -119,7 +120,7 @@ describe('insert function', () => {
         });
         const origCode = `const x = 2;`;
         const modifiedCode = code ? code : '';
-        const str = `\\s*${escapeRegExp(code + ';')}\\s*}`;
+        const str = `\\s*${escapeRegExp(insertCode + ';')}\\s*}`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();
@@ -134,7 +135,7 @@ describe('insert function', () => {
           'has-matching-function-with-statements.txt',
         );
         const code = insertInsideFunctionBlockInFile(filePath, {
-          code: `let c = 2`,
+          code: insertCode,
           functionId: 'myFun',
           insert: {
             relative: 'after',
@@ -142,8 +143,9 @@ describe('insert function', () => {
           },
         });
         const origCode = `const x = 2;`;
+        const firstStmt = `let b = 5;`;
         const modifiedCode = code ? code : '';
-        const str = `let b = 5;\\s*${escapeRegExp(code + ';')}`;
+        const str = firstStmt + `\\s*${escapeRegExp(insertCode + ';')}`;
         const regExp = new RegExp(str);
         expect(modifiedCode.includes(origCode)).toBeTruthy();
         expect(modifiedCode.match(regExp)).toBeTruthy();

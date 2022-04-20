@@ -20,7 +20,7 @@ export const removeFromNode = (
   srcNode: Node | SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { elementsField, node, remove, code, indexAdj, comma } = opts;
+  let { formatCode, elementsField, node, remove, code, indexAdj, comma } = opts;
   remove = remove || {};
   indexAdj = normalizeRemoveIndexAdj(indexAdj);
   const elements = node[elementsField];
@@ -64,5 +64,9 @@ export const removeFromNode = (
     }
   }
   const options = { ...positions, code: code };
-  return code ? replaceCode(srcNode, options) : removeCode(srcNode, options);
+  const formattedCode = code && formatCode ? formatCode(code) : code;
+  options.code = formattedCode;
+  return formattedCode
+    ? replaceCode(srcNode, options)
+    : removeCode(srcNode, options);
 };

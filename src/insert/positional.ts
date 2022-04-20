@@ -140,13 +140,18 @@ export const insertIntoNode = (
   }
 
   const elements = node[elementsField];
+  if (!elements) {
+    console.error({ node, elementsField });
+    throw new Error(`insertIntoNode: invalid elements field ${elementsField}`);
+  }
   const count = elements.length;
 
   if (count === 0) {
     let pos = bounds.startPos;
     pos += indexAdj || 0;
     pos = ensureValidPosition(pos);
-    return insertCode(srcNode, pos, code);
+    const formattedCode = formatCode(code, { insert, pos: 0, count });
+    return insertCode(srcNode, pos, formattedCode);
   }
 
   let elemPos =
@@ -169,7 +174,6 @@ export const insertIntoNode = (
       : aroundElementPos(elements, elemPos, insert.relative);
 
   const formattedCode = formatCode(code, { insert, pos: elemPos, count });
-
   insertPos += indexAdj || 0;
   insertPos = ensureValidPosition(insertPos);
   return insertCode(srcNode, insertPos, formattedCode);
