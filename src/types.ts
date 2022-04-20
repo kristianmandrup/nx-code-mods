@@ -4,7 +4,7 @@ export type ElementsType = any[] | NodeArray<any>;
 
 export type CollectionIndex = 'first' | 'last' | number;
 
-export type BetweenPos = {
+export type PositionBounds = {
   startPos: number;
   endPos: number;
 };

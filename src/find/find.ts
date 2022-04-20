@@ -10,7 +10,6 @@ import {
   Node,
   ParameterDeclaration,
   PropertyDeclaration,
-  SignatureDeclarationBase,
   SourceFile,
   Statement,
   StringLiteralLike,
@@ -335,10 +334,8 @@ export type ParamsPos = {
 export const findFirstParameter = (
   node: Node,
 ): ParameterDeclaration | ParamsPos | undefined => {
-  console.log('findFirstParameter', node);
-  const methDec = node as SignatureDeclarationBase;
+  const methDec = node as MethodDeclaration;
   const params: any = methDec.parameters;
-  console.log({ params });
   if (methDec.parameters) {
     if (params.pos) {
       return {
@@ -359,9 +356,8 @@ export const findFirstParameter = (
 export const findLastParameter = (
   node: Node,
 ): ParameterDeclaration | ParamsPos | undefined => {
-  const methDec = node as SignatureDeclarationBase;
+  const methDec = node as MethodDeclaration;
   const params: any = methDec.parameters;
-  console.log({ params });
   if (methDec.parameters) {
     if (params.pos) {
       return {

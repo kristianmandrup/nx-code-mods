@@ -1,10 +1,10 @@
 import { createEnsureValidPositions } from '../../ensure';
 import { findElementNode } from '../../find';
 import { endOfIndex, startOfIndex } from '../../positional';
-import { BetweenPos, ElementsType } from '../../types';
+import { PositionBounds, ElementsType } from '../../types';
 import { RemovePosArgs, RemovePosOpts } from './types';
 
-const hasValidBetween = (between?: BetweenPos) => {
+const hasValidBetween = (between?: PositionBounds) => {
   if (!between) return false;
   if (!(between.startPos && between.endPos)) return false;
   return true;
@@ -130,7 +130,7 @@ const getNextElem = (elements: ElementsType, pos: number) => {
   return elements[index];
 };
 
-const getPositionsInElements = ({
+const getRemovePositionsInElements = ({
   pos,
   remove,
   count,
@@ -176,7 +176,7 @@ const getPositionsNoElements = ({
   });
 };
 
-export const getIndexPositions = (options: RemovePosArgs) => {
+export const getIndexRemovePositions = (options: RemovePosArgs) => {
   let { node, elements, remove, count, indexAdj } = options;
   remove = remove || {};
   const { between } = remove;
@@ -215,7 +215,7 @@ export const getIndexPositions = (options: RemovePosArgs) => {
 
   let positions = noElements
     ? getPositionsNoElements(opts)
-    : getPositionsInElements(opts);
+    : getRemovePositionsInElements(opts);
 
   ensureValidPositions(positions);
   return { positions, pos };

@@ -1,8 +1,8 @@
 import { swapPositions } from './positional';
-import { BetweenPos } from './types';
+import { PositionBounds } from './types';
 
 export const createEnsureValidPosition =
-  (bounds: BetweenPos) => (index: number) => {
+  (bounds: PositionBounds) => (index: number) => {
     if (index > bounds.endPos) {
       return bounds.endPos;
     }
@@ -13,7 +13,7 @@ export const createEnsureValidPosition =
   };
 
 export const createEnsureValidPositions =
-  (bounds: BetweenPos) => (positions: BetweenPos) => {
+  (bounds: PositionBounds) => (positions: PositionBounds) => {
     if (positions.startPos > positions.endPos) {
       positions = swapPositions(positions);
     }

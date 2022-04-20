@@ -2,7 +2,7 @@ import { ensureCommaDelimiters, ensurePrefixComma } from './../../ensure';
 import { AnyOpts, removeCode, replaceCode } from '../../modify';
 import { Node, SourceFile } from 'typescript';
 import { IndexAdj } from '../../types';
-import { getIndexPositions } from './elements';
+import { getIndexRemovePositions } from './elements';
 import { getRangePositions } from './range';
 import { RemovePosArgs } from './types';
 
@@ -13,8 +13,8 @@ export const normalizeRemoveIndexAdj = (indexAdj: IndexAdj) => {
   return indexAdj;
 };
 
-export const getPositions = (posOpts: RemovePosArgs) =>
-  getIndexPositions(posOpts) || getRangePositions(posOpts);
+export const getRemovePositions = (posOpts: RemovePosArgs) =>
+  getIndexRemovePositions(posOpts) || getRangePositions(posOpts);
 
 export const removeFromNode = (
   srcNode: Node | SourceFile,
@@ -52,7 +52,7 @@ export const removeFromNode = (
     count,
     indexAdj,
   };
-  let { positions, pos } = getPositions(posOpts) || {};
+  let { positions, pos } = getRemovePositions(posOpts) || {};
   if (!positions) return;
 
   positions.startPos += indexAdj.start;

@@ -38,6 +38,7 @@ export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
     methodId,
     paramId,
   });
+  console.log('insertParamDecorator', { node });
   if (!node) return;
   return insertIntoNode(srcNode, {
     elementsField: 'decorators',

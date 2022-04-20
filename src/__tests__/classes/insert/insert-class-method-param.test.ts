@@ -61,7 +61,7 @@ describe('insert class method param decorator', () => {
   });
 
   context('file has matching class and method', () => {
-    it.skip('insert param in class method at position 1', () => {
+    it('insert param in class method at position 1', () => {
       const filePath = path.join(
         __dirname,
         '..',
@@ -95,7 +95,7 @@ describe('insert class method param decorator', () => {
     );
 
     context('index 1', () => {
-      it.only('insert param in class method at position 1, between params', () => {
+      it('insert param in class method at position 1, between params', () => {
         const code = insertClassMethodParameterInFile(filePath, {
           code: insertCode,
           classId: 'myClass',
@@ -108,7 +108,6 @@ describe('insert class method param decorator', () => {
         const origCode = 'const x = 2;';
         const str = `${escapeRegExp('myMethod(' + insertCode)}`;
         const regExp = new RegExp(str);
-        console.log({ modifiedCode, str });
         expect(modifiedCode.match(regExp)).toBeTruthy();
         expect(modifiedCode.includes(insertCode)).toBeTruthy();
         expect(modifiedCode.includes(origCode)).toBeTruthy();
@@ -116,7 +115,7 @@ describe('insert class method param decorator', () => {
     });
 
     context('index first', () => {
-      it.skip('insert param in class method at first param position', () => {
+      it('insert param in class method at first param position', () => {
         const filePath = path.join(
           __dirname,
           '..',
@@ -142,7 +141,7 @@ describe('insert class method param decorator', () => {
     });
 
     context('index last', () => {
-      it.skip('insert param in class method at last param position', () => {
+      it('insert param in class method at last param position', () => {
         const filePath = path.join(
           __dirname,
           '..',

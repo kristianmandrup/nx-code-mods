@@ -23,7 +23,7 @@ import {
   endOfIndex,
   startOfIndex,
 } from '../positional';
-import { ElementsType } from '../types';
+import { ElementsType, PositionBounds } from '../types';
 
 export type InsertPosNumParams = {
   node: Node;
@@ -129,56 +129,57 @@ export const insertInClassScope = (srcNode: SourceFile, opts: AnyOpts) => {
   return insertClassCode(srcNode, { index, code: code, indexAdj });
 };
 
-export const insertIntoNode = (
-  srcNode: SourceFile,
-  opts: AnyOpts,
-): string | undefined => {
-  let { bounds, formatCode, elementsField, node, code, insert, indexAdj } =
-    opts;
-  console.log('insertIntoNode', opts);
-  // support special
+const insertPosBounds = (node: any, bounds: PositionBounds) => {
   const startNodePos = startOfIndex(node);
   const endNodePos = endOfIndex(node);
   const nodeBounds = {
     startPos: startNodePos,
     endPos: endNodePos,
   };
-
-  console.log({ nodeBounds, bounds });
-  bounds = {
+  return {
     ...nodeBounds,
     ...bounds,
   };
+};
 
-  const ensureValidPosition = createEnsureValidPosition(bounds);
-  insert = insert || {};
+const normalizeInsert = (insert: any = {}) => {
   if (!insert.relative) {
     insert.relative = 'before';
   }
+  return insert;
+};
 
-  const { abortIfFound } = insert;
-  if (abortIfFound && abortIfFound(node)) {
-    return;
-  }
+export const insertIntoNoElements = (srcNode: any, opts: any) => {
+  const {
+    bounds,
+    indexAdj,
+    code,
+    formatCode,
+    insert,
+    count,
+    ensureValidPosition,
+  } = opts;
+  if (count > 0) return;
+  let pos = bounds.startPos;
+  pos += indexAdj || 0;
+  pos = ensureValidPosition(pos);
+  const formattedCode = formatCode
+    ? formatCode(code, { insert, pos: 0, count })
+    : code;
+  return insertCode(srcNode, pos, formattedCode);
+};
 
-  const elements = node[elementsField];
-  if (!elements) {
-    console.error({ node, elementsField });
-    throw new Error(`insertIntoNode: invalid elements field ${elementsField}`);
-  }
-  const count = elements.length;
-
-  if (count === 0) {
-    let pos = bounds.startPos;
-    console.log('no elements', { count, pos });
-    pos += indexAdj || 0;
-    pos = ensureValidPosition(pos);
-    const formattedCode = formatCode
-      ? formatCode(code, { insert, pos: 0, count })
-      : code;
-    return insertCode(srcNode, pos, formattedCode);
-  }
-
+export const insertIntoElements = (srcNode: any, opts: any) => {
+  let {
+    node,
+    elements,
+    insert,
+    count,
+    formatCode,
+    indexAdj,
+    code,
+    ensureValidPosition,
+  } = opts;
   let elemPos =
     getInsertPosNum({
       node,
@@ -203,6 +204,40 @@ export const insertIntoNode = (
   insertPos += indexAdj || 0;
   insertPos = ensureValidPosition(insertPos);
   return insertCode(srcNode, insertPos, formattedCode);
+};
+
+const insertPositional = (srcNode: any, opts: any) => {
+  return (
+    insertIntoNoElements(srcNode, opts) || insertIntoElements(srcNode, opts)
+  );
+};
+
+export const insertIntoNode = (
+  srcNode: SourceFile,
+  opts: AnyOpts,
+): string | undefined => {
+  let { bounds, elementsField, node, insert } = opts;
+  insert = normalizeInsert(insert);
+
+  const { abortIfFound } = insert;
+  if (abortIfFound && abortIfFound(node)) {
+    return;
+  }
+
+  bounds = insertPosBounds(node, bounds);
+  const elements = node[elementsField];
+
+  const count = elements ? elements.length : 0;
+
+  const ensureValidPosition = createEnsureValidPosition(bounds);
+  opts = {
+    ...opts,
+    ensureValidPosition,
+    bounds,
+    count,
+    elements,
+  };
+  return insertPositional(srcNode, opts);
 };
 
 export const afterLastElementPos = (elements: ElementsType) => {

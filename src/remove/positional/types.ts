@@ -1,7 +1,7 @@
 import { Node, NodeArray } from 'typescript';
 import { FindElementFn } from '../../find';
 import {
-  BetweenPos,
+  PositionBounds,
   CollectionIndex,
   ElementsType,
   RelativePos,
@@ -20,7 +20,7 @@ export interface RemovePosArgs extends ResolveOpts {
 
 export type CollectionModifyOpts = {
   index?: CollectionIndex;
-  between?: BetweenPos;
+  between?: PositionBounds;
   findElement?: FindElementFn;
   relative?: RelativePos;
   code?: string;

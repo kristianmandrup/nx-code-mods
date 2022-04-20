@@ -1,7 +1,7 @@
 import { Node } from 'typescript';
-import { BetweenPos } from './types';
+import { PositionBounds } from './types';
 
-export const swapPositions = ({ startPos, endPos }: BetweenPos) => {
+export const swapPositions = ({ startPos, endPos }: PositionBounds) => {
   return { startPos: endPos, endPos: startPos };
 };
 
