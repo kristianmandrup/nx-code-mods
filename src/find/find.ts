@@ -10,12 +10,14 @@ import {
   Node,
   ParameterDeclaration,
   PropertyDeclaration,
+  SignatureDeclarationBase,
   SourceFile,
   Statement,
   StringLiteralLike,
   VariableDeclaration,
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
+import { endOfIndex, startOfIndex } from '../positional';
 
 type WhereFn = (stmt: Node) => boolean;
 
@@ -323,6 +325,79 @@ export const findParameter = (
     return;
   }
   return result[0].parent as ParameterDeclaration;
+};
+
+export type ParamsPos = {
+  pos: number;
+  end: number;
+};
+
+export const findFirstParameter = (
+  node: Node,
+): ParameterDeclaration | ParamsPos | undefined => {
+  console.log('findFirstParameter', node);
+  const methDec = node as SignatureDeclarationBase;
+  const params: any = methDec.parameters;
+  console.log({ params });
+  if (methDec.parameters) {
+    if (params.pos) {
+      return {
+        pos: params.pos,
+        end: params.end,
+      };
+    }
+    return methDec.parameters[0];
+  }
+  const selector = `Parameter:first-child`;
+  const result = tsquery(node, selector);
+  console.log({ result });
+  if (!result || result.length === 0) return;
+  const found = result[0] as ParameterDeclaration;
+  return found;
+};
+
+export const findLastParameter = (
+  node: Node,
+): ParameterDeclaration | ParamsPos | undefined => {
+  const methDec = node as SignatureDeclarationBase;
+  const params: any = methDec.parameters;
+  console.log({ params });
+  if (methDec.parameters) {
+    if (params.pos) {
+      return {
+        pos: params.pos,
+        end: params.end,
+      };
+    }
+    return params[params.length - 1];
+  }
+  const selector = `Parameter:last-child`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) return;
+  const found = result[0] as ParameterDeclaration;
+  return found;
+};
+
+export const findFirstParamPos = (
+  param: ParameterDeclaration | ParamsPos | undefined,
+) => {
+  if (!param) return;
+  const paramsPos = param as ParamsPos;
+  if (paramsPos.pos) {
+    return paramsPos.pos;
+  }
+  return startOfIndex(param as ParameterDeclaration);
+};
+
+export const findLastParamPos = (
+  param: ParameterDeclaration | ParamsPos | undefined,
+) => {
+  if (!param) return;
+  const paramsPos = param as ParamsPos;
+  if (paramsPos.pos) {
+    return paramsPos.end;
+  }
+  return endOfIndex(param as ParameterDeclaration);
 };
 
 export const findVariableDeclaration = (

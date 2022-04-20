@@ -3,13 +3,14 @@ import { insertClassMethodDecoratorInFile } from '../../../';
 import { escapeRegExp } from '../../../utils';
 
 const context = describe;
+const insertCode = `@Post()`;
 
 describe('insert class decorator', () => {
   context('file has no class', () => {
     it('no insert', () => {
-      const filePath = path.join(__dirname, 'files', 'no-class.txt');
+      const filePath = path.join(__dirname, '..', 'files', 'no-class.txt');
       const code = insertClassMethodDecoratorInFile(filePath, {
-        code: `@Post()`,
+        code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
@@ -17,7 +18,7 @@ describe('insert class decorator', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(insertCode)).toBeFalsy();
     });
   });
 
@@ -25,11 +26,12 @@ describe('insert class decorator', () => {
     it('no insert', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-no-matching-class.txt',
       );
       const code = insertClassMethodDecoratorInFile(filePath, {
-        code: `@Post()`,
+        code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
@@ -37,7 +39,7 @@ describe('insert class decorator', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(insertCode)).toBeFalsy();
     });
   });
 
@@ -45,11 +47,12 @@ describe('insert class decorator', () => {
     it('no insert', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-empty-class.txt',
       );
       const code = insertClassMethodDecoratorInFile(filePath, {
-        code: `@Post()`,
+        code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
@@ -64,21 +67,23 @@ describe('insert class decorator', () => {
     it('insert decorator before matching method', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-class-and-method.txt',
       );
       const code = insertClassMethodDecoratorInFile(filePath, {
-        code: `@Post()`,
+        code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      const str = `${escapeRegExp(code)}\\s*\\nmyMethod`;
+      const str = `${escapeRegExp(insertCode)}\\s*myMethod`;
       const regExp = new RegExp(str);
+      console.log({ modifiedCode });
       expect(modifiedCode.match(regExp)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeTruthy();
+      expect(modifiedCode.includes(insertCode)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });

@@ -1,6 +1,16 @@
-import { findClassDeclaration } from './../find/find';
-import { Node, SourceFile, ClassDeclaration } from 'typescript';
-import { FindElementFn, CheckUnderNode, findElementNode } from '../find';
+import {
+  Node,
+  SourceFile,
+  ClassDeclaration,
+  ParameterDeclaration,
+} from 'typescript';
+import {
+  findClassDeclaration,
+  ParamsPos,
+  FindElementFn,
+  CheckUnderNode,
+  findElementNode,
+} from '../find';
 import { AnyOpts, insertCode } from '../modify';
 import {
   createEnsureValidPosition,
@@ -123,11 +133,23 @@ export const insertIntoNode = (
   srcNode: SourceFile,
   opts: AnyOpts,
 ): string | undefined => {
-  let { formatCode, elementsField, node, code, insert, indexAdj } = opts;
-  const bounds = {
-    startPos: startOfIndex(node),
-    endPos: endOfIndex(node),
+  let { bounds, formatCode, elementsField, node, code, insert, indexAdj } =
+    opts;
+  console.log('insertIntoNode', opts);
+  // support special
+  const startNodePos = startOfIndex(node);
+  const endNodePos = endOfIndex(node);
+  const nodeBounds = {
+    startPos: startNodePos,
+    endPos: endNodePos,
   };
+
+  console.log({ nodeBounds, bounds });
+  bounds = {
+    ...nodeBounds,
+    ...bounds,
+  };
+
   const ensureValidPosition = createEnsureValidPosition(bounds);
   insert = insert || {};
   if (!insert.relative) {
@@ -148,9 +170,12 @@ export const insertIntoNode = (
 
   if (count === 0) {
     let pos = bounds.startPos;
+    console.log('no elements', { count, pos });
     pos += indexAdj || 0;
     pos = ensureValidPosition(pos);
-    const formattedCode = formatCode(code, { insert, pos: 0, count });
+    const formattedCode = formatCode
+      ? formatCode(code, { insert, pos: 0, count })
+      : code;
     return insertCode(srcNode, pos, formattedCode);
   }
 
@@ -173,6 +198,7 @@ export const insertIntoNode = (
       ? afterLastElementPos(elements)
       : aroundElementPos(elements, elemPos, insert.relative);
 
+  console.log({ elements, elemPos, insertPos });
   const formattedCode = formatCode(code, { insert, pos: elemPos, count });
   insertPos += indexAdj || 0;
   insertPos = ensureValidPosition(insertPos);

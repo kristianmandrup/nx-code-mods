@@ -3,21 +3,22 @@ import { insertClassMethodParamDecoratorInFile } from '../../../';
 import { escapeRegExp } from '../../../utils';
 
 const context = describe;
+const insertCode = `@Body() body: string`;
 
 describe('insert class method param decorator', () => {
   context('file has no class', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-class.txt');
       const code = insertClassMethodParamDecoratorInFile(filePath, {
-        code: `@Body() body: string`,
+        code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Body',
+        paramId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(insertCode)).toBeFalsy();
     });
   });
 
@@ -29,15 +30,15 @@ describe('insert class method param decorator', () => {
         'has-no-matching-class.txt',
       );
       const code = insertClassMethodParamDecoratorInFile(filePath, {
-        code: `@Body() body: string`,
+        code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Body',
+        paramId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
+      expect(modifiedCode.includes(insertCode)).toBeFalsy();
     });
   });
 
@@ -52,7 +53,7 @@ describe('insert class method param decorator', () => {
         code: `@Body() body: string`,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Body',
+        paramId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -68,17 +69,17 @@ describe('insert class method param decorator', () => {
         'has-matching-class-and-method.txt',
       );
       const code = insertClassMethodParamDecoratorInFile(filePath, {
-        code: `@Body() body: string`,
+        code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
-        id: 'Body',
+        paramId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      const str = `${escapeRegExp('myMethod(' + code)}`;
+      const str = `${escapeRegExp('myMethod(' + insertCode)}`;
       const regExp = new RegExp(str);
       expect(modifiedCode.match(regExp)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeTruthy();
+      expect(modifiedCode.includes(insertCode)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });

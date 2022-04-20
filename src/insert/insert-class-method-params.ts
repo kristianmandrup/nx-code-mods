@@ -1,8 +1,16 @@
 import { CollectionInsert, insertIntoNode } from './positional';
-import { findClassDeclaration, findClassMethodDeclaration } from '../find';
+import {
+  findFirstParameter,
+  findLastParameter,
+  findClassDeclaration,
+  findClassMethodDeclaration,
+  findFirstParamPos,
+  findLastParamPos,
+} from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
 import { Tree } from '@nrwl/devkit';
+
 export interface ClassMethodParamsInsertOptions {
   classId: string;
   methodId: string;
@@ -32,8 +40,17 @@ export const insertParametersInClassMethod =
       classId: classId,
       methodId,
     });
+    const findStartNode = findFirstParameter;
+    const findEndNode = findLastParameter;
     if (!node) return;
+    const spStartNode = findStartNode && findStartNode(node);
+    const spEndNode = findEndNode && findEndNode(node);
+    const bounds = {
+      startPos: findFirstParamPos(spStartNode),
+      endPos: findLastParamPos(spEndNode),
+    };
     return insertIntoNode(srcNode, {
+      bounds,
       elementsField: 'parameters',
       node,
       code,
