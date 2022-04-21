@@ -1,3 +1,4 @@
+import { ModifyOptions } from './../../modify/modify-file';
 import { createEnsureValidPositions } from '../../ensure';
 import { findElementNode } from '../../find';
 import { endOfIndex, startOfIndex } from '../../positional';
@@ -130,14 +131,31 @@ const getNextElem = (elements: ElementsType, pos: number) => {
   return elements[index];
 };
 
-const getRemovePositionsInElements = ({
-  pos,
-  remove,
-  count,
-  elements,
-  bounds,
-  ensureValidPositions,
-}: any) => {
+export const getElementRemovePositions = (opts: any) => {
+  const { lastElementRemovePos, firstElementRemovePos, midElementRemovePos } =
+    opts;
+  return (
+    lastElementRemovePos(opts) ||
+    firstElementRemovePos(opts) ||
+    midElementRemovePos(opts)
+  );
+};
+
+const ensureElementRemovePositions = (positions: any, bounds: any) => {
+  if (!positions.startPos) {
+    positions.startPos = bounds.startPos;
+  }
+
+  if (!positions.endPos) {
+    positions.endPos = bounds.endPos;
+  }
+  return positions;
+};
+
+const normalizeElementsRemove = (
+  remove: ModifyOptions,
+  { pos, count }: any,
+) => {
   remove = remove || {};
   const { relative } = remove || {};
   if (pos === -1) {
@@ -147,20 +165,21 @@ const getRemovePositionsInElements = ({
   if (pos >= count) {
     remove.relative = relative || 'at';
   }
+  return remove;
+};
 
-  const removeOpts = { remove, elements, count, pos };
-  let positions =
-    lastElementRemovePos(removeOpts) ||
-    firstElementRemovePos(removeOpts) ||
-    midElementRemovePos(removeOpts);
-
-  if (!positions.startPos) {
-    positions.startPos = bounds.startPos;
-  }
-
-  if (!positions.endPos) {
-    positions.endPos = bounds.endPos;
-  }
+const getRemovePositionsInElements = ({
+  pos,
+  remove,
+  count,
+  elements,
+  bounds,
+  ensureValidPositions,
+  getElementRemovePositions,
+}: any) => {
+  remove = normalizeElementsRemove(remove, { pos, count });
+  let positions = getElementRemovePositions({ remove, elements, count, pos });
+  ensureElementRemovePositions(positions, bounds);
   ensureValidPositions(positions);
   return positions;
 };
@@ -174,6 +193,28 @@ const getPositionsNoElements = ({
     startPos: bounds.startPos + indexAdj.start,
     endPos: bounds.endPos + indexAdj.end,
   });
+};
+
+export const setRemoveInElementsFunctions = (opts: any) => {
+  opts.getPositionsNoElements =
+    opts.getPositionsNoElements || getPositionsNoElements;
+  opts.getRemovePositionsInElements =
+    opts.getRemovePositionsInElements || getRemovePositionsInElements;
+  opts.getElementRemovePositions =
+    opts.getElementRemovePositions || getElementRemovePositions;
+  opts.lastElementRemovePos = opts.lastElementRemovePos || lastElementRemovePos;
+  opts.firstElementRemovePos =
+    opts.firstElementRemovePos || firstElementRemovePos;
+  opts.midElementRemovePos = opts.midElementRemovePos || midElementRemovePos;
+  return opts;
+};
+
+const getElementIndexPositions = (opts: any, noElements: boolean) => {
+  setRemoveInElementsFunctions(opts);
+  const { getPositionsNoElements, getRemovePositionsInElements } = opts;
+  return noElements
+    ? getPositionsNoElements(opts)
+    : getRemovePositionsInElements(opts);
 };
 
 export const removeIndexPositions = (options: RemovePosArgs) => {
@@ -213,9 +254,7 @@ export const removeIndexPositions = (options: RemovePosArgs) => {
     pos,
   };
 
-  let positions = noElements
-    ? getPositionsNoElements(opts)
-    : getRemovePositionsInElements(opts);
+  let positions = getElementIndexPositions(opts, noElements);
 
   ensureValidPositions(positions);
   return { positions, pos };
