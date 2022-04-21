@@ -6,11 +6,14 @@ import {
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
+  findClassMethodDeclaration,
   findClassMethodParameterDeclaration,
-  findParameterBounds,
+  findDecorator,
+  findMatchingDecoratorForParameter,
+  findMatchingParameterDecorator,
 } from '../find';
 import { AnyOpts, modifyTree, replaceInFile, replaceInSource } from '../modify';
-import { SourceFile } from 'typescript';
+import { SourceFile, Node, ParameterDeclaration } from 'typescript';
 import { ElementsType } from '../types';
 import { afterIndex, beforeIndex } from '../positional';
 import { ensureSpaceClosing } from '../ensure';
@@ -19,6 +22,7 @@ export interface ClassMethodParamDecoratorInsertOptions {
   classId: string;
   methodId: string;
   paramId: string;
+  decoratorId: string;
   code: string;
   insert?: CollectionInsert;
   indexAdj?: number;
@@ -28,6 +32,7 @@ export interface ApiClassMethodParamDecoratorInsertOptions {
   classId?: string;
   methodId?: string;
   paramId?: string;
+  decoratorId?: string;
   insert?: CollectionInsert;
   indexAdj?: number;
   code: string;
@@ -65,19 +70,34 @@ const calcPosNoElements = (bounds: any, opts: any) => {
 };
 
 export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
-  const { classId, methodId, paramId, insert, code } = opts;
-  const node = findClassMethodParameterDeclaration(srcNode, {
-    classId: classId,
+  const { classId, methodId, paramId, decoratorId, insert, code } = opts;
+  // const methDeclNode = findClassMethodDeclaration(srcNode, {
+  //   classId,
+  //   methodId,
+  // });
+  const paramDeclNode = findClassMethodParameterDeclaration(srcNode, {
+    classId,
     methodId,
     paramId,
   });
-  if (!node) return;
+  if (!paramDeclNode) return;
+
+  const abortIfFound = (node: ParameterDeclaration) =>
+    findMatchingDecoratorForParameter(node, decoratorId);
+  if (abortIfFound) {
+    const found = abortIfFound(paramDeclNode);
+    console.log({ found });
+    if (found) {
+      return;
+    }
+  }
+
   return insertIntoNode(srcNode, {
     elementsField: 'decorators',
     boundsInsertPos,
     formatCode: ensureSpaceClosing,
     calcPosNoElements,
-    node,
+    node: paramDeclNode,
     code,
     insert,
     ...opts,

@@ -1,12 +1,6 @@
-import {
-  Node,
-  SourceFile,
-  ClassDeclaration,
-  ParameterDeclaration,
-} from 'typescript';
+import { Node, SourceFile, ClassDeclaration } from 'typescript';
 import {
   findClassDeclaration,
-  ParamsPos,
   FindElementFn,
   CheckUnderNode,
   findElementNode,
@@ -38,6 +32,7 @@ export const getInsertPosNum = ({
   insert,
   count,
 }: InsertPosNumParams) => {
+  insert = insert || {};
   let { findElement, index } = insert;
   if (findElement) {
     return findElementNode({ node, elements, findElement });
@@ -231,8 +226,9 @@ export const insertIntoNode = (
   opts: AnyOpts,
 ): string | undefined => {
   let { bounds, elementsField, node, insert } = opts;
-  insert = normalizeInsert(insert);
   opts = setInsertFunctions(opts);
+  insert = normalizeInsert(insert);
+  opts.insert = insert;
   const { insertPositional } = opts;
 
   const { abortIfFound } = insert;

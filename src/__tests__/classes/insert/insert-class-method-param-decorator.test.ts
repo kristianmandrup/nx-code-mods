@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { insertClassMethodParamDecoratorInFile } from '../../../';
-import { escapeRegExp } from '../../../utils';
+// import { escapeRegExp } from '../../../utils';
 
 const context = describe;
 const insertCode = `@Body()`;
@@ -13,7 +13,8 @@ describe('insert class method param decorator', () => {
         code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
-        paramId: 'Body',
+        paramId: 'body',
+        decoratorId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -34,7 +35,8 @@ describe('insert class method param decorator', () => {
         code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
-        paramId: 'Body',
+        paramId: 'body',
+        decoratorId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -55,7 +57,8 @@ describe('insert class method param decorator', () => {
         code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
-        paramId: 'Body',
+        paramId: 'body',
+        decoratorId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -76,6 +79,7 @@ describe('insert class method param decorator', () => {
         classId: 'myClass',
         methodId: 'myMethod',
         paramId: 'body',
+        decoratorId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -84,8 +88,8 @@ describe('insert class method param decorator', () => {
     });
   });
 
-  context('file has matching class and method', () => {
-    it.only('insert param decorator', () => {
+  context('file has matching class, method and 2 params - one matching', () => {
+    it('insert param decorator', () => {
       const filePath = path.join(
         __dirname,
         '..',
@@ -97,6 +101,7 @@ describe('insert class method param decorator', () => {
         classId: 'myClass',
         methodId: 'myMethod',
         paramId: 'body',
+        decoratorId: 'Body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -107,4 +112,32 @@ describe('insert class method param decorator', () => {
       expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
+
+  context(
+    'file has matching class, method and 2 params - one matching with Body Decorator',
+    () => {
+      it('no insert', () => {
+        const filePath = path.join(
+          __dirname,
+          '..',
+          'files',
+          'has-matching-class-method-param-decorator.txt',
+        );
+        const code = insertClassMethodParamDecoratorInFile(filePath, {
+          code: insertCode,
+          classId: 'myClass',
+          methodId: 'myMethod',
+          paramId: 'body',
+          decoratorId: 'Body',
+        });
+        const modifiedCode = code ? code : '';
+        const origCode = 'const x = 2;';
+        console.log({ modifiedCode });
+        expect(
+          modifiedCode.includes('myMethod(@Body body: string): string'),
+        ).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+      });
+    },
+  );
 });

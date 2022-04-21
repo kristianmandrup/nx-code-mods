@@ -1,4 +1,5 @@
 import {
+  BindingName,
   Block,
   ClassDeclaration,
   Decorator,
@@ -8,6 +9,7 @@ import {
   ImportSpecifier,
   MethodDeclaration,
   Node,
+  NodeArray,
   ParameterDeclaration,
   PropertyDeclaration,
   SourceFile,
@@ -17,6 +19,7 @@ import {
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { endOfIndex, startOfIndex } from '../positional';
+import { escapeRegExp } from '../utils';
 
 type WhereFn = (stmt: Node) => boolean;
 
@@ -344,6 +347,67 @@ export type ParamsPos = {
   end: number;
 };
 
+export const findMatchingParameter = (
+  node: Node,
+  paramId: string,
+): ParameterDeclaration | undefined => {
+  const methDec = node as MethodDeclaration;
+  const params: any = methDec.parameters;
+  if (methDec.parameters) {
+    if (params.pos) {
+      return;
+    }
+    const found = methDec.parameters.find(
+      (param: ParameterDeclaration) =>
+        (param.name as BindingName).getText() === paramId,
+    );
+    return found ? (found as ParameterDeclaration) : undefined;
+  }
+};
+
+export const findParameterDecorators = (
+  node: Node,
+  paramId: string,
+): NodeArray<Decorator> | undefined => {
+  const param = findMatchingParameter(node, paramId);
+  if (!param) return;
+  return param.decorators;
+};
+
+export const findMatchingDecoratorForParameter = (
+  paramNode: ParameterDeclaration,
+  decoratorId: string,
+): Decorator | undefined => {
+  const decorators = paramNode.decorators;
+  if (!decorators) return;
+  return findMatchingDecoratorInDecorators(decorators, decoratorId);
+};
+
+export const findMatchingDecoratorInDecorators = (
+  decorators: NodeArray<Decorator>,
+  decoratorId: string,
+): Decorator | undefined => {
+  let decorator;
+  decorators.find((dec: Decorator) => {
+    const decTxt = dec.getText();
+    const decoratorRegExp = '^' + escapeRegExp(`@${decoratorId}`);
+    if (decTxt.match(decoratorRegExp)) {
+      decorator = dec;
+    }
+  });
+  return decorator ? (decorator as Decorator) : undefined;
+};
+
+export const findMatchingParameterDecorator = (
+  node: Node,
+  paramId: string,
+  decoratorId: string,
+): Decorator | undefined => {
+  const decorators = findParameterDecorators(node, paramId);
+  if (!decorators) return;
+  let decorator;
+};
+
 export const findFirstParameter = (
   node: Node,
 ): ParameterDeclaration | ParamsPos | undefined => {
@@ -360,7 +424,6 @@ export const findFirstParameter = (
   }
   const selector = `Parameter:first-child`;
   const result = tsquery(node, selector);
-  console.log({ result });
   if (!result || result.length === 0) return;
   const found = result[0] as ParameterDeclaration;
   return found;
