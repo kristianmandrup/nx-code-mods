@@ -176,7 +176,7 @@ const getPositionsNoElements = ({
   });
 };
 
-export const getIndexRemovePositions = (options: RemovePosArgs) => {
+export const removeIndexPositions = (options: RemovePosArgs) => {
   let { node, elements, remove, count, indexAdj } = options;
   remove = remove || {};
   const { between } = remove;

@@ -29,7 +29,7 @@ export const resolveRangePos = (
   }
 };
 
-export const getRangePositions = (opts: RemovePosArgs) => {
+export const removeRangePositions = (opts: RemovePosArgs) => {
   const { count, remove, node, elements } = opts;
   let { index, between } = remove || {};
   if (index && !between) {

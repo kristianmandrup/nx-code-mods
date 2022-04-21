@@ -1,9 +1,10 @@
+import { ModifyOptions } from './../../modify/modify-file';
 import { ensureCommaDelimiters, ensurePrefixComma } from './../../ensure';
-import { AnyOpts, removeCode, replaceCode } from '../../modify';
+import { AnyOpts, isPresent, removeCode, replaceCode } from '../../modify';
 import { Node, SourceFile } from 'typescript';
 import { IndexAdj } from '../../types';
-import { getIndexRemovePositions } from './elements';
-import { getRangePositions } from './range';
+import { removeIndexPositions } from './elements';
+import { removeRangePositions } from './range';
 import { RemovePosArgs } from './types';
 
 export const normalizeRemoveIndexAdj = (indexAdj: IndexAdj) => {
@@ -13,25 +14,13 @@ export const normalizeRemoveIndexAdj = (indexAdj: IndexAdj) => {
   return indexAdj;
 };
 
-export const getRemovePositions = (posOpts: RemovePosArgs) =>
-  getIndexRemovePositions(posOpts) || getRangePositions(posOpts);
+export const removePositional = (opts: RemovePosArgs) => {
+  const { removeIndexPositions, removeRangePositions } = opts;
+  return removeIndexPositions(opts) || removeRangePositions(opts);
+};
 
-export const removeFromNode = (
-  srcNode: Node | SourceFile,
-  opts: AnyOpts,
-): string | undefined => {
-  let { formatCode, elementsField, node, remove, code, indexAdj, comma } = opts;
+const normalizeRemove = (remove: ModifyOptions, { count }: any) => {
   remove = remove || {};
-  indexAdj = normalizeRemoveIndexAdj(indexAdj);
-  const elements = node[elementsField];
-  if (!elements) {
-    console.error('removeFromNode', { node, elementsField });
-    throw new Error(
-      `removeFromNode: invalid elements field ${elementsField} for node`,
-    );
-  }
-  const count = elements.length;
-
   if (!remove.relative) {
     remove.relative = 'at';
   }
@@ -43,6 +32,46 @@ export const removeFromNode = (
   if (remove.index >= count) {
     remove.index = count - 1;
   }
+  return remove;
+};
+
+export const ensureRemoveCode = (code: string | undefined, opts: any) => {
+  const { comma, remove, pos, count, formatCode } = opts;
+  if (comma && code) {
+    code = ensureCommaDelimiters(code, { insert: remove, pos, count });
+    if (pos && pos > 0) {
+      code = ensurePrefixComma(code);
+    }
+  }
+  code = code && formatCode ? formatCode(code) : code;
+  return code;
+};
+
+export const setRemoveFunctions = (opts: any) => {
+  opts.removePositional = opts.removePositional || removePositional;
+  opts.removeIndexPositions = opts.removeIndexPositions || removeIndexPositions;
+  opts.removeRangePositions = opts.insertInElements || removeRangePositions;
+  return opts;
+};
+
+export const removeFromNode = (
+  srcNode: Node | SourceFile,
+  opts: AnyOpts,
+): string | undefined => {
+  opts = setRemoveFunctions(opts);
+  const { removePositional } = opts;
+  let { elementsField, node, remove, code, indexAdj, comma } = opts;
+  indexAdj = normalizeRemoveIndexAdj(indexAdj);
+  const elements = node[elementsField];
+  if (!elements) {
+    console.error('removeFromNode', { node, elementsField });
+    throw new Error(
+      `removeFromNode: invalid elements field ${elementsField} for node`,
+    );
+  }
+  const count = elements.length;
+
+  remove = normalizeRemove(remove, { count });
 
   const posOpts = {
     ...opts,
@@ -52,21 +81,20 @@ export const removeFromNode = (
     count,
     indexAdj,
   };
-  let { positions, pos } = getRemovePositions(posOpts) || {};
+
+  let { positions, pos } = removePositional(posOpts) || {};
   if (!positions) return;
 
   positions.startPos += indexAdj.start;
   positions.endPos += indexAdj.end;
-  if (comma && code) {
-    code = ensureCommaDelimiters(code, { insert: remove, pos, count });
-    if (pos && pos > 0) {
-      code = ensurePrefixComma(code);
-    }
-  }
-  const options = { ...positions, code: code };
-  const formattedCode = code && formatCode ? formatCode(code) : code;
-  options.code = formattedCode;
-  return formattedCode
+  opts.pos = pos;
+
+  // TODO: ensureRemoveCode
+  code = ensureRemoveCode(code, opts);
+
+  const options = { ...positions, code };
+
+  return isPresent(code)
     ? replaceCode(srcNode, options)
     : removeCode(srcNode, options);
 };

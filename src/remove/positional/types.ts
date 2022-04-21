@@ -16,6 +16,7 @@ export interface RemovePosArgs extends ResolveOpts {
   count: number;
   indexAdj?: number;
   remove?: CollectionModifyOpts;
+  [key: string]: any;
 }
 
 export type CollectionModifyOpts = {

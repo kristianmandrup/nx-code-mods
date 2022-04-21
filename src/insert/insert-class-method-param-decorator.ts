@@ -1,4 +1,8 @@
-import { CollectionInsert, insertIntoNode } from './positional';
+import {
+  CollectionInsert,
+  insertIntoNode,
+  InsertRelativePos,
+} from './positional';
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
@@ -6,6 +10,8 @@ import {
 } from '../find';
 import { AnyOpts, modifyTree, replaceInFile, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
+import { ElementsType } from '../types';
+import { afterIndex, beforeIndex } from '../positional';
 
 export interface ClassMethodParamDecoratorInsertOptions {
   classId: string;
@@ -31,6 +37,17 @@ export interface ClassMethodParamDecoratorInsertTreeOptions
   relTargetFilePath: string;
 }
 
+const aroundElementPos = (
+  elements: ElementsType,
+  pos: number,
+  relativePos: InsertRelativePos,
+) => {
+  const element = elements[pos];
+  // const maxIndex = elements.length - 1
+  // const nextElement = (pos < elements.length - 1) ? elements[pos + 1] : elements[maxIndex]
+  return relativePos === 'after' ? afterIndex(element) : beforeIndex(element);
+};
+
 export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
   const { classId, methodId, paramId, insert, code } = opts;
   const node = findClassMethodParameterDeclaration(srcNode, {
@@ -38,10 +55,10 @@ export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
     methodId,
     paramId,
   });
-  console.log('insertParamDecorator', { node });
   if (!node) return;
   return insertIntoNode(srcNode, {
     elementsField: 'decorators',
+    aroundElementPos,
     node,
     code,
     insert,

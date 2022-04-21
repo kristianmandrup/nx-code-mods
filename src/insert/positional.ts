@@ -150,15 +150,8 @@ const normalizeInsert = (insert: any = {}) => {
 };
 
 export const insertIntoNoElements = (srcNode: any, opts: any) => {
-  const {
-    bounds,
-    indexAdj,
-    code,
-    formatCode,
-    insert,
-    count,
-    ensureValidPosition,
-  } = opts;
+  const { ensureValidPosition } = opts;
+  const { bounds, indexAdj, code, formatCode, insert, count } = opts;
   if (count > 0) return;
   let pos = bounds.startPos;
   pos += indexAdj || 0;
@@ -170,16 +163,8 @@ export const insertIntoNoElements = (srcNode: any, opts: any) => {
 };
 
 export const insertIntoElements = (srcNode: any, opts: any) => {
-  let {
-    node,
-    elements,
-    insert,
-    count,
-    formatCode,
-    indexAdj,
-    code,
-    ensureValidPosition,
-  } = opts;
+  const { ensureValidPosition, afterLastElementPos, aroundElementPos } = opts;
+  let { node, elements, insert, count, formatCode, indexAdj, code } = opts;
   let elemPos =
     getInsertPosNum({
       node,
@@ -207,9 +192,19 @@ export const insertIntoElements = (srcNode: any, opts: any) => {
 };
 
 const insertPositional = (srcNode: any, opts: any) => {
+  const { insertIntoNoElements, insertIntoElements } = opts;
   return (
     insertIntoNoElements(srcNode, opts) || insertIntoElements(srcNode, opts)
   );
+};
+
+export const setInsertFunctions = (opts: any) => {
+  opts.insertPositional = opts.insertPositional || insertPositional;
+  opts.insertIntoNoElements = opts.insertIntoNoElements || insertIntoNoElements;
+  opts.insertIntoElements = opts.insertInElements || insertIntoElements;
+  opts.afterLastElementPos = opts.afterLastElementPos || afterLastElementPos;
+  opts.aroundElementPos = opts.aroundElementPos || aroundElementPos;
+  return opts;
 };
 
 export const insertIntoNode = (
@@ -218,6 +213,8 @@ export const insertIntoNode = (
 ): string | undefined => {
   let { bounds, elementsField, node, insert } = opts;
   insert = normalizeInsert(insert);
+  opts = setInsertFunctions(opts);
+  const { insertPositional } = opts;
 
   const { abortIfFound } = insert;
   if (abortIfFound && abortIfFound(node)) {
