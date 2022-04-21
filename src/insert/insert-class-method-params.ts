@@ -6,6 +6,7 @@ import {
   findClassMethodDeclaration,
   findFirstParamPos,
   findLastParamPos,
+  findParameterBounds,
 } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
@@ -40,17 +41,9 @@ export const insertParametersInClassMethod =
       classId: classId,
       methodId,
     });
-    const findStartNode = findFirstParameter;
-    const findEndNode = findLastParameter;
     if (!node) return;
-    const spStartNode = findStartNode && findStartNode(node);
-    const spEndNode = findEndNode && findEndNode(node);
-    const bounds = {
-      startPos: findFirstParamPos(spStartNode),
-      endPos: findLastParamPos(spEndNode),
-    };
     return insertIntoNode(srcNode, {
-      bounds,
+      bounds: findParameterBounds(node),
       elementsField: 'parameters',
       node,
       code,

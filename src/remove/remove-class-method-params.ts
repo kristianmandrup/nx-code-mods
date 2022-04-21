@@ -1,6 +1,10 @@
 import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration, findClassMethodDeclaration } from '../find';
+import {
+  findClassDeclaration,
+  findClassMethodDeclaration,
+  findParameterBounds,
+} from '../find';
 import { SourceFile } from 'typescript';
 import { CollectionModifyOpts, removeFromNode } from './positional';
 
@@ -30,6 +34,7 @@ export const removeClassMethodParameters =
     });
     if (!node) return;
     return removeFromNode(srcNode, {
+      bounds: findParameterBounds(node),
       elementsField: 'parameters',
       node,
       ...opts,

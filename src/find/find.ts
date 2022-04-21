@@ -326,6 +326,19 @@ export const findParameter = (
   return result[0].parent as ParameterDeclaration;
 };
 
+export const findParameterBounds = (node: any) => {
+  const findStartNode = findFirstParameter;
+  const findEndNode = findLastParameter;
+  const params = {
+    startNode: findStartNode && findStartNode(node),
+    endNode: findEndNode && findEndNode(node),
+  };
+  return {
+    startPos: findFirstParamPos(params.startNode),
+    endPos: findLastParamPos(params.endNode),
+  };
+};
+
 export type ParamsPos = {
   pos: number;
   end: number;

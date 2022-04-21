@@ -217,18 +217,21 @@ const getElementIndexPositions = (opts: any, noElements: boolean) => {
     : getRemovePositionsInElements(opts);
 };
 
+export const setNodeBounds = (node: any, opts: any) => ({
+  startPos: startOfIndex(node),
+  endPos: endOfIndex(node),
+});
+
 export const removeIndexPositions = (options: RemovePosArgs) => {
+  const { setBounds, getRemovePosNum } = options;
   let { node, elements, remove, count, indexAdj } = options;
   remove = remove || {};
   const { between } = remove;
   if (hasValidBetween(between)) return;
 
-  const bounds = {
-    startPos: startOfIndex(node),
-    endPos: endOfIndex(node),
-  };
-  const ensureValidPositions = createEnsureValidPositions(bounds);
+  const bounds = setBounds(node, options);
 
+  const ensureValidPositions = createEnsureValidPositions(bounds);
   let opts: any = {
     node,
     remove,

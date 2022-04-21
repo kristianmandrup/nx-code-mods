@@ -1,7 +1,10 @@
-import { findClassMethodParameterDeclaration } from './../find/find';
-import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration } from '../find';
+import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
+import {
+  findClassMethodParameterDeclaration,
+  findParameterBounds,
+  findClassDeclaration,
+} from '../find';
 import { SourceFile } from 'typescript';
 import { CollectionModifyOpts, removeFromNode } from './positional';
 
@@ -34,6 +37,7 @@ export const removeMethodParamDecorators =
     });
     if (!node) return;
     return removeFromNode(srcNode, {
+      bounds: findParameterBounds(node),
       elementsField: 'decorators',
       node,
       ...opts,

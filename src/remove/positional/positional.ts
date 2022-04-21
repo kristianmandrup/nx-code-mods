@@ -3,7 +3,11 @@ import { ensureCommaDelimiters, ensurePrefixComma } from './../../ensure';
 import { AnyOpts, isPresent, removeCode, replaceCode } from '../../modify';
 import { Node, SourceFile } from 'typescript';
 import { IndexAdj } from '../../types';
-import { removeIndexPositions } from './elements';
+import {
+  setNodeBounds,
+  removeIndexPositions,
+  getRemovePosNum,
+} from './elements';
 import { removeRangePositions } from './range';
 import { RemovePosArgs } from './types';
 
@@ -51,6 +55,8 @@ export const setRemoveFunctions = (opts: any) => {
   opts.removePositional = opts.removePositional || removePositional;
   opts.removeIndexPositions = opts.removeIndexPositions || removeIndexPositions;
   opts.removeRangePositions = opts.insertInElements || removeRangePositions;
+  opts.setBounds = opts.setBounds || setNodeBounds;
+  opts.getRemovePosNum = opts.getRemovePosNum || getRemovePosNum;
   return opts;
 };
 
