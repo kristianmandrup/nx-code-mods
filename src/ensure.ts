@@ -47,6 +47,9 @@ export const ensureStmtClosing = (code: string) => {
 export const ensureNewlineClosing = (code: string) =>
   code.match(/\n$/) ? code : code + '\n';
 
+export const ensureSpaceClosing = (code: string) =>
+  code.match(/\ $/) ? code : code + ' ';
+
 export const ensureCommaDelimiters = (
   code: string,
   { insert, pos, count }: any,

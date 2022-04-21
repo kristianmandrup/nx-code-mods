@@ -7,11 +7,13 @@ import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
   findClassMethodParameterDeclaration,
+  findParameterBounds,
 } from '../find';
 import { AnyOpts, modifyTree, replaceInFile, replaceInSource } from '../modify';
 import { SourceFile } from 'typescript';
 import { ElementsType } from '../types';
 import { afterIndex, beforeIndex } from '../positional';
+import { ensureSpaceClosing } from '../ensure';
 
 export interface ClassMethodParamDecoratorInsertOptions {
   classId: string;
@@ -42,10 +44,24 @@ const aroundElementPos = (
   pos: number,
   relativePos: InsertRelativePos,
 ) => {
+  // console.log('custom aroundElementPos', pos);
   const element = elements[pos];
   // const maxIndex = elements.length - 1
   // const nextElement = (pos < elements.length - 1) ? elements[pos + 1] : elements[maxIndex]
-  return relativePos === 'after' ? afterIndex(element) : beforeIndex(element);
+  const index =
+    relativePos === 'after' ? afterIndex(element) : beforeIndex(element);
+  return index;
+};
+
+const boundsInsertPos = (bounds: any) => {
+  return bounds.startPos - 1;
+};
+
+const calcPosNoElements = (bounds: any, opts: any) => {
+  const { indexAdj } = opts;
+  let pos = boundsInsertPos(bounds);
+  pos += indexAdj || 0;
+  return pos;
 };
 
 export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
@@ -58,7 +74,9 @@ export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
   if (!node) return;
   return insertIntoNode(srcNode, {
     elementsField: 'decorators',
-    aroundElementPos,
+    boundsInsertPos,
+    formatCode: ensureSpaceClosing,
+    calcPosNoElements,
     node,
     code,
     insert,

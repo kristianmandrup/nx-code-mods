@@ -33,8 +33,9 @@ const normalizeRemove = (remove: ModifyOptions, { count }: any) => {
   if (remove.index < 0) {
     remove.index = 0;
   }
+  const lastIndex = count - 1;
   if (remove.index >= count) {
-    remove.index = count - 1;
+    remove.index = lastIndex;
   }
   return remove;
 };

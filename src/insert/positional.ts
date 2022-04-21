@@ -149,13 +149,31 @@ const normalizeInsert = (insert: any = {}) => {
   return insert;
 };
 
-export const insertIntoNoElements = (srcNode: any, opts: any) => {
-  const { ensureValidPosition } = opts;
-  const { bounds, indexAdj, code, formatCode, insert, count } = opts;
-  if (count > 0) return;
-  let pos = bounds.startPos;
+export const boundsInsertPos = (bounds: any) => bounds.startPos;
+
+export const calcPosNoElements = (bounds: any, opts: any) => {
+  const { ensureValidPosition, indexAdj } = opts;
+  let pos = boundsInsertPos(bounds);
   pos += indexAdj || 0;
   pos = ensureValidPosition(pos);
+  return pos;
+};
+
+export const insertIntoNoElements = (srcNode: any, opts: any) => {
+  const {
+    calcPosNoElements,
+    boundsInsertPos,
+    bounds,
+    indexAdj,
+    code,
+    formatCode,
+    insert,
+    count,
+  } = opts;
+  if (count > 0) return;
+  // insert decorator at start of param!?
+  let pos = boundsInsertPos(bounds);
+  pos = calcPosNoElements(bounds, { indexAdj });
   const formattedCode = formatCode
     ? formatCode(code, { insert, pos: 0, count })
     : code;
@@ -184,7 +202,6 @@ export const insertIntoElements = (srcNode: any, opts: any) => {
       ? afterLastElementPos(elements)
       : aroundElementPos(elements, elemPos, insert.relative);
 
-  console.log({ elements, elemPos, insertPos });
   const formattedCode = formatCode(code, { insert, pos: elemPos, count });
   insertPos += indexAdj || 0;
   insertPos = ensureValidPosition(insertPos);
@@ -204,6 +221,8 @@ export const setInsertFunctions = (opts: any) => {
   opts.insertIntoElements = opts.insertInElements || insertIntoElements;
   opts.afterLastElementPos = opts.afterLastElementPos || afterLastElementPos;
   opts.aroundElementPos = opts.aroundElementPos || aroundElementPos;
+  opts.boundsInsertPos = opts.boundsInsertPos || boundsInsertPos;
+  opts.calcPosNoElements = opts.calcPosNoElements || calcPosNoElements;
   return opts;
 };
 

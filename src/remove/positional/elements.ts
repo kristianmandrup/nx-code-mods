@@ -45,10 +45,10 @@ export const lastElementRemovePos = (opts: RemovePosOpts) => {
   let { elements, count, pos, remove } = opts;
   remove = remove || {};
   const { relative } = remove;
-  if (pos < count - 1) {
+  const lastIndex = count - 1;
+  if (pos < lastIndex) {
     return;
   }
-  const lastIndex = elements.length - 1;
   const prevElementIndex = lastIndex >= 1 ? lastIndex - 1 : 0;
 
   const firstElement = elements[0];

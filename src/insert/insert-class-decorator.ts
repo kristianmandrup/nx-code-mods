@@ -39,7 +39,6 @@ export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
       return;
     }
   }
-  console.log('insertBeforeClassDecl', { classDecl });
   const classDeclIndex = beforeIndex(classDecl) + (indexAdj || 0);
   code = ensureNewlineClosing(code);
   return insertCode(node, classDeclIndex, code);

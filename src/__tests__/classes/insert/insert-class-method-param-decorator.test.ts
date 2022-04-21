@@ -100,9 +100,8 @@ describe('insert class method param decorator', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      const str = `${escapeRegExp('myMethod(' + insertCode)}`;
+      const str = `req:\ Request,\\s*@Body\\(\\)\\s*body:\\s*string`;
       const regExp = new RegExp(str);
-      console.log({ modifiedCode });
       expect(modifiedCode.match(regExp)).toBeTruthy();
       expect(modifiedCode.includes(insertCode)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();
