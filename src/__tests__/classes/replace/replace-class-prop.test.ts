@@ -7,7 +7,7 @@ const context = describe;
 describe('replace class property', () => {
   context('file has no class', () => {
     it('no replace', () => {
-      const filePath = path.join(__dirname, 'files', 'no-class.txt');
+      const filePath = path.join(__dirname, '..', 'files', 'no-class.txt');
       const code = replaceClassPropertyInFile(filePath, {
         code: `myProp: User`,
         classId: 'myClass',
@@ -23,6 +23,7 @@ describe('replace class property', () => {
     it('no replace', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-no-matching-class.txt',
       );
@@ -41,6 +42,7 @@ describe('replace class property', () => {
     it('replaces prop', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-empty-class.txt',
       );
@@ -59,6 +61,7 @@ describe('replace class property', () => {
     it('no replace', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-class-no-matching-property.txt',
       );
@@ -80,6 +83,7 @@ describe('replace class property', () => {
     it('replaces prop', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-class-and-property.txt',
       );

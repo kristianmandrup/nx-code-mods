@@ -6,7 +6,7 @@ const context = describe;
 describe('remove class method', () => {
   context('file has no class', () => {
     it('no remove', () => {
-      const filePath = path.join(__dirname, 'files', 'no-class.txt');
+      const filePath = path.join(__dirname, '..', 'files', 'no-class.txt');
       const code = removeClassMethodInFile(filePath, {
         classId: 'myClass',
         methodId: 'myMethod',
@@ -14,7 +14,6 @@ describe('remove class method', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -22,6 +21,7 @@ describe('remove class method', () => {
     it('no remove', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-no-matching-class.txt',
       );
@@ -39,6 +39,7 @@ describe('remove class method', () => {
     it('remove decorator before class', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-empty-class.txt',
       );
@@ -48,10 +49,6 @@ describe('remove class method', () => {
       });
       let modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(modifiedCode.includes(origCode)).toBeTruthy();
-      // const str = `${escapeRegExp(code)}\\s*\\nclass myClass`;
-      // const regExp = new RegExp(str);
-      // expect(modifiedCode.match(regExp)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });

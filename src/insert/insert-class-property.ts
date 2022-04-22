@@ -46,13 +46,11 @@ const insertClassProperty = (opts: AnyOpts) => (srcNode: any) => {
   const { propertyId, findNodeFn } = opts;
   const abortIfFound = (node: Node) =>
     findPropertyDeclaration(node, propertyId);
-
   const classDecl = findNodeFn(srcNode);
   if (!classDecl) return;
   if (abortIfFound && abortIfFound(classDecl)) {
     return;
   }
-
   return insertInClassScope(srcNode, {
     ...functionsMap,
     getFirstTypeNode,

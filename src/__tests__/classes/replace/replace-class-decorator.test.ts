@@ -7,7 +7,7 @@ const context = describe;
 describe('replace class decorator', () => {
   context('file has no class', () => {
     it('no replace', () => {
-      const filePath = path.join(__dirname, 'files', 'no-class.txt');
+      const filePath = path.join(__dirname, '..', 'files', 'no-class.txt');
       const code = replaceClassDecoratorInFile(filePath, {
         code: '@Api()',
         classId: 'myClass',
@@ -23,6 +23,7 @@ describe('replace class decorator', () => {
     it('no replace', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-no-matching-class.txt',
       );
@@ -41,6 +42,7 @@ describe('replace class decorator', () => {
     it('replace decorator before class', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-empty-class.txt',
       );

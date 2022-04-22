@@ -1,3 +1,4 @@
+import { findParameter } from './../find/find';
 import { CollectionInsert, insertIntoNode } from './positional';
 import {
   findFirstParameter,
@@ -7,9 +8,10 @@ import {
   findFirstParamPos,
   findLastParamPos,
   findParameterBounds,
+  findMatchingDecoratorForNode,
 } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
-import { SourceFile } from 'typescript';
+import { Node, SourceFile } from 'typescript';
 import { Tree } from '@nrwl/devkit';
 
 export interface ClassMethodParamsInsertOptions {
@@ -36,12 +38,20 @@ export interface ClassMethodParamsInsertTreeOptions
 
 export const insertParametersInClassMethod =
   (opts: AnyOpts) => (srcNode: any) => {
-    const { classId, methodId, insert, code } = opts;
+    const { classId, methodId, paramId, insert, code } = opts;
     const node = findClassMethodDeclaration(srcNode, {
       classId: classId,
       methodId,
     });
     if (!node) return;
+    const abortIfFound = (node: Node) => findParameter(node, paramId);
+    if (abortIfFound) {
+      const found = abortIfFound(node);
+      console.log({ found });
+      if (found) {
+        return;
+      }
+    }
     return insertIntoNode(srcNode, {
       bounds: findParameterBounds(node),
       elementsField: 'parameters',

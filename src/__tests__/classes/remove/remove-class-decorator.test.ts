@@ -7,7 +7,7 @@ const context = describe;
 describe('remove class decorator', () => {
   context('file has no class', () => {
     it('no remove', () => {
-      const filePath = path.join(__dirname, 'files', 'no-class.txt');
+      const filePath = path.join(__dirname, '..', 'files', 'no-class.txt');
       const code = removeClassDecoratorInFile(filePath, {
         classId: 'myClass',
         decoratorId: 'Model',
@@ -22,6 +22,7 @@ describe('remove class decorator', () => {
     it('no remove', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-no-matching-class.txt',
       );
@@ -39,6 +40,7 @@ describe('remove class decorator', () => {
     it('remove decorator before class', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-empty-class.txt',
       );

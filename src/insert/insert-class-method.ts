@@ -45,7 +45,6 @@ export const insertClassMethod = (opts: AnyOpts) => (srcNode: any) => {
   const { methodId, findNodeFn } = opts;
   const abortIfFound = (node: Node) => findMethodDeclaration(node, methodId);
   const classDecl = findNodeFn(srcNode);
-
   if (!classDecl) return;
   if (abortIfFound && abortIfFound(classDecl)) {
     return;

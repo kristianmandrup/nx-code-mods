@@ -9,6 +9,7 @@ export interface ClassMethodParamDecoratorReplaceOptions {
   methodId: string;
   paramId: string;
   replace?: CollectionModifyOpts;
+  code: string;
 }
 
 export interface ApiClassMethodParamDecoratorReplaceOptions {

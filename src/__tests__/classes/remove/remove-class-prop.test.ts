@@ -7,7 +7,7 @@ const context = describe;
 describe('remove class property', () => {
   context('file has no class', () => {
     it('no remove', () => {
-      const filePath = path.join(__dirname, 'files', 'no-class.txt');
+      const filePath = path.join(__dirname, '..', 'files', 'no-class.txt');
       const code = removeClassPropertyInFile(filePath, {
         classId: 'myClass',
         propertyId: 'myProp',
@@ -22,6 +22,7 @@ describe('remove class property', () => {
     it('no remove', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-no-matching-class.txt',
       );
@@ -39,6 +40,7 @@ describe('remove class property', () => {
     it('removes prop', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-empty-class.txt',
       );
@@ -56,6 +58,7 @@ describe('remove class property', () => {
     it('no remove', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-class-no-matching-property.txt',
       );
@@ -76,6 +79,7 @@ describe('remove class property', () => {
     it('removes prop', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'has-matching-class-and-property.txt',
       );
