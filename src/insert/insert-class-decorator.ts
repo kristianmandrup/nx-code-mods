@@ -51,6 +51,7 @@ export function insertClassDecoratorInSource(
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.classId);
 
+  // TODO: add abortIfFound
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: insertBeforeClassDecl,

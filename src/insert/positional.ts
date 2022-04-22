@@ -97,7 +97,7 @@ const nodeClassInsertIndex = (node: Node, opts: any) => {
 export const classInsertIndex = (classDecl: ClassDeclaration, opts: any) => {
   const { firstTypeNode } = opts;
   opts.nodeIndex = opts.nodeIndex || beforeIndex;
-  return !firstTypeNode
+  return firstTypeNode
     ? nodeClassInsertIndex(firstTypeNode, opts)
     : alternativeClassInsertIndex(classDecl, opts);
 };
@@ -147,10 +147,12 @@ const normalizeInsert = (insert: any = {}) => {
 export const boundsInsertPos = (bounds: any) => bounds.startPos;
 
 export const calcPosNoElements = (bounds: any, opts: any) => {
-  const { ensureValidPosition, indexAdj } = opts;
+  const { ensureValidPosition, indexAdj, validatePos } = opts;
   let pos = boundsInsertPos(bounds);
   pos += indexAdj || 0;
-  pos = ensureValidPosition(pos);
+  if (validatePos) {
+    pos = ensureValidPosition(pos);
+  }
   return pos;
 };
 
@@ -159,7 +161,6 @@ export const insertIntoNoElements = (srcNode: any, opts: any) => {
     calcPosNoElements,
     boundsInsertPos,
     bounds,
-    indexAdj,
     code,
     formatCode,
     insert,
@@ -168,7 +169,7 @@ export const insertIntoNoElements = (srcNode: any, opts: any) => {
   if (count > 0) return;
   // insert decorator at start of param!?
   let pos = boundsInsertPos(bounds);
-  pos = calcPosNoElements(bounds, { indexAdj });
+  pos = calcPosNoElements(bounds, opts);
   const formattedCode = formatCode
     ? formatCode(code, { insert, pos: 0, count })
     : code;
@@ -176,7 +177,12 @@ export const insertIntoNoElements = (srcNode: any, opts: any) => {
 };
 
 export const insertIntoElements = (srcNode: any, opts: any) => {
-  const { ensureValidPosition, afterLastElementPos, aroundElementPos } = opts;
+  const {
+    ensureValidPosition,
+    afterLastElementPos,
+    aroundElementPos,
+    validatePos,
+  } = opts;
   let { node, elements, insert, count, formatCode, indexAdj, code } = opts;
   let elemPos =
     getInsertPosNum({
@@ -199,7 +205,9 @@ export const insertIntoElements = (srcNode: any, opts: any) => {
 
   const formattedCode = formatCode(code, { insert, pos: elemPos, count });
   insertPos += indexAdj || 0;
-  insertPos = ensureValidPosition(insertPos);
+  if (validatePos) {
+    insertPos = ensureValidPosition(insertPos);
+  }
   return insertCode(srcNode, insertPos, formattedCode);
 };
 

@@ -80,7 +80,7 @@ export function insertClassMethodDecoratorInFile(
   });
 }
 
-export async function insertClassMethodDecoratororatorInTree(
+export async function insertClassMethodDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecoratorInsertTreeOptions,
 ) {
