@@ -69,7 +69,7 @@ export function removeClassMethodDecoratorInFile(
   });
 }
 
-export async function removeClassMethodDecoratorsInTree(
+export async function removeClassMethodDecoratorInTree(
   tree: Tree,
   opts: ClassMethodDecoratorRemoveTreeOptions,
 ) {

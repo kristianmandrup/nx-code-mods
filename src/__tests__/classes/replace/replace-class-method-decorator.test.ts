@@ -1,16 +1,17 @@
 import * as path from 'path';
-import { removeClassMethodDecoratorInFile } from '../../..';
+import { replaceClassMethodDecoratorInFile } from '../../..';
 // import { escapeRegExp } from '../../../utils';
 
 const context = describe;
 
-const removeCode = '@Post';
+const replaceCode = '@Post';
 
-describe('remove class method decorator', () => {
+describe('replace class method decorator', () => {
   context('file has no class', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(__dirname, '..', 'files', 'no-class.txt');
-      const code = removeClassMethodDecoratorInFile(filePath, {
+      const code = replaceClassMethodDecoratorInFile(filePath, {
+        code: replaceCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
@@ -18,19 +19,20 @@ describe('remove class method decorator', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(removeCode)).toBeFalsy();
+      expect(modifiedCode.includes(replaceCode)).toBeFalsy();
     });
   });
 
   context('file has no matching class', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(
         __dirname,
         '..',
         'files',
         'has-no-matching-class.txt',
       );
-      const code = removeClassMethodDecoratorInFile(filePath, {
+      const code = replaceClassMethodDecoratorInFile(filePath, {
+        code: replaceCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
@@ -38,19 +40,20 @@ describe('remove class method decorator', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(removeCode)).toBeFalsy();
+      expect(modifiedCode.includes(replaceCode)).toBeFalsy();
     });
   });
 
   context('file has matching empty class', () => {
-    it('no remove', () => {
+    it('no replace', () => {
       const filePath = path.join(
         __dirname,
         '..',
         'files',
         'has-matching-empty-class.txt',
       );
-      const code = removeClassMethodDecoratorInFile(filePath, {
+      const code = replaceClassMethodDecoratorInFile(filePath, {
+        code: replaceCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
@@ -62,14 +65,15 @@ describe('remove class method decorator', () => {
   });
 
   context('file has matching class and method with matching decorator', () => {
-    it('remove decorator before matching method', () => {
+    it('replace decorator before matching method', () => {
       const filePath = path.join(
         __dirname,
         '..',
         'files',
         'has-matching-class-method-decorator.txt',
       );
-      const code = removeClassMethodDecoratorInFile(filePath, {
+      const code = replaceClassMethodDecoratorInFile(filePath, {
+        code: replaceCode,
         classId: 'myClass',
         methodId: 'myMethod',
         decoratorId: 'Post',
