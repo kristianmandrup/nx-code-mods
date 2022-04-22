@@ -5,6 +5,7 @@ import {
   Decorator,
   FunctionDeclaration,
   Identifier,
+  IfStatement,
   ImportDeclaration,
   ImportSpecifier,
   MethodDeclaration,
@@ -131,6 +132,41 @@ export const findFirstMethodDeclaration = (
   if (!result || result.length === 0) return;
   const found = result[0] as MethodDeclaration;
   return found;
+};
+
+export const findIfStatements = (node: Node): IfStatement[] | undefined => {
+  const result: IfStatement[] = tsquery(node, `IfStatement`);
+  if (!result || result.length === 0) return;
+  return result;
+};
+
+export const findIfStatementsBlocks = (node: Node): Block[] | undefined => {
+  const result: Block[] = tsquery(node, `IfStatement > Block`);
+  if (!result || result.length === 0) return;
+  return result;
+};
+
+export const findIfStatementsWithElseBlocks = (
+  node: Node,
+): IfStatement[] | undefined => {
+  const result = findIfStatements(node);
+  if (!result || result.length === 0) return;
+  const ifStatements: IfStatement[] = result;
+  return ifStatements.filter((stmt: IfStatement) => {
+    return stmt.elseStatement ? true : false;
+  });
+};
+
+export const findIfStatementsTrueBlock = (node: Node): Block | undefined => {
+  const result = findIfStatementsBlocks(node);
+  if (!result || result.length === 0) return;
+  return result[0];
+};
+
+export const findIfStatementsElseBlock = (node: Node): Block | undefined => {
+  const result = findIfStatementsBlocks(node);
+  if (!result || result.length < 2) return;
+  return result[1];
 };
 
 export const findFirstPropertyDeclaration = (
