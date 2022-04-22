@@ -2,6 +2,7 @@ export * from './remove-array-elements';
 export * from './remove-class-decorator';
 export * from './remove-class-method-params';
 export * from './remove-class-method-param-decorator';
+export * from './remove-class-method-decorator';
 export * from './remove-class-method';
 export * from './remove-class-property';
 export * from './remove-from-function';
