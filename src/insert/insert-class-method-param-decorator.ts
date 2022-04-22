@@ -6,14 +6,11 @@ import {
 import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
-  findClassMethodDeclaration,
   findClassMethodParameterDeclaration,
-  findDecorator,
-  findMatchingDecoratorForParameter,
-  findMatchingParameterDecorator,
+  findMatchingDecoratorForNode,
 } from '../find';
 import { AnyOpts, modifyTree, replaceInFile, replaceInSource } from '../modify';
-import { SourceFile, Node, ParameterDeclaration } from 'typescript';
+import { SourceFile, ParameterDeclaration } from 'typescript';
 import { ElementsType } from '../types';
 import { afterIndex, beforeIndex } from '../positional';
 import { ensureSpaceClosing } from '../ensure';
@@ -83,7 +80,7 @@ export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
   if (!paramDeclNode) return;
 
   const abortIfFound = (node: ParameterDeclaration) =>
-    findMatchingDecoratorForParameter(node, decoratorId);
+    findMatchingDecoratorForNode(node, decoratorId);
   if (abortIfFound) {
     const found = abortIfFound(paramDeclNode);
     console.log({ found });

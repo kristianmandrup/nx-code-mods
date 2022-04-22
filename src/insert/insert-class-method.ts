@@ -39,6 +39,8 @@ const functionsMap = {
   findAltPivotNode: findLastPropertyDeclaration,
 };
 
+const getFirstTypeNode = findFirstMethodDeclaration;
+
 export const insertClassMethod = (opts: AnyOpts) => (srcNode: any) => {
   const { methodId, findNodeFn } = opts;
   const abortIfFound = (node: Node) => findMethodDeclaration(node, methodId);
@@ -48,7 +50,11 @@ export const insertClassMethod = (opts: AnyOpts) => (srcNode: any) => {
   if (abortIfFound && abortIfFound(classDecl)) {
     return;
   }
-  return insertInClassScope(srcNode, { ...functionsMap, ...opts });
+  return insertInClassScope(srcNode, {
+    ...functionsMap,
+    getFirstTypeNode,
+    ...opts,
+  });
 };
 
 export function insertClassMethodInSource(

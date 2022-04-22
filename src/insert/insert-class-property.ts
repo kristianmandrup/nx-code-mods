@@ -4,9 +4,10 @@ import {
   findClassPropertyDeclaration,
   findFirstMethodDeclaration,
   findFirstPropertyDeclaration,
+  findPropertyDeclaration,
 } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
-import { SourceFile } from 'typescript';
+import { SourceFile, ClassDeclaration, Node } from 'typescript';
 import { startOfIndex, afterIndex } from '../positional';
 import { insertInClassScope } from './positional';
 
@@ -39,8 +40,24 @@ const functionsMap = {
   findAltPivotNode: findFirstMethodDeclaration,
 };
 
+const getFirstTypeNode = findFirstPropertyDeclaration;
+
 const insertClassProperty = (opts: AnyOpts) => (srcNode: any) => {
-  return insertInClassScope(srcNode, { ...functionsMap, ...opts });
+  const { propertyId, findNodeFn } = opts;
+  const abortIfFound = (node: Node) =>
+    findPropertyDeclaration(node, propertyId);
+
+  const classDecl = findNodeFn(srcNode);
+  if (!classDecl) return;
+  if (abortIfFound && abortIfFound(classDecl)) {
+    return;
+  }
+
+  return insertInClassScope(srcNode, {
+    ...functionsMap,
+    getFirstTypeNode,
+    ...opts,
+  });
 };
 
 export function insertClassPropertyInSource(
@@ -49,6 +66,7 @@ export function insertClassPropertyInSource(
 ) {
   const findNodeFn = (node: SourceFile) =>
     findClassDeclaration(node, opts.classId);
+
   return replaceInSource(source, {
     findNodeFn,
     modifyFn: insertClassProperty,

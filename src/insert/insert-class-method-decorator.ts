@@ -1,12 +1,9 @@
 import { beforeIndex, startOfIndex } from './../positional';
-import {
-  findClassMethodDecorator,
-  findClassMethodDeclaration,
-} from './../find';
+import { findClassMethodDeclaration } from './../find';
 import { Node, SourceFile } from 'typescript';
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration, findDecorator } from '../find';
+import { findClassDeclaration, findMatchingDecoratorForNode } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { ensureNewlineClosing } from '../ensure';
 
@@ -40,7 +37,8 @@ export const insertClassMethodDecorator = (opts: AnyOpts) => (node: Node) => {
   });
   if (!methodDecl) return;
   // abort if class decorator already present
-  const abortIfFound = (node: Node) => findDecorator(node, decoratorId);
+  const abortIfFound = (node: Node) =>
+    findMatchingDecoratorForNode(node, decoratorId);
 
   if (abortIfFound) {
     const found = abortIfFound(methodDecl);

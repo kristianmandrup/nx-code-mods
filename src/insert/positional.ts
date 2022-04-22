@@ -103,8 +103,15 @@ export const classInsertIndex = (classDecl: ClassDeclaration, opts: any) => {
 };
 
 export const insertInClassScope = (srcNode: SourceFile, opts: AnyOpts) => {
-  const { findMatchingNode, classId, code, insertPos, propertyId, indexAdj } =
-    opts;
+  const {
+    getFirstTypeNode,
+    findMatchingNode,
+    classId,
+    code,
+    insertPos,
+    propertyId,
+    indexAdj,
+  } = opts;
   const abortIfFound = (node: any) =>
     findMatchingNode(node, { classId: classId, propertyId });
 
@@ -116,12 +123,15 @@ export const insertInClassScope = (srcNode: SourceFile, opts: AnyOpts) => {
     if (found) return;
   }
 
+  const firstTypeNode = getFirstTypeNode(classDecl);
+  opts.firstTypeNode = firstTypeNode;
+
   if (insertPos === 'end') {
     const index = endOfIndex(classDecl);
-    return insertClassCode(srcNode, { index, code: code, indexAdj });
+    return insertClassCode(srcNode, { index, ...opts });
   }
   const index = classInsertIndex(classDecl, opts);
-  return insertClassCode(srcNode, { index, code: code, indexAdj });
+  return insertClassCode(srcNode, { index, ...opts });
 };
 
 const insertPosBounds = (node: any, bounds: PositionBounds) => {

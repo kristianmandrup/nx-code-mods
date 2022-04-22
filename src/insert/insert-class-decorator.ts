@@ -1,6 +1,9 @@
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
-import { findClassDeclaration, findDecorator } from '../find/find';
+import {
+  findClassDeclaration,
+  findMatchingDecoratorForNode,
+} from '../find/find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';
 import { ensureNewlineClosing } from '../ensure';
@@ -25,13 +28,14 @@ export interface ClassDecoratorInsertTreeOptions
 }
 
 export const insertBeforeClassDecl = (opts: AnyOpts) => (node: Node) => {
-  let { classId, code, indexAdj } = opts;
+  let { classId, decoratorId, code, indexAdj } = opts;
   const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) {
     return;
   }
   // abort if class decorator already present
-  const abortIfFound = (node: Node) => findDecorator(node, classId);
+  const abortIfFound = (node: Node) =>
+    findMatchingDecoratorForNode(node, decoratorId);
 
   if (abortIfFound) {
     const found = abortIfFound(classDecl);

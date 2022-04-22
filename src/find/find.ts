@@ -255,28 +255,13 @@ export const findIdentifier = (
   return result[0] as Identifier;
 };
 
-export const findDecorator = (
-  node: Node,
-  decoratorId: string,
-): Decorator | undefined => {
-  if (!decoratorId) {
-    throw Error('findDecorator: missing decoratorId');
-  }
-  const selector = `Decorator[name='${decoratorId}']`;
-  const result = tsquery(node, selector);
-  if (!result || result.length === 0) {
-    return;
-  }
-  return result[0].parent as Decorator;
-};
-
 export const findClassDecorator = (
   node: Node,
   { classId, decoratorId }: { classId: string; decoratorId: string },
 ): Decorator | undefined => {
   const classDecl = findClassDeclaration(node, classId);
   if (!classDecl) return;
-  const dec = findDecorator(classDecl, decoratorId);
+  const dec = findMatchingDecoratorForNode(classDecl, decoratorId);
   if (!dec) {
     return;
   }
@@ -294,7 +279,7 @@ export const findClassMethodDecorator = (
 ): Decorator | undefined => {
   const methodDecl = findClassMethodDeclaration(node, { classId, methodId });
   if (!methodDecl) return;
-  const dec = findDecorator(methodDecl, decoratorId);
+  const dec = findMatchingDecoratorForNode(methodDecl, decoratorId);
   if (!dec) return;
   return dec as Decorator;
 };
@@ -374,11 +359,11 @@ export const findParameterDecorators = (
   return param.decorators;
 };
 
-export const findMatchingDecoratorForParameter = (
-  paramNode: ParameterDeclaration,
+export const findMatchingDecoratorForNode = (
+  node: Node,
   decoratorId: string,
 ): Decorator | undefined => {
-  const decorators = paramNode.decorators;
+  const decorators = node.decorators;
   if (!decorators) return;
   return findMatchingDecoratorInDecorators(decorators, decoratorId);
 };
