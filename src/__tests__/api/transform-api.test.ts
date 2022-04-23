@@ -7,7 +7,7 @@ const context = describe;
 
 const transformOpts = {
   format: true,
-  transform: (source) => {
+  transform: (source: string) => {
     const api = chainApi(source).setDefaultOpts({ classId: 'myClass' });
     const { insert } = api;
     insert
@@ -22,7 +22,7 @@ const transformOpts = {
   },
 };
 
-describe('chain api', () => {
+describe.skip('chain api', () => {
   context('file with no named array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');

@@ -4,7 +4,7 @@ import * as path from 'path';
 
 const context = describe;
 
-describe('insert api', () => {
+describe.skip('insert api', () => {
   context('file with no named array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');

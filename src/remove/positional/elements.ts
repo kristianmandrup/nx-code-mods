@@ -168,19 +168,14 @@ const normalizeElementsRemove = (
   return remove;
 };
 
-const getRemovePositionsInElements = ({
-  pos,
-  remove,
-  count,
-  elements,
-  bounds,
-  ensureValidPositions,
-  getElementRemovePositions,
-}: any) => {
-  remove = normalizeElementsRemove(remove, { pos, count });
-  let positions = getElementRemovePositions({ remove, elements, count, pos });
+const getRemovePositionsInElements = (opts: any) => {
+  let { validatePos, ensureValidPositions, bounds, remove } = opts;
+  remove = normalizeElementsRemove(remove, opts);
+  let positions = getElementRemovePositions(opts);
   ensureElementRemovePositions(positions, bounds);
-  ensureValidPositions(positions);
+  if (validatePos) {
+    ensureValidPositions(positions);
+  }
   return positions;
 };
 
@@ -223,7 +218,7 @@ export const setNodeBounds = (node: any, opts: any) => ({
 });
 
 export const removeIndexPositions = (options: RemovePosArgs) => {
-  const { setBounds, getRemovePosNum } = options;
+  const { validatePos, setBounds, getRemovePosNum } = options;
   let { node, elements, remove, count, indexAdj } = options;
   remove = remove || {};
   const { between } = remove;
@@ -259,6 +254,8 @@ export const removeIndexPositions = (options: RemovePosArgs) => {
 
   let positions = getElementIndexPositions(opts, noElements);
 
-  ensureValidPositions(positions);
+  if (validatePos) {
+    ensureValidPositions(positions);
+  }
   return { positions, pos };
 };

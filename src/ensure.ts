@@ -54,6 +54,7 @@ export const ensureCommaDelimiters = (
   code: string,
   { insert, pos, count }: any,
 ) => {
+  insert = insert || {};
   const shouldInsertAfter = pos === count || insert.relative === 'after';
   return shouldInsertAfter ? ensurePrefixComma(code) : ensureSuffixComma(code);
 };

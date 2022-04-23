@@ -4,7 +4,7 @@ import { replaceApi } from '../../replace';
 
 const context = describe;
 
-describe('replace api', () => {
+describe.skip('replace api', () => {
   context('file with no named array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');
