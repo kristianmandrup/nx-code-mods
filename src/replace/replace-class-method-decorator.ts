@@ -29,13 +29,17 @@ export function replaceClassMethodDecoratorInSource(
   source: string,
   opts: ClassMethodDecoratorReplaceOptions,
 ) {
-  return removeClassMethodDecoratorInSource(source, opts);
+  return removeClassMethodDecoratorInSource(source, {
+    ...opts,
+  });
 }
 export function replaceClassMethodDecoratorInFile(
   filePath: string,
   opts: ClassMethodDecoratorReplaceOptions,
 ) {
-  return removeClassMethodDecoratorInFile(filePath, opts);
+  return removeClassMethodDecoratorInFile(filePath, {
+    ...opts,
+  });
 }
 
 export async function replaceClassMethodDecoratorInTree(

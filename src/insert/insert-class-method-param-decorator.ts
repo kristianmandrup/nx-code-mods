@@ -83,7 +83,6 @@ export const insertParamDecorator = (opts: AnyOpts) => (srcNode: any) => {
     findMatchingDecoratorForNode(node, decoratorId);
   if (abortIfFound) {
     const found = abortIfFound(paramDeclNode);
-    console.log({ found });
     if (found) {
       return;
     }

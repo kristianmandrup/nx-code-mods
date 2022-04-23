@@ -71,7 +71,6 @@ export const findMatchingImportDecl = (
       importFileRef,
     );
     if (!matchingImportFileNodes || matchingImportFileNodes.length === 0) {
-      // console.log('no import match');
       return;
     }
     if (!importId) {
@@ -401,10 +400,10 @@ export const findMatchingDecoratorForNode = (
 ): Decorator | undefined => {
   const decorators = node.decorators;
   if (!decorators) return;
-  return findMatchingDecoratorInDecorators(decorators, decoratorId);
+  return findMatchingDecorator(decorators, decoratorId);
 };
 
-export const findMatchingDecoratorInDecorators = (
+export const findMatchingDecorator = (
   decorators: NodeArray<Decorator>,
   decoratorId: string,
 ): Decorator | undefined => {

@@ -47,7 +47,6 @@ export const insertParametersInClassMethod =
     const abortIfFound = (node: Node) => findParameter(node, paramId);
     if (abortIfFound) {
       const found = abortIfFound(node);
-      console.log({ found });
       if (found) {
         return;
       }

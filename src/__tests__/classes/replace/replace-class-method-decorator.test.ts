@@ -65,7 +65,7 @@ describe('replace class method decorator', () => {
   });
 
   context('file has matching class and method with matching decorator', () => {
-    it('replace decorator before matching method', () => {
+    it('no replace - already present', () => {
       const filePath = path.join(
         __dirname,
         '..',
@@ -80,8 +80,33 @@ describe('replace class method decorator', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      expect(modifiedCode.includes('@Post')).toBeFalsy();
+      expect(modifiedCode.includes('@Post')).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();
     });
   });
+
+  context(
+    'file has matching class and method with non-matching decorator',
+    () => {
+      it('replace @Get with @Post decorator', () => {
+        const filePath = path.join(
+          __dirname,
+          '..',
+          'files',
+          'has-matching-class-method-other-decorator.txt',
+        );
+        const code = replaceClassMethodDecoratorInFile(filePath, {
+          code: replaceCode,
+          classId: 'myClass',
+          methodId: 'myMethod',
+          decoratorId: 'Get',
+        });
+        const modifiedCode = code ? code : '';
+        const origCode = 'const x = 2;';
+        expect(modifiedCode.includes('@Get')).toBeFalsy();
+        expect(modifiedCode.includes('@Post')).toBeTruthy();
+        expect(modifiedCode.includes(origCode)).toBeTruthy();
+      });
+    },
+  );
 });

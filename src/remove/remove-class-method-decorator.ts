@@ -5,6 +5,7 @@ import {
   modifyTree,
   replaceInSource,
   removeCode,
+  replaceCode,
 } from '../modify';
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
@@ -31,7 +32,7 @@ export interface ClassMethodDecoratorRemoveTreeOptions
 }
 
 export const removeClassMethodDecorator = (opts: AnyOpts) => (srcNode: any) => {
-  const { classId, methodId, decoratorId } = opts;
+  const { code, classId, methodId, decoratorId } = opts;
   const methDecl = findClassMethodDeclaration(srcNode, {
     classId: classId,
     methodId,
@@ -41,7 +42,10 @@ export const removeClassMethodDecorator = (opts: AnyOpts) => (srcNode: any) => {
   if (!decorator) return;
   const startPos = decorator.getStart();
   const endPos = decorator.getEnd();
-  return removeCode(srcNode, { startPos, endPos });
+  const positions = { startPos, endPos };
+  return code
+    ? replaceCode(srcNode, { ...positions, code })
+    : removeCode(srcNode, positions);
 };
 
 export function removeClassMethodDecoratorInSource(
