@@ -4,7 +4,7 @@ import * as path from 'path';
 
 const context = describe;
 
-describe.skip('insert api', () => {
+describe('insert api', () => {
   context('file with no named array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');
@@ -18,7 +18,6 @@ describe.skip('insert api', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -38,7 +37,7 @@ describe.skip('insert api', () => {
         });
         const code = api.source;
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'c','a'`)).toBeTruthy();
+        expect(modifiedCode.match(/'c'\s*,\s*'a'/)).toBeTruthy();
       });
     });
   });

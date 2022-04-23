@@ -17,13 +17,12 @@ describe('remove api', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
   context('file with named array with 2 elements', () => {
     context('default pos', () => {
-      it.skip('removes first element of array', () => {
+      it('removes first element of array', () => {
         const filePath = path.join(
           __dirname,
           'files',

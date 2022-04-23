@@ -81,7 +81,6 @@ describe('insert class decorator', () => {
       const origCode = 'const x = 2;';
       const str = `${escapeRegExp(insertCode)}\\s*myMethod`;
       const regExp = new RegExp(str);
-      console.log({ modifiedCode });
       expect(modifiedCode.match(regExp)).toBeTruthy();
       expect(modifiedCode.includes(insertCode)).toBeTruthy();
       expect(modifiedCode.includes(origCode)).toBeTruthy();

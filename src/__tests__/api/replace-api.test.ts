@@ -4,7 +4,7 @@ import { replaceApi } from '../../replace';
 
 const context = describe;
 
-describe.skip('replace api', () => {
+describe('replace api', () => {
   context('file with no named array', () => {
     it('no insert', () => {
       const filePath = path.join(__dirname, 'files', 'no-array.txt');
@@ -17,15 +17,16 @@ describe.skip('replace api', () => {
       const code = api.source;
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
+      console.log({ modifiedCode });
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(`'c'`)).toBeTruthy();
+      expect(modifiedCode.includes(`'c'`)).toBeFalsy();
       expect(modifiedCode.includes(`'a'`)).toBeFalsy();
     });
   });
 
   context('file with named array with 2 elements', () => {
     context('default pos', () => {
-      it.skip('replaces first element of array', () => {
+      it('replaces first element of array', () => {
         const filePath = path.join(
           __dirname,
           'files',

@@ -132,7 +132,6 @@ describe('insert class method param decorator', () => {
         });
         const modifiedCode = code ? code : '';
         const origCode = 'const x = 2;';
-        console.log({ modifiedCode });
         expect(
           modifiedCode.includes('myMethod(@Body body: string): string'),
         ).toBeTruthy();

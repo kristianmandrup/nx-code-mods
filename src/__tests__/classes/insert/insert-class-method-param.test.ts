@@ -13,6 +13,7 @@ describe('insert class method param decorator', () => {
         code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
+        paramId: 'body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -33,6 +34,7 @@ describe('insert class method param decorator', () => {
         code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
+        paramId: 'body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -53,6 +55,7 @@ describe('insert class method param decorator', () => {
         code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
+        paramId: 'body',
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
@@ -72,6 +75,7 @@ describe('insert class method param decorator', () => {
         code: insertCode,
         classId: 'myClass',
         methodId: 'myMethod',
+        paramId: 'body',
         insert: {
           index: 1,
         },
@@ -100,6 +104,7 @@ describe('insert class method param decorator', () => {
           code: insertCode,
           classId: 'myClass',
           methodId: 'myMethod',
+          paramId: 'body',
           insert: {
             index: 1,
           },
@@ -126,6 +131,7 @@ describe('insert class method param decorator', () => {
           code: insertCode,
           classId: 'myClass',
           methodId: 'myMethod',
+          paramId: 'body',
           insert: {
             index: 'start',
           },
@@ -152,6 +158,7 @@ describe('insert class method param decorator', () => {
           code: insertCode,
           classId: 'myClass',
           methodId: 'myMethod',
+          paramId: 'body',
           insert: {
             index: 'end',
           },

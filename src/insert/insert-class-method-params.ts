@@ -17,6 +17,7 @@ import { Tree } from '@nrwl/devkit';
 export interface ClassMethodParamsInsertOptions {
   classId: string;
   methodId: string;
+  paramId: string;
   insert?: CollectionInsert;
   indexAdj?: number;
   code: string;
@@ -25,6 +26,7 @@ export interface ClassMethodParamsInsertOptions {
 export interface ApiClassMethodParamsInsertOptions {
   classId?: string;
   methodId?: string;
+  paramId?: string;
   insert?: CollectionInsert;
   indexAdj?: number;
   code: string;

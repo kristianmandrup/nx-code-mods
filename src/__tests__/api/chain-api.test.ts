@@ -16,7 +16,6 @@ describe('chain api', () => {
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
       expect(modifiedCode.includes(origCode)).toBeTruthy();
-      expect(modifiedCode.includes(code)).toBeFalsy();
     });
   });
 
@@ -35,7 +34,7 @@ describe('chain api', () => {
         });
         const code = api.source;
         const modifiedCode = code ? code : '';
-        expect(modifiedCode.includes(`'c','a'`)).toBeTruthy();
+        expect(modifiedCode.match(/'c'\s*,\s*'a'/)).toBeTruthy();
       });
     });
   });
