@@ -143,9 +143,9 @@ export function replaceInSource(sourceCode: string, opts: ModifyFileOptions) {
 
 type SaveTreeOpts = {
   tree: Tree;
-  source: string;
+  source?: string;
   filePath: string;
-  newContents: string;
+  fileContent: string;
 };
 
 interface SaveAndFormatTreeOpts extends SaveTreeOpts {
@@ -156,14 +156,15 @@ export const saveTree = ({
   tree,
   source,
   filePath,
-  newContents,
+  fileContent,
 }: SaveTreeOpts) => {
-  if (!newContents || newContents == source) return;
-  tree.write(filePath, newContents);
+  if (!fileContent || fileContent == source) return;
+  tree.write(filePath, fileContent);
 };
 
 export const saveAndFormatTree = async (opts: SaveAndFormatTreeOpts) => {
-  const { format, tree } = opts;
+  let { format, tree } = opts;
+  format = format === false ? false : true;
   saveTree(opts);
   if (format) {
     await formatFiles(tree);
@@ -192,7 +193,7 @@ export async function modifyTree(tree: Tree, opts: ModifyTreeOptions) {
     tree,
     source,
     filePath,
-    newContents,
+    fileContent: newContents,
     ...opts,
   });
   return newContents;

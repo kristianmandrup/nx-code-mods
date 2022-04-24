@@ -16,6 +16,11 @@ export class BaseApi implements Chainable {
     this.defaultOpts = opts;
   }
 
+  resetStore() {
+    this.store = [];
+    return this;
+  }
+
   addToStore(name: string, def: AnyOpts) {
     this.store.push({ name, def });
     return this;

@@ -67,6 +67,7 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const { classId, projectRoot, relTargetFilePath } = normalizedOptions;
   // Read source file to modify
+  const filePath = path.join(projectRoot, relTargetFilePath);
   const source = readNxSourceFile({ projectRoot, relTargetFilePath });
   // create Chain API
   const chain = chainApi(source);
@@ -77,7 +78,7 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
     classId,
   });
 
-  await saveAndFormatTree({ tree, format: true });
+  await chain.saveFile(filePath, { tree });
 }
 ```
 
