@@ -61,16 +61,17 @@ remove.fromNamedArray({
 
 ```ts
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
-import { chainApi, saveAndFormatTree, readNxSourceFile } from 'nx-code-mods';
+import { chainApi, saveAndFormatTree } from 'nx-code-mods';
 
 export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const { classId, projectRoot, relTargetFilePath } = normalizedOptions;
   // Read source file to modify
   const filePath = path.join(projectRoot, relTargetFilePath);
-  const source = readNxSourceFile({ projectRoot, relTargetFilePath });
+  const source = readFileIfExisting(filePath);
   // create Chain API
   const chain = chainApi(source);
+  chain.setTree(tree);
   const { insert } = chain;
   // Apply Code Mods
   insert.classDecorator({
@@ -78,13 +79,13 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
     classId,
   });
 
-  await chain.saveFile(filePath, { tree });
+  await chain.saveFile(filePath);
 }
 ```
 
-#### Chain API: Work in Progress
+#### Chain API: Load JSON structure
 
-Ability to load a JSON structure that defines the Code Mod operations.
+Load a JSON structure that defines the Code Mod operations.
 
 ```ts
 [
@@ -117,13 +118,14 @@ Ability to load a JSON structure that defines the Code Mod operations.
 ];
 ```
 
-You can try this out using `chain.loadChain(chainDef)`
+Usage Example
 
 ```ts
-  const chain = chainApi(source);
-  const chainDef readFileIfExisting(chainDefFilePath)
-  chain.loadChain(chainDef)
-  chain.applyStores()
+const chain = chainApi(source);
+chain.setTee(tree);
+chain.loadChainFromFile(chainDefFilePath);
+chain.applyStores();
+await chain.saveFile(sourceFilePath);
 ```
 
 ### <a name='InsertChainAPI'></a>Insert Chain API
