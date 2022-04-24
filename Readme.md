@@ -93,7 +93,7 @@ Load a JSON structure that defines the Code Mod operations.
     api: 'remove': {
     ops: [
       {
-        name: 'import',
+        name: 'imports',
         def: {
           importFileRef: './legacy-models',
         },

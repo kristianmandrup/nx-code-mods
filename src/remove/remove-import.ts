@@ -67,6 +67,38 @@ export const removeImports = (opts: AnyOpts) => (node: any) => {
   return code;
 };
 
+export function removeImportsInSource(
+  sourceCode: string,
+  opts: RemoveImportOptions,
+) {
+  const findNodeFn = (node: SourceFile) => {
+    return findMatchingImportDeclarationsByFileRef(node, opts.importFileRef);
+  };
+  const allOpts = {
+    checkFn: hasAnyImportDecl,
+    findNodeFn,
+    modifyFn: removeImports,
+    ...opts,
+  };
+  return replaceInSource(sourceCode, allOpts);
+}
+
+export function removeImportsInFile(
+  filePath: string,
+  opts: RemoveImportOptions,
+) {
+  const findNodeFn = (node: SourceFile) => {
+    return findMatchingImportDeclarationsByFileRef(node, opts.importFileRef);
+  };
+  const allOpts = {
+    checkFn: hasAnyImportDecl,
+    findNodeFn,
+    modifyFn: removeImports,
+    ...opts,
+  };
+  return replaceInFile(filePath, allOpts);
+}
+
 export function removeImportInSource(
   sourceCode: string,
   opts: RemoveImportOptions,

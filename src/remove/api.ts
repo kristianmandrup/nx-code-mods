@@ -21,6 +21,7 @@ import {
 } from './functions';
 import { ApiClassMethodParamDecoratorRemoveOptions } from './remove-class-method-param-decorator';
 import { ApiClassMethodRemoveOptions } from './remove-class-method';
+import { removeImportsInSource } from './remove-import';
 
 export const removeApi = (chain: Chainable, opts: AnyOpts = {}): RemoveApi => {
   return new RemoveApi(chain, opts);
@@ -64,6 +65,11 @@ export class RemoveApi extends BaseApi {
   import(opts: ApiRemoveImportIdOptions): RemoveApi {
     return this.apply(removeImportInSource, opts);
   }
+
+  imports(opts: ApiRemoveImportIdOptions): RemoveApi {
+    return this.apply(removeImportsInSource, opts);
+  }
+
   fromObject(opts: AnyOpts): RemoveApi {
     return this.apply(removeFromNamedObjectInSource, opts);
   }
