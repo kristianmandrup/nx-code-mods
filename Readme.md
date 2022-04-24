@@ -88,24 +88,41 @@ Ability to load a JSON structure that defines the Code Mod operations.
 ```ts
 [
   {
-    remove: {
-      import: {
-        importFileRef: './legacy-models',
+    api: 'remove': {
+    ops: [
+      {
+        name: 'import',
+        def: {
+          importFileRef: './legacy-models',
+        },
       },
-    },
+    ]
   },
   {
-    insert: {
-      import: {
+    api: 'insert',
+    ops: [{
+      name: 'import',
+      def: {
         code: `import { Model } from './models'`,
       },
-      classDecorator: {
+    }, {
+      name: 'classDecorator',
+      def: {
         code: '@Model()',
         classId: 'myClass',
       },
-    },
+    ],
   },
 ];
+```
+
+You can try this out using `chain.loadChain(chainDef)`
+
+```ts
+  const chain = chainApi(source);
+  const chainDef readFileIfExisting(chainDefFilePath)
+  chain.loadChain(chainDef)
+  chain.applyStores()
 ```
 
 ### <a name='InsertChainAPI'></a>Insert Chain API
