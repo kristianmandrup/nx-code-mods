@@ -57,6 +57,30 @@ remove.fromNamedArray({
 });
 ```
 
+#### Sample Nx usage
+
+```ts
+import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
+import { chainApi, saveAndFormatTree, readNxSourceFile } from 'nx-code-mods';
+
+export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
+  const normalizedOptions = normalizeOptions(tree, options);
+  const { classId, projectRoot, relTargetFilePath } = normalizedOptions;
+  // Read source file to modify
+  const source = readNxSourceFile({ projectRoot, relTargetFilePath });
+  // create Chain API
+  const chain = chainApi(source);
+  const { insert } = chain;
+  // Apply Code Mods
+  insert.classDecorator({
+    code: '@Model()',
+    classId,
+  });
+
+  await saveAndFormatTree({ tree, format: true });
+}
+```
+
 ### <a name='InsertChainAPI'></a>Insert Chain API
 
 - `insertApi(source: string)`

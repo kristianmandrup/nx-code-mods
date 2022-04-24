@@ -170,6 +170,17 @@ export const saveAndFormatTree = async (opts: SaveAndFormatTreeOpts) => {
   }
 };
 
+export interface ReadNxSourceFileOpts {
+  projectRoot: string;
+  relTargetFilePath: string;
+}
+
+export const readNxSourceFile = (opts: ReadNxSourceFileOpts) => {
+  const { projectRoot, relTargetFilePath } = opts;
+  const filePath = path.join(projectRoot, relTargetFilePath);
+  return readFileIfExisting(filePath);
+};
+
 export async function modifyTree(tree: Tree, opts: ModifyTreeOptions) {
   const { projectRoot, relTargetFilePath } = opts;
   const filePath = path.join(projectRoot, relTargetFilePath);
