@@ -1,4 +1,4 @@
-import { SourceFile } from 'typescript';
+import { SourceFile, ImportDeclaration } from 'typescript';
 import { Tree } from '@nrwl/devkit';
 import {
   findMatchingImportDecl,
@@ -17,6 +17,7 @@ import { afterIndex, beforeIndex } from '../positional';
 export interface RemoveImportOptions {
   importId: string;
   importFileRef: string;
+  multiple?: boolean;
 }
 
 export interface ApiRemoveImportOptions {
@@ -28,12 +29,10 @@ export interface RemoveImportTreeOptions extends RemoveImportOptions {
   relTargetFilePath: string;
 }
 
-export const removeImport = (opts: AnyOpts) => (node: any) => {
-  let { importId, importFileRef } = opts;
-  const importDecl = findMatchingImportDecl(node, { importId, importFileRef });
-  if (!importDecl) {
-    return;
-  }
+export const removeImportDeclCode = (
+  node: any,
+  importDecl: ImportDeclaration,
+) => {
   const startPos = importDecl.getStart();
   const endPos = importDecl.getEnd();
   const positions = {
@@ -43,6 +42,31 @@ export const removeImport = (opts: AnyOpts) => (node: any) => {
   return removeCode(node, positions);
 };
 
+export const removeImport = (opts: AnyOpts) => (node: any) => {
+  let { importId, importFileRef } = opts;
+  const importDecl = findMatchingImportDecl(node, { importId, importFileRef });
+  if (!importDecl) {
+    return;
+  }
+  return removeImportDeclCode(node, importDecl);
+};
+
+export const removeImports = (opts: AnyOpts) => (node: any) => {
+  let { importFileRef } = opts;
+  const importDeclarations = findMatchingImportDeclarationsByFileRef(
+    node,
+    importFileRef,
+  );
+  if (!importDeclarations || importDeclarations.length === 0) {
+    return;
+  }
+  let code;
+  importDeclarations.map((importDecl: ImportDeclaration) => {
+    code = removeImportDeclCode(node, importDecl);
+  });
+  return code;
+};
+
 export function removeImportInSource(
   sourceCode: string,
   opts: RemoveImportOptions,
@@ -50,10 +74,11 @@ export function removeImportInSource(
   const findNodeFn = (node: SourceFile) => {
     return findMatchingImportDeclarationsByFileRef(node, opts.importFileRef);
   };
+  const modifyFn = opts.multiple ? removeImports : removeImport;
   const allOpts = {
     checkFn: hasAnyImportDecl,
     findNodeFn,
-    modifyFn: removeImport,
+    modifyFn,
     ...opts,
   };
   return replaceInSource(sourceCode, allOpts);
