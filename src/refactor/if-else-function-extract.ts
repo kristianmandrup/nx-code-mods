@@ -31,9 +31,11 @@ export const createThenFnCode = (
   conditionName: string,
   expr: Expression,
   block: Block,
+  opts: any,
 ) => {
+  const { strIds } = opts;
   const blockSrc = block.getFullText();
-  const exprSrc = expr.getFullText();
+  const exprSrc = strIds ? `${conditionName}({${strIds}})` : expr.getFullText();
   return `
   function then${conditionName}(opts: any) {
       if (!${exprSrc}) return;
@@ -47,9 +49,11 @@ export const createElseFnCode = (
   conditionName: string,
   expr: Expression,
   block: Block,
+  opts: any,
 ) => {
+  const { strIds } = opts;
   const blockSrc = block.getFullText();
-  const exprSrc = expr.getFullText();
+  const exprSrc = strIds ? `${conditionName}({${strIds}})` : expr.getFullText();
   return `
     function then${conditionName}(opts: any) {
         if (${exprSrc}) return;
@@ -77,6 +81,20 @@ export const replaceIfElseWithCalls = (
     `;
 };
 
+const createConditionFnCode = (
+  conditionName: string,
+  expr: Expression,
+  opts: any,
+) => {
+  const { ids } = opts;
+  const exprSrc = expr.getFullText();
+  return `
+  function ${conditionName}({${ids}}: any) {
+      return ${exprSrc}
+  }
+  `;
+};
+
 const extractIfStmtWithElseToFunctions = (node: IfStatement, opts: AnyOpts) => {
   const { conditionName } = opts;
   const expr = node.expression;
@@ -84,10 +102,20 @@ const extractIfStmtWithElseToFunctions = (node: IfStatement, opts: AnyOpts) => {
   if (!blocks) return;
   const { thenBlock, elseBlock } = blocks;
 
+  const exprSrc = expr.getFullText();
+  let conditionFnCode, ids, strIds;
+  if (exprSrc.length > 10) {
+    ids = findAllIdentifiersFor(expr);
+    strIds = mapIdentifiersToSrc(ids);
+    conditionFnCode = createConditionFnCode(conditionName, expr, {
+      ids: strIds,
+    });
+  }
+  const fnOpts = { conditionFnCode, ids, strIds };
   const thenIds = findAllIdentifiersFor(thenBlock);
   const elseIds = findAllIdentifiersFor(elseBlock);
-  const thenFnCode = createThenFnCode(conditionName, expr, thenBlock);
-  const elseFnCode = createElseFnCode(conditionName, expr, elseBlock);
+  const thenFnCode = createThenFnCode(conditionName, expr, thenBlock, fnOpts);
+  const elseFnCode = createElseFnCode(conditionName, expr, elseBlock, fnOpts);
   const replaceCode = replaceIfElseWithCalls(conditionName, {
     thenIds,
     elseIds,
