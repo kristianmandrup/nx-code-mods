@@ -156,6 +156,33 @@ export const findIfStatementsWithElseBlocks = (
   });
 };
 
+export const findAllIdentifiersFor = (node: Node): Identifier[] => {
+  const selector = `Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
+};
+
+interface IfStatementBlocks {
+  thenBlock: Block;
+  elseBlock: Block;
+}
+
+export const getIfStatementBlocks = (
+  node: Node,
+): IfStatementBlocks | undefined => {
+  const result = findIfStatementsBlocks(node);
+  if (!result || result.length === 0) return;
+  const thenBlock = result[0];
+  const elseBlock = result[1];
+  return {
+    thenBlock,
+    elseBlock,
+  };
+};
+
 export const findIfStatementsTrueBlock = (node: Node): Block | undefined => {
   const result = findIfStatementsBlocks(node);
   if (!result || result.length === 0) return;
