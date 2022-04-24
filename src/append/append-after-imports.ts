@@ -6,9 +6,14 @@ import {
   findLastImport,
   hasAnyImportDecl,
 } from '../find/find';
-import { modifyTree, AnyOpts, replaceInFile } from '../modify';
+import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
 
 export interface AppendAfterImportsOptions {
+  code: string;
+  indexAdj?: number;
+}
+
+export interface ApiAppendAfterImportsOptions {
   code: string;
   indexAdj?: number;
 }
@@ -31,6 +36,19 @@ export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
   return insertCode(node, importIndex, code);
 };
 
+export function appendAfterImportsInSource(
+  filePath: string,
+  opts: AppendAfterImportsOptions,
+) {
+  const allOpts = {
+    checkFn: hasAnyImportDecl,
+    findNodeFn: findLastImport,
+    modifyFn: insertAfterLastImport,
+    getDefaultNodeFn: getFirstStatement,
+    ...opts,
+  };
+  return replaceInSource(filePath, allOpts);
+}
 export function appendAfterImportsInFile(
   filePath: string,
   opts: AppendAfterImportsOptions,

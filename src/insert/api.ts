@@ -23,6 +23,10 @@ import {
 import { BaseApi } from '../api';
 import { AnyOpts } from '../modify';
 import { ApiInsertImportOptions } from './insert-import-ids';
+import {
+  ApiAppendAfterImportsOptions,
+  appendAfterImportsInSource,
+} from '../append';
 
 export const insertApi = (chain: Chainable, opts: AnyOpts = {}): InsertApi => {
   return new InsertApi(chain, {
@@ -62,8 +66,12 @@ export class InsertApi extends BaseApi {
     return this.apply(insertClassPropertyInSource, opts);
   }
 
-  import(opts: ApiInsertImportOptions): InsertApi {
+  importId(opts: ApiInsertImportOptions): InsertApi {
     return this.apply(insertImportInSource, opts);
+  }
+
+  import(opts: ApiAppendAfterImportsOptions): InsertApi {
+    return this.apply(appendAfterImportsInSource, opts);
   }
 
   inFunction(opts: ApiInsertFunctionOptions): InsertApi {

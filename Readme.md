@@ -81,6 +81,33 @@ export async function pageGenerator(tree: Tree, options: GeneratorSchema) {
 }
 ```
 
+#### Chain API: Work in Progress
+
+Ability to load a JSON structure that defines the Code Mod operations.
+
+```ts
+[
+  {
+    remove: {
+      import: {
+        importFileRef: './legacy-models',
+      },
+    },
+  },
+  {
+    insert: {
+      import: {
+        code: `import { Model } from './models'`,
+      },
+      classDecorator: {
+        code: '@Model()',
+        classId: 'myClass',
+      },
+    },
+  },
+];
+```
+
 ### <a name='InsertChainAPI'></a>Insert Chain API
 
 - `insertApi(source: string)`

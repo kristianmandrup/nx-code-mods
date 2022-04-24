@@ -74,7 +74,7 @@ export const findMatchingImportDecl = (
       return;
     }
     if (!importId) {
-      throw Error('findMatchingImportDecl: missing importId');
+      return matchingImportFileNodes[0];
     }
     const importIdSelector = `ImportDeclaration Identifier[name='${importId}']`;
     let found;
