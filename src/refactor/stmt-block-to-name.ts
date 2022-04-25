@@ -5,7 +5,7 @@ import { complete as verbs } from 'verb-corpus';
 import * as adjectives from 'adjectives';
 import * as prepositions from 'prepositions';
 import { Block } from 'typescript';
-import { findAllIdentifiersFor } from '../find';
+import { findAllIdentifiersFor, findFirstIdentifier } from '../find';
 import { escapeRegExp } from '../utils';
 
 export function arrToObject(arr: string[]) {
@@ -25,8 +25,11 @@ const prepositionsMap = arrToObject(prepositions);
 export const determineMainIdentifier = (
   block: Block,
   ids: string[],
-): string => {
-  return ids[0];
+): string | undefined => {
+  const lastStmt = block.statements[block.statements.length - 1];
+  const id = findFirstIdentifier(lastStmt);
+  if (!id) return;
+  return id.escapedText as string;
 };
 
 export const stmtBlockToName = (block: Block) => {
@@ -69,7 +72,7 @@ export const stmtBlockToName = (block: Block) => {
 
   const action = arrayOps[0] || verbs[0];
 
-  if (isSingular(action) && isNoun(mainId)) {
+  if (isSingular(action) && mainId && isNoun(mainId)) {
     mainId = inflection.singularize(mainId);
   }
   let beforeNoun = [adjectives[0], prepositions[0]].filter((x) => x);

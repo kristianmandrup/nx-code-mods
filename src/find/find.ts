@@ -311,6 +311,24 @@ export const findStringLiteral = (
   return result[0] as StringLiteralLike;
 };
 
+export const findFirstIdentifier = (node: Node): Identifier | undefined => {
+  const selector = `Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[0] as Identifier;
+};
+
+export const findLastIdentifier = (node: Node): Identifier | undefined => {
+  const selector = `Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[result.length - 1] as Identifier;
+};
+
 export const findIdentifier = (
   node: Node,
   id: string,
