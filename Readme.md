@@ -34,27 +34,37 @@ Tests:       188 passed, 188 total
 Example
 
 ```ts
-const chain = chainApi(source);
-const { insert, remove } = chain;
-
-insert
-  .classDecorator({
-    code: '@Model()',
+const applyCodeMods = (source) => {
+  const chain = chainApi(source);
+  const { insert, remove } = chain;
+  chain.setDefaults({
     classId: 'myClass',
-  })
-  .classMethodDecorator({
-    code: '@Post()',
-    classId: 'myClass',
-    methodId: 'myMethod',
   });
 
-remove.fromNamedArray({
-  varId: 'Routes',
-  code: `{ x: 2 }`,
-  insert: {
-    index: 'end',
-  },
-});
+  insert
+    .classDecorator({
+      code: '@Model()',
+    })
+    .classMethodDecorator({
+      code: '@Post()',
+      methodId: 'myMethod',
+    });
+
+  remove.fromNamedArray({
+    varId: 'Routes',
+    remove: {
+      index: 'end',
+    },
+  });
+
+  return chain;
+};
+
+const codeModsOnFile = async (filePath: string) => {
+  const source = readFileIfExisting(filePath);
+  const chain = applyCodeMods(source);
+  return await chain.saveFile(filePath);
+};
 ```
 
 #### Sample Nx usage
