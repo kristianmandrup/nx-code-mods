@@ -55,6 +55,7 @@
     "@phenomnomnominal/tsquery": "^4.2.0",
     "adjectives": "^1.0.2",
     "humanize-string": "^3.0.0",
+    "inflection": "^1.13.2",
     "prepositions": "^0.0.0"
   }
 }

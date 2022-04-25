@@ -165,6 +165,15 @@ export const findAllIdentifiersFor = (node: Node): Identifier[] => {
   return result as Identifier[];
 };
 
+export const findReturnStatementIdentifiersFor = (node: Node): Identifier[] => {
+  const selector = `ReturnStatement Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
+};
+
 interface IfStatementBlocks {
   thenBlock: Block;
   elseBlock: Block;
