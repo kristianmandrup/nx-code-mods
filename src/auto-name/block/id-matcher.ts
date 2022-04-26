@@ -1,4 +1,4 @@
-import { arrToObject, idToStr } from '../utils';
+import { arrToObject, idToStr, unique } from '../utils';
 import * as inflection from 'inflection';
 import { nouns } from '../../refactor/nouns';
 import { complete as verbs } from 'verb-corpus';
@@ -7,7 +7,9 @@ import * as prepositions from 'prepositions';
 import { Block } from 'typescript';
 import { findFirstIdentifier, getLastStatement } from '../../find';
 
-const nounsMap = arrToObject(nouns);
+const nounAliases = ['admin', 'id'];
+
+const nounsMap = arrToObject([...nouns, ...nounAliases]);
 const verbsMap = arrToObject(verbs);
 const adjectivesMap = arrToObject(adjectives);
 const prepositionsMap = arrToObject(prepositions);
@@ -38,29 +40,33 @@ export class IdentifierMatcher {
   }
 
   split() {
-    this.words = inflection
-      .humanize(this.identifier)
-      .split(' ')
-      .map((w: string) => w.toLowerCase());
+    this.words = unique(
+      inflection
+        .humanize(this.identifier)
+        .split(' ')
+        .map((w: string) => w.toLowerCase()),
+    );
     return this;
   }
 
   getAdjectives() {
-    this.adjectives = this.words.filter((word) => adjectivesMap[word]);
+    this.adjectives = unique(this.words.filter((word) => adjectivesMap[word]));
     return this;
   }
 
   getPrepositions() {
-    this.prepositions = this.words.filter((word) => prepositionsMap[word]);
+    this.prepositions = unique(
+      this.words.filter((word) => prepositionsMap[word]),
+    );
   }
 
   getNouns() {
-    this.nouns = this.words.filter((word) => nounsMap[word]);
+    this.nouns = unique(this.words.filter((word) => nounsMap[word]));
     return this;
   }
 
   getVerbs() {
-    this.verbs = this.words.filter((word) => verbsMap[word]);
+    this.verbs = unique(this.words.filter((word) => verbsMap[word]));
     return this;
   }
 }

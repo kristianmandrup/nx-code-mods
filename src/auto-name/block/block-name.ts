@@ -1,11 +1,19 @@
 import { getLastStatement } from './../../find/find';
 import { Statement } from 'typescript';
 import { Block } from 'typescript';
-import { findArrayActionAndId, isSingularAction } from './action-name';
+import {
+  findArrayActionAndId,
+  isSingularAction,
+  isSingularActionNoun,
+} from './action-name';
 import { determineMainIdentifier } from './id-matcher';
 import { createStmtMatcher, StatementMatcher } from './statement-name';
 import * as inflection from 'inflection';
-import { camelizedIdentifier } from '../utils';
+import {
+  camelizedIdentifier,
+  createArrayMatcher,
+  createSingularArrayMatcher,
+} from '../utils';
 
 export const createBlockMatcher = (block: Block) => new BlockMatcher(block);
 
@@ -16,7 +24,10 @@ export class BlockMatcher {
   arrayOps: string[] = [];
   stmtMatchers: StatementMatcher[] = [];
 
-  constructor(public block: Block) {}
+  constructor(public block: Block) {
+    this.findMainId();
+    this.getActions();
+  }
 
   get statements() {
     return this.block.statements;
@@ -47,24 +58,43 @@ export class BlockMatcher {
     });
   }
 
+  getBeforeNoun({ action }: any) {
+    if (action === 'find') return 'where';
+    return 'by';
+  }
+
   toName() {
     const stmtMatcher = this.popStatementMatcher();
     if (!stmtMatcher) return;
-    const { arrayOps, mainId } = this;
-    const { verbs, adjectives, prepositions, nouns } = stmtMatcher;
-
+    let { arrayOps, mainId } = this;
+    let { verbs, adjectives, prepositions, nouns } = stmtMatcher;
     const action = arrayOps[0] || verbs[0];
-    if (isSingularAction({ action, id: mainId })) {
-      this.mainId = inflection.singularize(mainId);
+
+    if (isSingularActionNoun({ action, id: mainId })) {
+      mainId = inflection.singularize(mainId);
     }
 
-    let beforeNoun = [adjectives[0], prepositions[0]].filter((x) => x);
+    nouns = nouns.filter((noun) => !arrayOps.includes(noun));
 
-    let beforeNounStr = beforeNoun.length === 0 ? 'by' : beforeNoun.join('-');
-    let nounStr = nouns[0];
+    let beforeNoun = [adjectives[0], prepositions[0]].filter((x) => x);
+    let noun = nouns[0];
+    if (mainId.includes(noun)) {
+      noun = nouns[1];
+    }
+
+    let beforeNounStr =
+      beforeNoun.length === 0
+        ? this.getBeforeNoun({ action, noun })
+        : beforeNoun.join('-');
 
     // pick the best combination (best effort)
-    const parts = [action, mainId, beforeNounStr, nounStr].filter((x) => x);
-    return camelizedIdentifier(parts);
+    const parts = [action, mainId, beforeNounStr, noun];
+    const removeGrammaticalDuplicates = createSingularArrayMatcher(parts);
+
+    const filteredParts = parts
+      .filter((x) => x)
+      .filter(removeGrammaticalDuplicates);
+
+    return camelizedIdentifier(filteredParts);
   }
 }

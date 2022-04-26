@@ -1,5 +1,5 @@
 import { camelizedIdentifier, idToStr } from '../utils';
-import { findAllIdentifiersFor } from '../../find/find';
+import { findAllIdentifiersOrStringLiteralsFor } from '../../find';
 import { BinaryExpression } from 'typescript';
 import { ExpressionParser } from './expr-parser';
 
@@ -37,8 +37,18 @@ export class BinaryExpressionParser extends ExpressionParser {
     this.findRightIds();
   }
 
+  noRightIds() {
+    return this.rightIds.length === 0;
+  }
+
+  noLeftIds() {
+    return this.leftIds.length === 0;
+  }
+
   name() {
-    const parts = [...this.leftIds, this.tokenName, ...this.rightIds];
+    const parts = this.noRightIds()
+      ? [this.tokenName, ...this.leftIds]
+      : [...this.leftIds, this.tokenName, ...this.rightIds];
     return camelizedIdentifier(parts);
   }
 
@@ -49,17 +59,21 @@ export class BinaryExpressionParser extends ExpressionParser {
   }
 
   getToken() {
-    this.token = this.expr.operatorToken.getFullText();
+    this.token = this.expr.operatorToken.getFullText().trim();
     return this;
   }
 
   findLeftIds() {
-    this.leftIds = findAllIdentifiersFor(this.expr.left).map(idToStr);
+    this.leftIds = findAllIdentifiersOrStringLiteralsFor(this.expr.left).map(
+      idToStr,
+    );
     return this;
   }
 
   findRightIds() {
-    this.rightIds = findAllIdentifiersFor(this.expr.left).map(idToStr);
+    this.rightIds = findAllIdentifiersOrStringLiteralsFor(this.expr.right).map(
+      idToStr,
+    );
     return this;
   }
 }

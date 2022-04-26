@@ -14,10 +14,10 @@ const arrayOpsMap: any = {
   group: 'grouped',
 };
 
-export const isSingularAction = ({ action, id }: any) =>
-  isSingular(action) && id && isNoun(id);
+export const isSingularActionNoun = ({ action, id }: any) =>
+  isSingularAction(action) && id && isNoun(id);
 
-export const isSingular = (action: string) => {
+export const isSingularAction = (action: string) => {
   return actionPluralityMap[action];
 };
 

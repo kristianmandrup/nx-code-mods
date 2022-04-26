@@ -2,8 +2,9 @@ import { createUnaryExpressionParser } from './unary-expr';
 import { findBinaryExpressions, findPrefixUnaryExpressions } from '../../find';
 import { camelizedIdentifier, sortByPosition } from '../utils';
 import { createBinaryExpressionParser } from './binary-expression';
+import { Expression } from 'typescript';
 
-export const conditionName = (condition: Node) => {
+export const conditionName = (condition: Expression) => {
   const binaryExprs = findBinaryExpressions(condition);
   const binExprParsers = binaryExprs.map(createBinaryExpressionParser);
 
@@ -11,9 +12,8 @@ export const conditionName = (condition: Node) => {
   const prefixUnaryExprParsers = prefixUnaryExprs.map(
     createUnaryExpressionParser,
   );
-
   const allExprParsers = [...binExprParsers, ...prefixUnaryExprParsers];
   const sortedExprs = sortByPosition(allExprParsers);
-  const parts = sortedExprs.map((expr) => expr.name);
+  const parts = sortedExprs.map((expr) => expr.name());
   return camelizedIdentifier(parts);
 };

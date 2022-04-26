@@ -1,5 +1,5 @@
 import { Identifier, StringLiteral, Node } from 'typescript';
-import { findAllIdentifiersFor, findAllStringLiteralsFor } from '../find';
+import { findAllIdentifiersOrStringLiteralsFor, IdLike } from '../find';
 import * as inflection from 'inflection';
 export const camelizedIdentifier = (parts: string[]) =>
   inflection.camelize(parts.join('_'), true);
@@ -8,17 +8,48 @@ export const idToStr = (id: Identifier | StringLiteral): string => {
   return id.text ? id.text : ((id as Identifier).escapedText as string);
 };
 
-type IdLike = Identifier | StringLiteral;
-
 export const sortByPosition = (nodeList: any[]) =>
   nodeList.sort((idA: any, idB: any) => idA.pos - idB.pos);
 
 export const findNodeIds = (node: Node): string[] => {
-  const ids: Identifier[] = findAllIdentifiersFor(node);
-  const strLits: StringLiteral[] = findAllStringLiteralsFor(node);
-  const allIds: IdLike[] = [...ids, ...strLits];
-  const orderedIds = sortByPosition(allIds);
-  return orderedIds.map((id) => idToStr(id as IdLike));
+  const ids: IdLike[] = findAllIdentifiersOrStringLiteralsFor(node);
+  return ids.map(idToStr);
+};
+
+export const createArrayMatcher =
+  (list: string[]) =>
+  (x: string): boolean => {
+    console.log({ x, list });
+    return isSingular(x)
+      ? !list.includes(inflection.pluralize(x))
+      : !list.includes(inflection.singularize(x));
+  };
+
+export const createSingularArrayMatcher =
+  (list: string[]) =>
+  (x: string): boolean => {
+    return isSingular(x) ? !list.includes(inflection.pluralize(x)) : true;
+  };
+
+export const createPluralArrayMatcher =
+  (list: string[]) =>
+  (x: string): boolean => {
+    return isPlural(x) ? list.includes(inflection.singularize(x)) : true;
+  };
+
+export const isSingular = (x: string) => inflection.singularize(x) === x;
+export const isPlural = (x: string) => inflection.pluralize(x) === x;
+
+export const unique = (list: any[]) => {
+  var obj: any = {};
+
+  list.forEach(function (v) {
+    obj[v + '::' + typeof obj] = v;
+  });
+
+  return Object.keys(obj).map(function (v) {
+    return obj[v];
+  });
 };
 
 export function arrToObject(arr: string[]) {

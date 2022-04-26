@@ -1,3 +1,4 @@
+import { sortByPosition } from './../auto-name/utils';
 import {
   BinaryExpression,
   BindingName,
@@ -48,7 +49,7 @@ export const findBinaryExpressions = (node: any): BinaryExpression[] => {
 export const findPrefixUnaryExpressions = (
   node: any,
 ): PrefixUnaryExpression[] => {
-  const selector = 'UnaryExpression';
+  const selector = 'PrefixUnaryExpression';
   const matches = tsquery(node, selector);
   return matches as PrefixUnaryExpression[];
 };
@@ -176,6 +177,16 @@ export const findIfStatementsWithElseBlocks = (
   return ifStatements.filter((stmt: IfStatement) => {
     return stmt.elseStatement ? true : false;
   });
+};
+
+export type IdLike = Identifier | StringLiteral;
+
+export const findAllIdentifiersOrStringLiteralsFor = (node: Node): IdLike[] => {
+  const ids = findAllIdentifiersFor(node);
+  const strLits = findAllStringLiteralsFor(node);
+  const allIds = [...ids, ...strLits];
+  const sortedIds = sortByPosition(allIds);
+  return sortedIds;
 };
 
 export const findAllIdentifiersFor = (node: Node): Identifier[] => {

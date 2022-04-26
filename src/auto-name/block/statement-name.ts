@@ -1,6 +1,6 @@
 import { Statement } from 'typescript';
 import { idMatcher } from './id-matcher';
-import { findNodeIds } from '../utils';
+import { findNodeIds, unique } from '../utils';
 
 export const createStmtMatcher = (stmt: Statement) =>
   new StatementMatcher(stmt);
@@ -27,7 +27,7 @@ export class StatementMatcher {
   }
 
   getIds() {
-    this.ids = findNodeIds(this.stmt);
+    this.ids = unique(findNodeIds(this.stmt));
     return this;
   }
 

@@ -9,13 +9,13 @@ const context = describe;
 
 describe('block name', () => {
   context('file with no named object', () => {
-    it('no insert', () => {
+    it('determines sensible name', () => {
       const filePath = path.join(__dirname, 'files', 'user-find-block.txt');
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
-      expect(name).toEqual('findUserByType');
+      expect(name).toEqual('findUserWhereType');
     });
   });
 });
