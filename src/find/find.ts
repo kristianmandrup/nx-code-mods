@@ -1,4 +1,5 @@
 import {
+  BinaryExpression,
   BindingName,
   Block,
   ClassDeclaration,
@@ -12,24 +13,45 @@ import {
   Node,
   NodeArray,
   ParameterDeclaration,
+  PrefixUnaryExpression,
   PropertyDeclaration,
   SourceFile,
   Statement,
+  StringLiteral,
   StringLiteralLike,
+  UnaryExpression,
   VariableDeclaration,
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { endOfIndex, startOfIndex } from '../positional';
 import { escapeRegExp } from '../utils';
 
-type WhereFn = (stmt: Node) => boolean;
+export type WhereFn = (stmt: Node) => boolean;
 
-export const getFirstStatement = (ast: SourceFile) => ast.statements[0];
-export const getLastStatement = (ast: SourceFile) =>
-  ast.statements[ast.statements.length - 1];
+export type StmtContainerNode = SourceFile | Block;
+
+export const getFirstStatement = (node: SourceFile | Block) =>
+  node.statements[0];
+
+export const getLastStatement = (node: StmtContainerNode) =>
+  node.statements[node.statements.length - 1];
 
 export const hasAnyImportDecl = (node: SourceFile) =>
   Boolean(findLastImport(node));
+
+export const findBinaryExpressions = (node: any): BinaryExpression[] => {
+  const selector = 'BinaryExpression';
+  const matches = tsquery(node, selector);
+  return matches as BinaryExpression[];
+};
+
+export const findPrefixUnaryExpressions = (
+  node: any,
+): PrefixUnaryExpression[] => {
+  const selector = 'UnaryExpression';
+  const matches = tsquery(node, selector);
+  return matches as PrefixUnaryExpression[];
+};
 
 export const findMatchingImportDeclarationsByFileRef = (
   node: SourceFile,
@@ -163,6 +185,15 @@ export const findAllIdentifiersFor = (node: Node): Identifier[] => {
     return [];
   }
   return result as Identifier[];
+};
+
+export const findAllStringLiteralsFor = (node: Node): StringLiteral[] => {
+  const selector = `StringLiteral`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as StringLiteral[];
 };
 
 export const findReturnStatementIdentifiersFor = (node: Node): Identifier[] => {
