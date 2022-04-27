@@ -1,4 +1,4 @@
-import { getLastStatement } from './../../find/find';
+import { getLastStatement } from '../../find';
 import { Statement } from 'typescript';
 import { Block } from 'typescript';
 import {
@@ -12,7 +12,8 @@ import * as inflection from 'inflection';
 import {
   camelizedIdentifier,
   createSingularArrayMatcher,
-  humanize,
+  ensureValidParts,
+  shouldAddExtraNoun,
   unique,
 } from '../utils';
 import { conditionName, conditionParts } from '../condition';
@@ -95,11 +96,10 @@ export class BlockMatcher {
     // pick the best combination (best effort)
     let parts = [action, mainId, beforeNounStr, noun, ...condParts];
 
-    parts = unique(
-      parts.map((id) => humanize(id).toLowerCase().split(' ')).flat(),
-    );
-
-    if (parts.length >= 3 && parts[parts.length - 1] === 'by') {
+    parts = ensureValidParts(parts);
+    // console.log({ parts });
+    if (shouldAddExtraNoun(parts)) {
+      // console.log('add extra', { parts, nouns });
       parts.push(nouns.pop());
     }
 

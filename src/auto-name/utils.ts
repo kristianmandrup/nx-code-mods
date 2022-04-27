@@ -16,7 +16,28 @@ export const findNodeIds = (node: Node): string[] => {
   return ids.map(idToStr);
 };
 
+const adjectivesList = ['by', 'where'];
+export const lastPartIsAdjective = (parts: string[]) => {
+  const word = parts[parts.length - 1];
+  return adjectivesList.includes(word);
+};
+
+export const shouldAddExtraNoun = (parts: string[]) =>
+  parts.length >= 2 && lastPartIsAdjective(parts);
+
+export const ensureValidParts = (parts: string[]) =>
+  unique(
+    parts.map((id) => humanize(id).toLowerCase().split(' ')).flat(),
+  ).filter((x) => x);
+
+export const wordsFromId = (identifier: string) => {
+  const humanized = humanize(identifier);
+  const list = humanized.split(' ').filter((x) => x);
+  return unique(list.map((w: string) => w.toLowerCase()));
+};
+
 export const humanize = (str: string) => {
+  if (!str) return '';
   const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;
   const matches = str.match(wordRegex);
   return matches?.join(' ') || str;

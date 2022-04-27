@@ -50,13 +50,12 @@ describe('block name', () => {
   });
 
   context('users sort', () => {
-    it('determines sensible name', () => {
+    it('name: sortUsersByLevel', () => {
       const filePath = path.join(__dirname, 'files', 'users-sort.txt');
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
-      console.log({ name });
       expect(name).toEqual('sortUsersByLevel');
     });
   });

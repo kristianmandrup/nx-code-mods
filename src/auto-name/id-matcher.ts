@@ -1,4 +1,4 @@
-import { arrToObject, humanize, idToStr, unique } from './utils';
+import { arrToObject, humanize, idToStr, unique, wordsFromId } from './utils';
 import * as inflection from 'inflection';
 import { nouns } from './nouns';
 import { complete as verbs } from 'verb-corpus';
@@ -13,6 +13,9 @@ const nounsMap = arrToObject([...nouns, ...nounAliases]);
 const verbsMap = arrToObject(verbs);
 const adjectivesMap = arrToObject(adjectives);
 const prepositionsMap = arrToObject(prepositions);
+
+export const mapWords = (words: string[], kvMap: any) =>
+  unique(words.filter((word) => kvMap[word]));
 
 export const idMatcher = (identifier: string) =>
   new IdentifierMatcher(identifier);
@@ -44,31 +47,26 @@ export class IdentifierMatcher {
   }
 
   split() {
-    const humanized = this.humanize(this.identifier);
-    this.words = unique(
-      humanized.split(' ').map((w: string) => w.toLowerCase()),
-    );
+    this.words = wordsFromId(this.identifier);
     return this;
   }
 
   getAdjectives() {
-    this.adjectives = unique(this.words.filter((word) => adjectivesMap[word]));
+    this.adjectives = mapWords(this.words, adjectivesMap);
     return this;
   }
 
   getPrepositions() {
-    this.prepositions = unique(
-      this.words.filter((word) => prepositionsMap[word]),
-    );
+    this.prepositions = mapWords(this.words, prepositionsMap);
   }
 
   getNouns() {
-    this.nouns = unique(this.words.filter((word) => nounsMap[word]));
+    this.nouns = mapWords(this.words, nounsMap);
     return this;
   }
 
   getVerbs() {
-    this.verbs = unique(this.words.filter((word) => verbsMap[word]));
+    this.verbs = mapWords(this.words, verbsMap);
     return this;
   }
 }
