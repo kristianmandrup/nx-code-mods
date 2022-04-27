@@ -12,6 +12,7 @@ import {
   getIfStatementBlocks,
 } from '../find';
 import { AnyOpts, replaceInSource } from '../modify';
+import { mapIdentifiersToSrc } from './utils';
 
 // function notCondition({ids}) {
 //     if (condition) return
@@ -61,13 +62,6 @@ export const createElseFnCode = (
         return
     }
   `;
-};
-
-export const mapIdentifiersToTxtList = (ids: Identifier[]) =>
-  ids.map((id) => id.escapedText);
-
-export const mapIdentifiersToSrc = (ids: Identifier[]) => {
-  return mapIdentifiersToTxtList(ids).join(',');
 };
 
 export const replaceIfElseWithCalls = (

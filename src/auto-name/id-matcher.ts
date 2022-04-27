@@ -1,6 +1,6 @@
 import { arrToObject, idToStr, unique } from './utils';
 import * as inflection from 'inflection';
-import { nouns } from '../refactor/nouns';
+import { nouns } from './nouns';
 import { complete as verbs } from 'verb-corpus';
 import * as adjectives from 'adjectives';
 import * as prepositions from 'prepositions';

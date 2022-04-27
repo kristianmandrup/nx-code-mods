@@ -20,7 +20,6 @@ import {
   Statement,
   StringLiteral,
   StringLiteralLike,
-  UnaryExpression,
   VariableDeclaration,
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
@@ -154,6 +153,18 @@ export const findFirstMethodDeclaration = (
   if (!result || result.length === 0) return;
   const found = result[0] as MethodDeclaration;
   return found;
+};
+
+export const findFirstConditionalExpression = (
+  node: Node,
+): PrefixUnaryExpression | BinaryExpression | undefined => {
+  const binExprs = findBinaryExpressions(node);
+  if (!binExprs || binExprs.length === 0) {
+    const prefixUnaryExprs = findPrefixUnaryExpressions(node);
+    if (!prefixUnaryExprs || prefixUnaryExprs.length === 0) return;
+    return prefixUnaryExprs[0];
+  }
+  return binExprs[0];
 };
 
 export const findIfStatements = (node: Node): IfStatement[] | undefined => {
