@@ -1,4 +1,4 @@
-import { arrToObject, idToStr, unique } from './utils';
+import { arrToObject, humanize, idToStr, unique } from './utils';
 import * as inflection from 'inflection';
 import { nouns } from './nouns';
 import { complete as verbs } from 'verb-corpus';
@@ -7,7 +7,7 @@ import * as prepositions from 'prepositions';
 import { Block } from 'typescript';
 import { findFirstIdentifier, getLastStatement } from '../find';
 
-const nounAliases = ['admin', 'id'];
+const nounAliases = ['admin', 'id', 'ctx'];
 
 const nounsMap = arrToObject([...nouns, ...nounAliases]);
 const verbsMap = arrToObject(verbs);
@@ -40,9 +40,7 @@ export class IdentifierMatcher {
   }
 
   humanize(str: string) {
-    const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;
-    const matches = str.match(wordRegex);
-    return matches?.join(' ') || str;
+    return humanize(str);
   }
 
   split() {

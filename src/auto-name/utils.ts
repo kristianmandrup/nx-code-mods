@@ -16,6 +16,12 @@ export const findNodeIds = (node: Node): string[] => {
   return ids.map(idToStr);
 };
 
+export const humanize = (str: string) => {
+  const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;
+  const matches = str.match(wordRegex);
+  return matches?.join(' ') || str;
+};
+
 export const createArrayMatcher =
   (list: string[]) =>
   (x: string): boolean => {

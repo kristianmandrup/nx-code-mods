@@ -11,8 +11,8 @@ import { createStmtMatcher, StatementMatcher } from './statement-name';
 import * as inflection from 'inflection';
 import {
   camelizedIdentifier,
-  createArrayMatcher,
   createSingularArrayMatcher,
+  humanize,
   unique,
 } from '../utils';
 import { conditionName, conditionParts } from '../condition';
@@ -77,12 +77,12 @@ export class BlockMatcher {
       mainId = inflection.singularize(mainId);
     }
 
-    nouns = nouns.filter((noun) => !arrayOps.includes(noun));
+    nouns = nouns.filter((noun) => !arrayOps.includes(noun)).reverse();
 
     let beforeNoun = [adjectives[0], prepositions[0]].filter((x) => x);
-    let noun = nouns[0];
-    if (mainId.includes(noun)) {
-      noun = nouns[1];
+    let noun = nouns.pop();
+    if (mainId.includes('' + noun)) {
+      noun = nouns.pop();
     }
 
     let beforeNounStr =
@@ -93,11 +93,19 @@ export class BlockMatcher {
     const condParts = conditionParts(stmtMatcher.stmt);
 
     // pick the best combination (best effort)
-    const parts = unique([action, mainId, beforeNounStr, noun, ...condParts]);
+    let parts = [action, mainId, beforeNounStr, noun, ...condParts];
+
+    parts = unique(
+      parts.map((id) => humanize(id).toLowerCase().split(' ')).flat(),
+    );
+
+    if (parts.length >= 3 && parts[parts.length - 1] === 'by') {
+      parts.push(nouns.pop());
+    }
 
     const removeGrammaticalDuplicates = createSingularArrayMatcher(parts);
 
-    const filteredParts = parts
+    const filteredParts = unique(parts)
       .filter((x) => x)
       .filter(removeGrammaticalDuplicates);
 

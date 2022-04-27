@@ -1,9 +1,9 @@
 import { conditionName } from './../auto-name/condition/condition-name';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { Expression, Identifier, PropertyAccessExpression } from 'typescript';
-import { findAllIdentifiersFor, findFirstConditionalExpression } from '../find';
+import { Expression } from 'typescript';
+import { findFirstConditionalExpression } from '../find';
 import { AnyOpts, replaceInSource } from '../modify';
-import { mapIdentifiersToSrc, mapIdentifiersToTxtList } from './utils';
+import { exprToSrcIds } from './utils';
 
 export interface DecomposeConditionalOpts {
   name?: string;
@@ -13,7 +13,7 @@ export interface CreateFnOpts {
   strIds: string;
 }
 
-export const createFnCode = (
+export const createConditionFnCode = (
   name: string,
   expr: Expression,
   opts: CreateFnOpts,
@@ -28,22 +28,9 @@ export const createFnCode = (
 `;
 };
 
-export const createCallSrc = (name: string, opts: CreateFnOpts) => {
+export const createConditionCallSrc = (name: string, opts: CreateFnOpts) => {
   const { strIds } = opts;
   return strIds ? `${name}({${strIds}})` : `${name}()`;
-};
-
-const filterChildIds = (ids: Identifier[]) => {
-  return ids.filter((id) => {
-    const idStr = id.escapedText as string;
-    const parentId = id.parent;
-    const propAccess = parentId as PropertyAccessExpression;
-    const propAccessCode = propAccess.getFullText();
-    const dotParts = propAccessCode.split('.');
-    const lastDotPart = dotParts[dotParts.length - 1];
-    if (lastDotPart === idStr) return false;
-    return true;
-  });
 };
 
 export const decomposeConditionalExpr = (
@@ -52,12 +39,10 @@ export const decomposeConditionalExpr = (
 ) => {
   let { name } = options;
   name = name || conditionName(expr);
-  const ids = findAllIdentifiersFor(expr);
-  const filteredIds = filterChildIds(ids);
-  const strIds = mapIdentifiersToSrc(filteredIds);
+  const strIds = exprToSrcIds(expr);
   const opts = { strIds };
-  const callSrc = createCallSrc(name, opts);
-  const fnSrc = createFnCode(name, expr, opts);
+  const callSrc = createConditionCallSrc(name, opts);
+  const fnSrc = createConditionFnCode(name, expr, opts);
   return {
     callSrc,
     fnSrc,

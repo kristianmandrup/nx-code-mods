@@ -1,3 +1,4 @@
-export * from './if-else-function-extract';
+export * from './if-else-extract-function';
+export * from './if-extract-function';
 export * from './decompose-conditional';
-export * from '../auto-name/nouns';
+export * from './utils';
