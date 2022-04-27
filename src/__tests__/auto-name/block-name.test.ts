@@ -9,7 +9,7 @@ const context = describe;
 
 describe('block name', () => {
   context('user find in last statement', () => {
-    it('determines sensible name', () => {
+    it('name: findUserWhereTypeIsAdmin', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -19,12 +19,12 @@ describe('block name', () => {
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
-      expect(name).toEqual('findUserWhereType');
+      expect(name).toEqual('findUserWhereTypeIsAdmin');
     });
   });
 
   context('return user in last statement', () => {
-    it('determines sensible name', () => {
+    it('name: findUserWhere', () => {
       const filePath = path.join(
         __dirname,
         'files',
@@ -39,7 +39,7 @@ describe('block name', () => {
   });
 
   context('return user or default', () => {
-    it('determines sensible name', () => {
+    it('name: findUserWhere', () => {
       const filePath = path.join(__dirname, 'files', 'user-find-default.txt');
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
@@ -57,7 +57,7 @@ describe('block name', () => {
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
       console.log({ name });
-      expect(name).toEqual('sortedUsersBy');
+      expect(name).toEqual('sortUsersByLevel');
     });
   });
 });

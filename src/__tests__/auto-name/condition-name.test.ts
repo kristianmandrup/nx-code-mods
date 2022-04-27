@@ -1,16 +1,19 @@
-import { findIfStatementsWithElseBlocks } from '../../find/find';
+import {
+  findIfStatementsWithElseBlocks,
+  findBinaryExpressions,
+} from '../../find/find';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { findFunctionBlock } from '../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { conditionName } from '../../auto-name';
-import { Block, IfStatement } from 'typescript';
+import { Block, IfStatement, BinaryExpression } from 'typescript';
 
 const context = describe;
 
 describe('condition name', () => {
-  context('file with no named object', () => {
-    it('no insert', () => {
+  context('if else user block', () => {
+    it('name: userTypeIsAdmin', () => {
       const filePath = path.join(__dirname, 'files', 'if-else-user-block.txt');
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
@@ -22,6 +25,21 @@ describe('condition name', () => {
       if (!expression) return;
       const name = conditionName(expression);
       expect(name).toEqual('userTypeIsAdmin');
+    });
+  });
+
+  context('user sort by level', () => {
+    it('name: userLevel', () => {
+      const filePath = path.join(__dirname, 'files', 'users-sort.txt');
+      const content = readFileIfExisting(filePath);
+      const srcNode = tsquery.ast(content);
+      const block = findFunctionBlock(srcNode, 'xyz') as Block;
+      const exprs = findBinaryExpressions(block);
+      if (!exprs) return;
+      const expression = exprs[0] as BinaryExpression;
+      if (!expression) return;
+      const name = conditionName(expression);
+      expect(name).toEqual('userLevel');
     });
   });
 });

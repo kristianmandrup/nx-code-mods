@@ -6,14 +6,16 @@ import {
   isSingularAction,
   isSingularActionNoun,
 } from './action-name';
-import { determineMainIdentifier } from './id-matcher';
+import { determineMainIdentifier } from '../id-matcher';
 import { createStmtMatcher, StatementMatcher } from './statement-name';
 import * as inflection from 'inflection';
 import {
   camelizedIdentifier,
   createArrayMatcher,
   createSingularArrayMatcher,
+  unique,
 } from '../utils';
+import { conditionName, conditionParts } from '../condition';
 
 export const createBlockMatcher = (block: Block) => new BlockMatcher(block);
 
@@ -65,6 +67,7 @@ export class BlockMatcher {
 
   toName() {
     const stmtMatcher = this.popStatementMatcher();
+
     if (!stmtMatcher) return;
     let { arrayOps, mainId } = this;
     let { verbs, adjectives, prepositions, nouns } = stmtMatcher;
@@ -87,8 +90,11 @@ export class BlockMatcher {
         ? this.getBeforeNoun({ action, noun })
         : beforeNoun.join('-');
 
+    const condParts = conditionParts(stmtMatcher.stmt);
+
     // pick the best combination (best effort)
-    const parts = [action, mainId, beforeNounStr, noun];
+    const parts = unique([action, mainId, beforeNounStr, noun, ...condParts]);
+
     const removeGrammaticalDuplicates = createSingularArrayMatcher(parts);
 
     const filteredParts = parts

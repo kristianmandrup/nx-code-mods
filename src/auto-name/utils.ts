@@ -19,7 +19,6 @@ export const findNodeIds = (node: Node): string[] => {
 export const createArrayMatcher =
   (list: string[]) =>
   (x: string): boolean => {
-    console.log({ x, list });
     return isSingular(x)
       ? !list.includes(inflection.pluralize(x))
       : !list.includes(inflection.singularize(x));

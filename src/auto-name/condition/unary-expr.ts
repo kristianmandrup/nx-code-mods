@@ -3,7 +3,7 @@
 
 import { PrefixUnaryExpression } from 'typescript';
 import { findAllIdentifiersFor } from '../../find';
-import { camelizedIdentifier, idToStr } from '../utils';
+import { camelizedIdentifier, idToStr, unique } from '../utils';
 import { ExpressionParser } from './expr-parser';
 
 const operatorMap: any = {
@@ -27,7 +27,7 @@ export class UnaryExpressionParser extends ExpressionParser {
   }
 
   name() {
-    const parts = [this.operatorName, ...this.ids];
+    const parts = this.filter([this.operatorName, ...this.ids]);
     return camelizedIdentifier(parts);
   }
 

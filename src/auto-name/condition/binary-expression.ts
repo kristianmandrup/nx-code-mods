@@ -1,3 +1,4 @@
+import { idMatcher } from '../id-matcher';
 import { camelizedIdentifier, idToStr } from '../utils';
 import { findAllIdentifiersOrStringLiteralsFor } from '../../find';
 import { BinaryExpression } from 'typescript';
@@ -8,6 +9,10 @@ import { ExpressionParser } from './expr-parser';
 // readonly right: Expression;
 
 const tokenMap: any = {
+  // '-': 'sub',
+  // '--': 'sub',
+  // '+': 'add',
+  // '++': 'add',
   '==': 'is',
   '===': 'is',
   '!==': 'not',
@@ -45,10 +50,31 @@ export class BinaryExpressionParser extends ExpressionParser {
     return this.leftIds.length === 0;
   }
 
+  fullNameParts() {
+    return this.filter([...this.leftIds, this.tokenName, ...this.rightIds]);
+  }
+
+  leftNameParts() {
+    return this.filter([this.tokenName, ...this.leftIds]);
+  }
+
+  partition() {
+    const rawParts = this.noRightIds()
+      ? this.leftNameParts()
+      : this.fullNameParts();
+
+    let parts: string[] = [];
+    rawParts.map((id) => {
+      const matcher = idMatcher(id);
+      parts.push(...matcher.verbs, ...matcher.nouns);
+    });
+    this.parts = this.filter(parts);
+    return this.parts;
+  }
+
   name() {
-    const parts = this.noRightIds()
-      ? [this.tokenName, ...this.leftIds]
-      : [...this.leftIds, this.tokenName, ...this.rightIds];
+    this.partition();
+    const { parts } = this;
     return camelizedIdentifier(parts);
   }
 

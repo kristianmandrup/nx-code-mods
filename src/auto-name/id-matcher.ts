@@ -1,11 +1,11 @@
-import { arrToObject, idToStr, unique } from '../utils';
+import { arrToObject, idToStr, unique } from './utils';
 import * as inflection from 'inflection';
-import { nouns } from '../../refactor/nouns';
+import { nouns } from '../refactor/nouns';
 import { complete as verbs } from 'verb-corpus';
 import * as adjectives from 'adjectives';
 import * as prepositions from 'prepositions';
 import { Block } from 'typescript';
-import { findFirstIdentifier, getLastStatement } from '../../find';
+import { findFirstIdentifier, getLastStatement } from '../find';
 
 const nounAliases = ['admin', 'id'];
 
@@ -39,12 +39,16 @@ export class IdentifierMatcher {
     this.getVerbs();
   }
 
+  humanize(str: string) {
+    const wordRegex = /[A-Z]?[a-z]+|[0-9]+|[A-Z]+(?![a-z])/g;
+    const matches = str.match(wordRegex);
+    return matches?.join(' ') || str;
+  }
+
   split() {
+    const humanized = this.humanize(this.identifier);
     this.words = unique(
-      inflection
-        .humanize(this.identifier)
-        .split(' ')
-        .map((w: string) => w.toLowerCase()),
+      humanized.split(' ').map((w: string) => w.toLowerCase()),
     );
     return this;
   }

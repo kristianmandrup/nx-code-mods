@@ -41,7 +41,6 @@ describe('chain api', () => {
         const source = readFileIfExisting(filePath);
         const code = transformInSource(source, transformOpts);
         const modifiedCode = code ? code : '';
-        console.log({ modifiedCode });
         expect(modifiedCode.match(/'c'\s*,\s*'a'/)).toBeTruthy();
       });
     });

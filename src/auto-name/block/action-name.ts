@@ -1,18 +1,18 @@
 import { escapeRegExp } from '../../utils';
-import { isNoun } from './id-matcher';
+import { isNoun } from '../id-matcher';
 
-const arrayOpsMap: any = {
-  map: 'mapped',
-  reverse: 'reversed',
-  filter: 'filtered',
-  reduce: 'reduced',
-  find: 'find',
-  join: 'joined',
-  fill: 'filled',
-  slice: 'sliced',
-  sort: 'sorted',
-  group: 'grouped',
-};
+const arrayOps: any = [
+  'map',
+  'reverse',
+  'filter',
+  'reduce',
+  'find',
+  'join',
+  'fill',
+  'slice',
+  'sort',
+  'group',
+];
 
 export const isSingularActionNoun = ({ action, id }: any) =>
   isSingularAction(action) && id && isNoun(id);
@@ -25,8 +25,6 @@ const actionPluralityMap: any = {
   find: true,
 };
 
-const arrayOps = Object.keys(arrayOpsMap);
-
 export const findArrayActionAndId = ({
   ids,
   code,
@@ -34,26 +32,25 @@ export const findArrayActionAndId = ({
   ids: string[];
   code: string;
 }) => {
-  let foundOp, foundId;
+  let action, foundId;
   ids.find((id) => {
     const op = findArrayOp(id, code);
     if (op) {
       foundId = id;
-      foundOp = op;
+      action = op;
     }
     return op;
   });
 
-  if (!foundOp) return;
-  const arrayOp = arrayOpsMap[foundOp];
+  if (!action) return;
   return {
-    action: arrayOp,
+    action,
     id: foundId,
   };
 };
 
 const findArrayOp = (id: string, stmtTxt: string) => {
-  return arrayOps.find((op) => {
+  return arrayOps.find((op: string) => {
     const idExp = escapeRegExp(id);
     const opExp = escapeRegExp(op);
     const regExp = new RegExp(idExp + '.' + opExp + `\\s*\\(`);
