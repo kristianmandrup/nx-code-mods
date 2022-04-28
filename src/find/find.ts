@@ -398,19 +398,22 @@ export const findLastIdentifier = (node: Node): Identifier | undefined => {
   return result[result.length - 1] as Identifier;
 };
 
-export const findTopLevelIdentifiers = (srcNode: SourceFile) => {
-  const importIds = findImportIdentifiers(srcNode);
-  const varIds = findTopLevelVarIdentifiers(srcNode);
-  const funIds = findTopLevelFunctionIdentifiers(srcNode);
-  const classIds = findTopLevelClassIdentifiers(srcNode);
-  return [...importIds, ...varIds, ...funIds, ...classIds] as Identifier[];
+export const findDeclaredIdentifiersInScope = (node: Node) => {
+  const varIds = findVarDeclIdentifiers(node);
+  const funIds = findFunctionDeclIdentifiers(node);
+  const classIds = findClassDeclIdentifiers(node);
+  return [...varIds, ...funIds, ...classIds] as Identifier[];
 };
 
-export const findTopLevelVarIdentifiers = (
-  srcNode: SourceFile,
-): Identifier[] => {
-  const selector = `SourceFile > VariableStatement`;
-  const result = tsquery(srcNode, selector);
+export const findTopLevelIdentifiers = (srcNode: SourceFile) => {
+  const importIds = findImportIdentifiers(srcNode);
+  const scopeIds = findDeclaredIdentifiersInScope(srcNode);
+  return [...importIds, ...scopeIds] as Identifier[];
+};
+
+export const findVarDeclIdentifiers = (node: Node): Identifier[] => {
+  const selector = `> VariableStatement`;
+  const result = tsquery(node, selector);
   if (!result || result.length === 0) {
     return [];
   }
@@ -427,20 +430,18 @@ export const findTopLevelVarIdentifiers = (
   return varIds;
 };
 
-export const findTopLevelFunctionIdentifiers = (srcNode: SourceFile) => {
-  const selector = `SourceFile > FunctionDeclaration > Identifier`;
-  const result = tsquery(srcNode, selector);
+export const findFunctionDeclIdentifiers = (node: Node) => {
+  const selector = `> FunctionDeclaration > Identifier`;
+  const result = tsquery(node, selector);
   if (!result || result.length === 0) {
     return [];
   }
   return result as Identifier[];
 };
 
-export const findTopLevelClassIdentifiers = (
-  srcNode: SourceFile,
-): Identifier[] => {
-  const selector = `SourceFile > ClassDeclaration > Identifier`;
-  const result = tsquery(srcNode, selector);
+export const findClassDeclIdentifiers = (node: Node): Identifier[] => {
+  const selector = `> ClassDeclaration > Identifier`;
+  const result = tsquery(node, selector);
   if (!result || result.length === 0) {
     return [];
   }
