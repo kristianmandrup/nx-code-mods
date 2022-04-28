@@ -41,7 +41,6 @@ export const createFnCode = (block: Block, expr: Expression, opts: any) => {
   const endPos = block.getEnd() - pos - 1;
   const src = blockSrc.substring(startPos, endPos);
   const exprSrc = expr.getFullText();
-  const positions = { startPos: block.getStart(), endPos: block.getEnd() };
   const insertPos = getPosAfterLastImport(block.getSourceFile());
   const code = `
   function ${name}(opts: any) {
@@ -53,7 +52,6 @@ export const createFnCode = (block: Block, expr: Expression, opts: any) => {
   `;
   return {
     insertPos,
-    positions,
     code,
   };
 };
@@ -71,11 +69,9 @@ export const ifStmtToCall = (
   const code = `
     return ${name}({${strIds}})`;
   const positions = { startPos: block.getStart(), endPos: block.getEnd() };
-  const insertPos = getPosAfterLastImport(block.getSourceFile());
   return {
     code,
     positions,
-    insertPos,
   };
 };
 
