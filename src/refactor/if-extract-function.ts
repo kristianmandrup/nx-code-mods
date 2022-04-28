@@ -9,8 +9,8 @@ import { Block, Expression, Identifier, IfStatement } from 'typescript';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { findIfStatementsWithElseBlocks, getIfStatementBlocks } from '../find';
 import { AnyOpts, replaceInSource } from '../modify';
-import { exprToSrcIds } from './utils';
 import { blockName } from '../auto-name';
+import { findAllLocalIds, idsToSrc } from './utils';
 
 // function isCondition({ids}) {
 //     if (!condition) return
@@ -26,7 +26,8 @@ export interface RefactorIfStmtOpts {
 export const createFnCode = (block: Block, expr: Expression, opts: any) => {
   let { name } = opts;
   name = name || blockName(block);
-  const strIds = exprToSrcIds(block);
+  const strIds = idsToSrc(findAllLocalIds(expr));
+
   const blockSrc = block.getFullText();
   const pos = block.pos;
   const startPos = block.getStart() - pos + 1;
@@ -52,7 +53,7 @@ export const ifStmtToCall = (
   },
 ) => {
   name = name || blockName(block);
-  const strIds = exprToSrcIds(block);
+  const strIds = idsToSrc(findAllLocalIds(block));
   return `
     return ${name}({${strIds}})`;
 };

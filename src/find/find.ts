@@ -67,6 +67,13 @@ export const findMatchingImportDeclarationsByFileRef = (
   return matches.map((m) => m.parent) as ImportDeclaration[];
 };
 
+export const findImportIdentifiers = (node: any): Identifier[] => {
+  const selector = `ImportSpecifier > Identifier']`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) return [];
+  return result as Identifier[];
+};
+
 export const findImportSpecifier = (
   node: any,
   importId: string,
@@ -232,6 +239,14 @@ interface IfStatementBlocks {
   elseBlock: Block;
 }
 
+function isSourceFile(object: any): object is SourceFile {
+  return 'fooProperty' in object;
+}
+
+export const getSourceFile = (node: Node): SourceFile => {
+  return node.getSourceFile();
+};
+
 export const getIfStatementBlocks = (
   node: Node,
 ): IfStatementBlocks | undefined => {
@@ -380,6 +395,45 @@ export const findLastIdentifier = (node: Node): Identifier | undefined => {
     return;
   }
   return result[result.length - 1] as Identifier;
+};
+
+export const findTopLevelIdentifiers = (srcNode: SourceFile) => {
+  const importIds = findImportIdentifiers(srcNode);
+  const varIds = findTopLevelVarIdentifiers(srcNode);
+  const funIds = findTopLevelFunctionIdentifiers(srcNode);
+  const classIds = findTopLevelClassIdentifiers(srcNode);
+  return [...importIds, ...varIds, ...funIds, ...classIds] as Identifier[];
+};
+
+export const findTopLevelVarIdentifiers = (
+  srcNode: SourceFile,
+): Identifier[] => {
+  const selector = `SourceFile > VariableStatement Identifier`;
+  const result = tsquery(srcNode, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
+};
+
+export const findTopLevelFunctionIdentifiers = (srcNode: SourceFile) => {
+  const selector = `SourceFile > FunctionDeclaration > Identifier`;
+  const result = tsquery(srcNode, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
+};
+
+export const findTopLevelClassIdentifiers = (
+  srcNode: SourceFile,
+): Identifier[] => {
+  const selector = `SourceFile > ClassDeclaration > Identifier`;
+  const result = tsquery(srcNode, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
 };
 
 export const findIdentifier = (

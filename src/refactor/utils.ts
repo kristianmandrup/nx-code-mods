@@ -1,6 +1,15 @@
-import { Identifier, Node, PropertyAccessExpression } from 'typescript';
-import { unique } from '../auto-name';
-import { findAllIdentifiersFor } from '../find';
+import {
+  Identifier,
+  Node,
+  PropertyAccessExpression,
+  SourceFile,
+} from 'typescript';
+import { idToStr, unique } from '../auto-name';
+import {
+  findTopLevelIdentifiers,
+  findAllIdentifiersFor,
+  getSourceFile,
+} from '../find';
 
 export const mapIdentifiersToTxtList = (ids: Identifier[]): string[] =>
   ids.map((id) => id.escapedText as string);
@@ -9,8 +18,29 @@ export const mapIdentifiersToSrc = (ids: Identifier[]) => {
   return unique(mapIdentifiersToTxtList(ids)).join(', ');
 };
 
-export const exprToSrcIds = (expr: Node) => {
-  return idsToSrc(findAllIdentifiersFor(expr));
+export const filterLocalIdentifiers = (
+  node: Node,
+  ids: Identifier[],
+): Identifier[] => {
+  const sourceFile = getSourceFile(node);
+  const topIds = findTopLevelIds(sourceFile);
+  return ids.filter((id: Identifier) => !topIds.includes(idToStr(id)));
+};
+
+export const findTopLevelIds = (sourceFile: SourceFile) => {
+  const ids = findTopLevelIdentifiers(sourceFile);
+  return ids.map(idToStr);
+};
+
+export type IdsFinder = (node: Node) => string[];
+
+export const srcIdsFor = (node: Node, find: IdsFinder) => {
+  find = find || findAllLocalIds;
+  return idsToSrc(findAllIdentifiersFor(node));
+};
+
+export const findAllLocalIds = (node: Node): Identifier[] => {
+  return filterLocalIdentifiers(node, findAllIdentifiersFor(node));
 };
 
 export const idsToSrc = (ids: Identifier[]) => {

@@ -1,6 +1,12 @@
-import { Identifier, StringLiteral, Node } from 'typescript';
-import { findAllIdentifiersOrStringLiteralsFor, IdLike } from '../find';
+import { Identifier, StringLiteral, Node, SourceFile } from 'typescript';
+import {
+  findAllIdentifiersOrStringLiteralsFor,
+  findTopLevelIdentifiers,
+  getSourceFile,
+  IdLike,
+} from '../find';
 import * as inflection from 'inflection';
+
 export const camelizedIdentifier = (parts: string[]) =>
   inflection.camelize(parts.join('_'), true);
 
