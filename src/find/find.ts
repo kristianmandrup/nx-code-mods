@@ -21,6 +21,7 @@ import {
   StringLiteral,
   StringLiteralLike,
   VariableDeclaration,
+  VariableStatement,
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { endOfIndex, startOfIndex } from '../positional';
@@ -408,12 +409,22 @@ export const findTopLevelIdentifiers = (srcNode: SourceFile) => {
 export const findTopLevelVarIdentifiers = (
   srcNode: SourceFile,
 ): Identifier[] => {
-  const selector = `SourceFile > VariableStatement Identifier`;
+  const selector = `SourceFile > VariableStatement`;
   const result = tsquery(srcNode, selector);
   if (!result || result.length === 0) {
     return [];
   }
-  return result as Identifier[];
+  const varStmts = result as VariableStatement[];
+  const varIds: Identifier[] = [];
+  varStmts.map((varStmt: VariableStatement) => {
+    varStmt.declarationList.declarations.map((decl: VariableDeclaration) => {
+      const varId = findVariableIdentifier(decl);
+      if (varId) {
+        varIds.push(varId);
+      }
+    });
+  });
+  return varIds;
 };
 
 export const findTopLevelFunctionIdentifiers = (srcNode: SourceFile) => {
@@ -651,6 +662,15 @@ export const findLastParamPos = (
     return paramsPos.end;
   }
   return endOfIndex(param as ParameterDeclaration);
+};
+
+export const findVariableIdentifier = (node: Node): Identifier | undefined => {
+  const selector = `VariableDeclaration > Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return;
+  }
+  return result[0] as Identifier;
 };
 
 export const findVariableDeclaration = (
