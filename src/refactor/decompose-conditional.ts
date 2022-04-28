@@ -3,7 +3,7 @@ import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsq
 import { Expression } from 'typescript';
 import { findFirstConditionalExpression } from '../find';
 import { AnyOpts, replaceInSource } from '../modify';
-import { findAllLocalIds } from './utils';
+import { findAllLocalIds, idsToSrc } from './utils';
 
 export interface DecomposeConditionalOpts {
   name?: string;
@@ -39,7 +39,7 @@ export const decomposeConditionalExpr = (
 ) => {
   let { name } = options;
   name = name || conditionName(expr);
-  const strIds = findAllLocalIds(expr);
+  const strIds = idsToSrc(findAllLocalIds(expr));
   const opts = { strIds };
   const callSrc = createConditionCallSrc(name, opts);
   const fnSrc = createConditionFnCode(name, expr, opts);

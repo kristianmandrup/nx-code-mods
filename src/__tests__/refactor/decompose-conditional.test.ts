@@ -2,7 +2,6 @@ import { findFirstConditionalExpression } from './../../find/find';
 import { decomposeConditionalExpr } from './../../refactor/decompose-conditional';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
-import { conditionName } from '../../auto-name';
 import { tsquery } from '@phenomnomnominal/tsquery';
 
 const context = describe;

@@ -7,10 +7,17 @@ import { Block, Expression, Identifier, IfStatement } from 'typescript';
 // }
 
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import { findIfStatementsWithElseBlocks, getIfStatementBlocks } from '../find';
-import { AnyOpts, replaceInSource } from '../modify';
+import {
+  findIfStatements,
+  findIfStatementsWithElseBlocks,
+  getIfStatementBlocks,
+} from '../find';
+import { AnyOpts, insertCode, replaceCode, replaceInSource } from '../modify';
 import { blockName } from '../auto-name';
 import { findAllLocalIds, idsToSrc } from './utils';
+import { tsquery } from '@phenomnomnominal/tsquery';
+import { getPosAfterLastImport } from '../append';
+import { PositionBounds } from '../types';
 
 // function isCondition({ids}) {
 //     if (!condition) return
@@ -34,14 +41,21 @@ export const createFnCode = (block: Block, expr: Expression, opts: any) => {
   const endPos = block.getEnd() - pos - 1;
   const src = blockSrc.substring(startPos, endPos);
   const exprSrc = expr.getFullText();
-  return `
+  const positions = { startPos: block.getStart(), endPos: block.getEnd() };
+  const insertPos = getPosAfterLastImport(block.getSourceFile());
+  const code = `
   function ${name}(opts: any) {
       const { ${strIds} } = opts
       if (!(${exprSrc})) return;
       ${src}
       return;
   }
-`;
+  `;
+  return {
+    insertPos,
+    positions,
+    code,
+  };
 };
 
 export const ifStmtToCall = (
@@ -54,8 +68,15 @@ export const ifStmtToCall = (
 ) => {
   name = name || blockName(block);
   const strIds = idsToSrc(findAllLocalIds(block));
-  return `
+  const code = `
     return ${name}({${strIds}})`;
+  const positions = { startPos: block.getStart(), endPos: block.getEnd() };
+  const insertPos = getPosAfterLastImport(block.getSourceFile());
+  return {
+    code,
+    positions,
+    insertPos,
+  };
 };
 
 export const srcsFor = (block: Block, expr: Expression, opts: any) => {
@@ -69,7 +90,7 @@ export const srcsFor = (block: Block, expr: Expression, opts: any) => {
   };
 };
 
-export const ifStmtExtractFunction = (node: IfStatement, opts: AnyOpts) => {
+export const ifThenStmtExtractFunction = (node: IfStatement, opts: AnyOpts) => {
   const blocks = getIfStatementBlocks(node);
   if (!blocks) return;
   const { thenBlock } = blocks;
@@ -81,17 +102,47 @@ export const ifStmtExtractFunction = (node: IfStatement, opts: AnyOpts) => {
   };
 };
 
-const extractIfStmtToFunctions =
+interface InsertDef {
+  code: string;
+  insertPos: number;
+}
+
+interface ReplaceDef {
+  code: string;
+  positions: PositionBounds;
+}
+
+export const insertExtractedFunction = (srcNode: any, insertDef: InsertDef) => {
+  return insertCode(srcNode, insertDef.insertPos, insertDef.code);
+};
+
+export const replaceWithCallToExtractedFunction = (
+  srcNode: any,
+  replaceDef: ReplaceDef,
+) => {
+  const opts = { ...replaceDef.positions, code: replaceDef.code };
+  return replaceCode(srcNode, opts);
+};
+
+export const extractIfThenStmtToFunctions =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const stmts = findIfStatementsWithElseBlocks(srcNode);
+    const { code } = opts;
+    if (!code) {
+      throw new Error('Missing code');
+    }
+    const stmts = findIfStatements(srcNode);
     if (!stmts || stmts.length === 0) {
       return;
     }
     const stmt = stmts[0];
-    const codeParts = ifStmtExtractFunction(stmt, opts);
-    // insert and replace code
-    return; // modified src code;
+    const codeParts = ifThenStmtExtractFunction(stmt, opts);
+    if (!codeParts) return;
+    const { fnSrc, callSrc } = codeParts;
+
+    const newSource = replaceWithCallToExtractedFunction(srcNode, callSrc);
+    const newSrcNode = tsquery.ast(newSource);
+    return insertExtractedFunction(newSrcNode, fnSrc);
   };
 
 export function refactorIfToFunctions(
@@ -102,7 +153,7 @@ export function refactorIfToFunctions(
 
   return replaceInSource(source, {
     findNodeFn,
-    modifyFn: extractIfStmtToFunctions,
+    modifyFn: extractIfThenStmtToFunctions,
     ...opts,
   });
 }

@@ -1,4 +1,4 @@
-import { SourceFile } from 'typescript';
+import { Node, SourceFile } from 'typescript';
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
 import {
@@ -24,15 +24,14 @@ export interface AppendAfterImportsTreeOptions
   relTargetFilePath: string;
 }
 
-export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
-  const { code, indexAdj } = opts;
+export const getPosAfterLastImport = (node: SourceFile) => {
   const lastImportDecl = findLastImport(node);
-  let importIndex = 0;
-  if (!lastImportDecl) {
-    importIndex = node.getStart() + (indexAdj || 0);
-  } else {
-    importIndex = lastImportDecl.getEnd() + (indexAdj || 0);
-  }
+  return !lastImportDecl ? node.getStart() : lastImportDecl.getEnd();
+};
+
+export const insertAfterLastImport = (opts: AnyOpts) => (node: any) => {
+  const { code } = opts;
+  const importIndex = getPosAfterLastImport(node);
   return insertCode(node, importIndex, code);
 };
 
