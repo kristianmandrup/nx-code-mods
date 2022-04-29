@@ -400,15 +400,57 @@ export const findLastIdentifier = (node: Node): Identifier | undefined => {
   return result[result.length - 1] as Identifier;
 };
 
+export const isFunctionDeclaration = (node: Node) =>
+  node.kind === SyntaxKind.FunctionDeclaration;
+
+export const isMethodDeclaration = (node: Node) =>
+  node.kind === SyntaxKind.MethodDeclaration;
+
+export const isFunction = (node: Node) =>
+  isFunctionDeclaration(node) || isArrowFunction(node);
+
+export const isArrowFunction = (node: Node) =>
+  node.kind === SyntaxKind.ArrowFunction;
+
+export const isForStatement = (node: Node) =>
+  isForInStatement(node) || isForOfStatement(node);
+
+export const isWhileStatement = (node: Node) =>
+  node.kind === SyntaxKind.WhileStatement;
+export const isForOfStatement = (node: Node) =>
+  node.kind === SyntaxKind.ForOfStatement;
+export const isForInStatement = (node: Node) =>
+  node.kind === SyntaxKind.ForInStatement;
+export const isIfStatement = (node: Node) =>
+  node.kind === SyntaxKind.IfStatement;
+
 export const isScopeBlock = (node: Node) => {
   const parent = node.parent;
-  if (parent.kind === SyntaxKind.WhileStatement) return true;
-  if (parent.kind === SyntaxKind.ForOfStatement) return true;
-  if (parent.kind === SyntaxKind.ForInStatement) return true;
-  if (parent.kind === SyntaxKind.IfStatement) return true;
-  if (parent.kind === SyntaxKind.ArrowFunction) return true;
-  if (parent.kind === SyntaxKind.FunctionDeclaration) return true;
-  if (parent.kind === SyntaxKind.MethodDeclaration) return true;
+  return (
+    isWhileStatement(parent) ||
+    isForStatement(parent) ||
+    isIfStatement(parent) ||
+    isFunction(parent) ||
+    isMethodDeclaration(parent)
+  );
+};
+
+export const findLocalIdentifiersWithinScopePath = (
+  node: Node,
+): Identifier[] => {
+  const found: Identifier[] = [];
+  while ((node = node.parent)) {
+    if (isScopeBlock(node)) {
+      if (isForStatement(node)) {
+        const ids = findForStatementVariableDeclarationIds(node);
+        found.push(...ids);
+      }
+      // ...
+      const ids = findDeclaredIdentifiersInScope(node);
+      found.push(...ids);
+    }
+  }
+  return found;
 };
 
 export const findDeclaredIdentifiersInScope = (node: Node) => {
