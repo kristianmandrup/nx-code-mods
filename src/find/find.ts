@@ -20,7 +20,9 @@ import {
   Statement,
   StringLiteral,
   StringLiteralLike,
+  SyntaxKind,
   VariableDeclaration,
+  VariableDeclarationList,
   VariableStatement,
 } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
@@ -398,6 +400,17 @@ export const findLastIdentifier = (node: Node): Identifier | undefined => {
   return result[result.length - 1] as Identifier;
 };
 
+export const isScopeBlock = (node: Node) => {
+  const parent = node.parent;
+  if (parent.kind === SyntaxKind.WhileStatement) return true;
+  if (parent.kind === SyntaxKind.ForOfStatement) return true;
+  if (parent.kind === SyntaxKind.ForInStatement) return true;
+  if (parent.kind === SyntaxKind.IfStatement) return true;
+  if (parent.kind === SyntaxKind.ArrowFunction) return true;
+  if (parent.kind === SyntaxKind.FunctionDeclaration) return true;
+  if (parent.kind === SyntaxKind.MethodDeclaration) return true;
+};
+
 export const findDeclaredIdentifiersInScope = (node: Node) => {
   const varIds = findVarDeclIdentifiers(node);
   const funIds = findFunctionDeclIdentifiers(node);
@@ -411,13 +424,9 @@ export const findTopLevelIdentifiers = (srcNode: SourceFile) => {
   return [...importIds, ...scopeIds] as Identifier[];
 };
 
-export const findVarDeclIdentifiers = (node: Node): Identifier[] => {
-  const selector = `> VariableStatement`;
-  const result = tsquery(node, selector);
-  if (!result || result.length === 0) {
-    return [];
-  }
-  const varStmts = result as VariableStatement[];
+export const getVariableStatementIdentifiers = (
+  varStmts: VariableStatement[],
+) => {
   const varIds: Identifier[] = [];
   varStmts.map((varStmt: VariableStatement) => {
     varStmt.declarationList.declarations.map((decl: VariableDeclaration) => {
@@ -428,6 +437,16 @@ export const findVarDeclIdentifiers = (node: Node): Identifier[] => {
     });
   });
   return varIds;
+};
+
+export const findVarDeclIdentifiers = (node: Node): Identifier[] => {
+  const selector = `> VariableStatement`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  const varStmts = result as VariableStatement[];
+  return getVariableStatementIdentifiers(varStmts);
 };
 
 export const findFunctionDeclIdentifiers = (node: Node) => {
@@ -505,6 +524,63 @@ export const findParamWithDecorator = (
     return;
   }
   return result[0].parent as ParameterDeclaration;
+};
+
+export const findForStatementVariableDeclarationIds = (
+  node: Node,
+): Identifier[] => {
+  const selector = `ForStatement > VariableDeclarationList`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  const declList = result[0] as VariableDeclarationList;
+  const ids = tsquery(
+    node,
+    'VariableDeclarationList > VariableDeclaration > Identifier',
+  );
+  if (!ids || ids.length === 0) {
+    return [];
+  }
+  return ids as Identifier[];
+};
+
+export const findMethodDeclarationParameterIds = (node: Node): Identifier[] => {
+  const selector = `MethodDeclaration > Parameter > Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
+};
+
+export const findFunctionCallParameterIds = (node: Node): Identifier[] => {
+  const selector = `CallExpression > Parameter > Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
+};
+
+export const findArrowFunctionParameterIds = (node: Node): Identifier[] => {
+  const selector = `ArrowFunction > Parameter > Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
+};
+
+export const findFunctionDeclarationParameterIds = (
+  node: Node,
+): Identifier[] => {
+  const selector = `FunctionDeclaration > Parameter > Identifier`;
+  const result = tsquery(node, selector);
+  if (!result || result.length === 0) {
+    return [];
+  }
+  return result as Identifier[];
 };
 
 export const findParameter = (
