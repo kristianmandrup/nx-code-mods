@@ -1,10 +1,11 @@
-import { sortByPosition } from './../auto-name/utils';
+import { sortByPosition, unique } from './../auto-name';
 import {
   BinaryExpression,
   BindingName,
   Block,
   ClassDeclaration,
   Decorator,
+  ForStatement,
   FunctionDeclaration,
   Identifier,
   IfStatement,
@@ -263,13 +264,13 @@ export const getIfStatementBlocks = (
   };
 };
 
-export const findIfStatementsTrueBlock = (node: Node): Block | undefined => {
+export const findIfStatementThenBlock = (node: Node): Block | undefined => {
   const result = findIfStatementsBlocks(node);
   if (!result || result.length === 0) return;
   return result[0];
 };
 
-export const findIfStatementsElseBlock = (node: Node): Block | undefined => {
+export const findIfStatementElseBlock = (node: Node): Block | undefined => {
   const result = findIfStatementsBlocks(node);
   if (!result || result.length < 2) return;
   return result[1];
@@ -435,22 +436,60 @@ export const isScopeBlock = (node: Node) => {
   );
 };
 
+export const findFunctionDeclParamIds = (node: Node): Identifier[] => {
+  if (!isFunctionDeclaration(node)) return [];
+  return findFunctionDeclarationParameterIds(node as FunctionDeclaration);
+};
+
+export const findMethodDeclParamIds = (node: Node): Identifier[] => {
+  if (!isMethodDeclaration(node)) return [];
+  return findMethodDeclarationParameterIds(node as MethodDeclaration);
+};
+
+export const findForStmtDeclIds = (node: Node): Identifier[] => {
+  if (!isForStatement(node)) return [];
+  return findForStatementVariableDeclarationIds(node as ForStatement);
+};
+
+export const findIfStmtDeclIds = (node: Node, block?: Node): Identifier[] => {
+  if (!isIfStatement(node) || !block) return [];
+  const thenBlock = findIfStatementThenBlock(node);
+  const elseBlock = findIfStatementElseBlock(node);
+  if (block === thenBlock) {
+    return findIfThenStatementDeclaredIdentifiersInScope(node as IfStatement);
+  }
+  if (block === elseBlock) {
+    return findIfElseStatementDeclaredIdentifiersInScope(node as IfStatement);
+  }
+  return [];
+};
+
 export const findLocalIdentifiersWithinScopePath = (
   node: Node,
 ): Identifier[] => {
   const found: Identifier[] = [];
+
+  const addIds = (ids: Identifier[]) => {
+    found.push(...ids);
+  };
+
+  let recentBlock: Block | undefined;
   while ((node = node.parent)) {
+    if (node.kind === SyntaxKind.Block) {
+      recentBlock = node as Block;
+    }
     if (isScopeBlock(node)) {
-      if (isForStatement(node)) {
-        const ids = findForStatementVariableDeclarationIds(node);
-        found.push(...ids);
-      }
-      // ...
-      const ids = findDeclaredIdentifiersInScope(node);
-      found.push(...ids);
+      // add special ids
+      addIds(findForStmtDeclIds(node));
+      addIds(findIfStmtDeclIds(node, recentBlock));
+      addIds(findFunctionDeclParamIds(node));
+      addIds(findMethodDeclParamIds(node));
+      // add block ids
+      addIds(findDeclaredIdentifiersInScope(node));
     }
   }
-  return found;
+
+  return unique(found);
 };
 
 export const findDeclaredIdentifiersInScope = (node: Node) => {
@@ -568,8 +607,53 @@ export const findParamWithDecorator = (
   return result[0].parent as ParameterDeclaration;
 };
 
+export const findVariableDeclarationListIds = (
+  declList: VariableDeclarationList,
+): Identifier[] => {
+  const ids = tsquery(
+    declList,
+    'VariableDeclarationList > VariableDeclaration > Identifier',
+  );
+  if (!ids || ids.length === 0) {
+    return [];
+  }
+  return ids as Identifier[];
+};
+
+export const findIfThenStatementDeclaredIdentifiersInScope = (
+  ifStmt: IfStatement,
+): Identifier[] => {
+  const block = findIfStatementThenBlock(ifStmt);
+  if (!block) return [];
+  return findDeclaredIdentifiersInScope(block);
+};
+
+export const findIfElseStatementDeclaredIdentifiersInScope = (
+  ifStmt: IfStatement,
+): Identifier[] => {
+  const block = findIfStatementElseBlock(ifStmt);
+  if (!block) return [];
+  return findDeclaredIdentifiersInScope(block);
+};
+
+export const findIfThenStatementVariableDeclarationIds = (
+  ifStmt: IfStatement,
+): Identifier[] => {
+  const block = findIfStatementThenBlock(ifStmt);
+  if (!block) return [];
+  return findDeclaredIdentifiersInScope(block);
+};
+
+export const findIfElseStatementVariableDeclarationIds = (
+  ifStmt: IfStatement,
+): Identifier[] => {
+  const block = findIfStatementElseBlock(ifStmt);
+  if (!block) return [];
+  return findDeclaredIdentifiersInScope(block);
+};
+
 export const findForStatementVariableDeclarationIds = (
-  node: Node,
+  node: ForStatement,
 ): Identifier[] => {
   const selector = `ForStatement > VariableDeclarationList`;
   const result = tsquery(node, selector);
@@ -577,14 +661,7 @@ export const findForStatementVariableDeclarationIds = (
     return [];
   }
   const declList = result[0] as VariableDeclarationList;
-  const ids = tsquery(
-    node,
-    'VariableDeclarationList > VariableDeclaration > Identifier',
-  );
-  if (!ids || ids.length === 0) {
-    return [];
-  }
-  return ids as Identifier[];
+  return findVariableDeclarationListIds(declList);
 };
 
 export const findMethodDeclarationParameterIds = (node: Node): Identifier[] => {
