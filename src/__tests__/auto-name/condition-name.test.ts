@@ -1,7 +1,7 @@
 import {
   findIfStatementsWithElseBlocks,
   findBinaryExpressions,
-} from '../../find/find';
+} from '../../find';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { findFunctionBlock } from '../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';

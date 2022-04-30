@@ -1,11 +1,11 @@
-import { arrToObject, humanize, idToStr, unique, wordsFromId } from './utils';
+import { arrToObject, humanize, unique, wordsFromId } from './utils';
 import * as inflection from 'inflection';
 import { nouns } from './nouns';
 import { complete as verbs } from 'verb-corpus';
 import * as adjectives from 'adjectives';
 import * as prepositions from 'prepositions';
 import { Block } from 'typescript';
-import { findFirstIdentifier, getLastStatement } from '../find';
+import { idToStr, findFirstIdentifier, getLastStatement } from '../find';
 
 const nounAliases = ['admin', 'id', 'ctx'];
 

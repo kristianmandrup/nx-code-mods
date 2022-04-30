@@ -1,4 +1,4 @@
-import { findMatchingDecoratorForNode } from './../find/find';
+import { findMatchingDecoratorForNode } from '../find/types';
 import {
   AnyOpts,
   replaceInFile,

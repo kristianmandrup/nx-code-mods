@@ -4,8 +4,9 @@ import {
   PropertyAccessExpression,
   SourceFile,
 } from 'typescript';
-import { idToStr, unique } from '../auto-name';
+import { unique } from '../auto-name';
 import {
+  idToStr,
   findTopLevelIdentifiers,
   findAllIdentifiersFor,
   getSourceFile,

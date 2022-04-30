@@ -1,4 +1,4 @@
-import { findFirstConditionalExpression } from './../../find/find';
+import { findFirstConditionalExpression } from '../../find';
 import { decomposeConditionalExpr } from './../../refactor/decompose-conditional';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';

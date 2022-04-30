@@ -1,26 +1,7 @@
-import { Identifier, StringLiteral, Node, SourceFile } from 'typescript';
-import {
-  findAllIdentifiersOrStringLiteralsFor,
-  findTopLevelIdentifiers,
-  getSourceFile,
-  IdLike,
-} from '../find';
 import * as inflection from 'inflection';
 
 export const camelizedIdentifier = (parts: string[]) =>
   inflection.camelize(parts.join('_'), true);
-
-export const idToStr = (id: Identifier | StringLiteral): string => {
-  return id.text ? id.text : ((id as Identifier).escapedText as string);
-};
-
-export const sortByPosition = (nodeList: any[]) =>
-  nodeList.sort((idA: any, idB: any) => idA.pos - idB.pos);
-
-export const findNodeIds = (node: Node): string[] => {
-  const ids: IdLike[] = findAllIdentifiersOrStringLiteralsFor(node);
-  return ids.map(idToStr);
-};
 
 const adjectivesList = ['by', 'where'];
 export const lastPartIsAdjective = (parts: string[]) => {

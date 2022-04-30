@@ -1,6 +1,10 @@
-import { findStringLiteral, findIdentifier } from './find';
 import { Node } from 'typescript';
 import { ElementsType } from '../types';
+import { findIdentifier } from './ids';
+import { findStringLiteral } from './literals';
+
+export const sortByPosition = (nodeList: any[]) =>
+  nodeList.sort((idA: any, idB: any) => idA.pos - idB.pos);
 
 export const createFindStrLit = (id: string) => (node: Node) =>
   findStringLiteral(node, id);

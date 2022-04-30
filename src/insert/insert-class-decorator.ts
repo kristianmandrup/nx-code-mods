@@ -3,7 +3,7 @@ import { Tree } from '@nrwl/devkit';
 import {
   findClassDeclaration,
   findMatchingDecoratorForNode,
-} from '../find/find';
+} from '../find/types';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';
 import { ensureNewlineClosing } from '../ensure';

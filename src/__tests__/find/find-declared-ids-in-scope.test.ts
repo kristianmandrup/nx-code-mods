@@ -1,5 +1,5 @@
-import { idToStr } from '../../auto-name/utils';
 import {
+  idToStr,
   findIfStatements,
   findIfStatementThenBlock,
   findDeclaredIdentifiersInScope,

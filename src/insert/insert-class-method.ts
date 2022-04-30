@@ -1,4 +1,4 @@
-import { findClassMethodDeclaration } from './../find/find';
+import { findClassMethodDeclaration } from '../find/types';
 import { AnyOpts, replaceInFile, modifyTree, replaceInSource } from '../modify';
 import { Tree } from '@nrwl/devkit';
 import {

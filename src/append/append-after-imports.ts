@@ -1,11 +1,7 @@
 import { Node, SourceFile } from 'typescript';
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
-import {
-  getFirstStatement,
-  findLastImport,
-  hasAnyImportDecl,
-} from '../find/find';
+import { getFirstStatement, findLastImport, hasAnyImportDecl } from '../find';
 import { modifyTree, AnyOpts, replaceInFile, replaceInSource } from '../modify';
 
 export interface AppendAfterImportsOptions {

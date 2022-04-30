@@ -1,5 +1,4 @@
-import { findTopLevelIdentifiers } from './../../find/find';
-import { idToStr } from '../../auto-name/utils';
+import { idToStr, findTopLevelIdentifiers } from '../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { tsquery } from '@phenomnomnominal/tsquery';

@@ -1,4 +1,4 @@
-import { findParameter } from './../find/find';
+import { findParameter } from '../find/types';
 import { CollectionInsert, insertIntoNode } from './positional';
 import {
   findFirstParameter,
