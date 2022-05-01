@@ -86,3 +86,14 @@ export const findIfStatementsWithElseBlocks = (
     return stmt.elseStatement ? true : false;
   });
 };
+
+export const findIfStatementsWithoutElseBlocks = (
+  node: Node,
+): IfStatement[] | undefined => {
+  const result = findIfStatements(node);
+  if (!result || result.length === 0) return;
+  const ifStatements: IfStatement[] = result;
+  return ifStatements.filter((stmt: IfStatement) => {
+    return stmt.elseStatement ? false : true;
+  });
+};

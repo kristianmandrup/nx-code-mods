@@ -1,6 +1,10 @@
 import { createUnaryExpressionParser } from './unary-expr';
-import { findBinaryExpressions, findPrefixUnaryExpressions } from '../../find';
-import { camelizedIdentifier, sortByPosition, unique } from '../utils';
+import {
+  findBinaryExpressions,
+  findPrefixUnaryExpressions,
+  sortByPosition,
+} from '../../find';
+import { camelizedIdentifier, unique } from '../utils';
 import { createBinaryExpressionParser } from './binary-expression';
 import { Node } from 'typescript';
 

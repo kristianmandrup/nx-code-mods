@@ -1,35 +1,48 @@
 import * as path from 'path';
-import { Block, IfStatement } from 'typescript';
+import { Block, IfStatement, SyntaxKind } from 'typescript';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import {
   findFunctionBlock,
-  findIfStatementsWithElseBlocks,
+  findIfStatements,
   findPrefixUnaryExpressions,
 } from '../../../find';
-import { createUnaryExpressionParser } from '../../../auto-name';
+import {
+  createUnaryExpressionParser,
+  UnaryExpressionParser,
+} from '../../../auto-name';
 
 const context = describe;
 
 describe('unary expression parser', () => {
   context('unary expr: not', () => {
-    const filePath = path.join(__dirname, 'files', 'unary-expr-not.txt');
-    const content = readFileIfExisting(filePath);
-    const srcNode = tsquery.ast(content);
-    const block = findFunctionBlock(srcNode, 'xyz') as Block;
-    const ifElseStmts = findIfStatementsWithElseBlocks(block);
-    if (!ifElseStmts || ifElseStmts.length === 0) return;
-    const ifElseStmt = ifElseStmts[0] as IfStatement;
-    if (!ifElseStmt) return;
-    const exprs = findPrefixUnaryExpressions(ifElseStmt);
-    const puExpr = exprs[0];
-    if (!puExpr) return;
-    const parser = createUnaryExpressionParser(puExpr);
+    let parser: UnaryExpressionParser;
+    beforeAll(() => {
+      const filePath = path.join(__dirname, 'files', 'unary-expr-not.txt');
+      const content = readFileIfExisting(filePath);
+      const srcNode = tsquery.ast(content);
+      const block = findFunctionBlock(srcNode, 'xyz') as Block;
+      const ifElseStmts = findIfStatements(block);
+      if (!ifElseStmts || ifElseStmts.length === 0) return;
+      const ifElseStmt = ifElseStmts[0] as IfStatement;
+      if (!ifElseStmt) return;
+      const exprs = findPrefixUnaryExpressions(ifElseStmt);
+      const puExpr = exprs[0];
+      if (!puExpr) return;
+      parser = createUnaryExpressionParser(puExpr);
+    });
 
     describe('ids', () => {
-      it('user, type, admin', () => {
+      it('user, type', () => {
         const ids = parser.ids;
-        expect(ids).toContain(['user', 'type', 'admin']);
+        expect(ids).toEqual(['user', 'type']);
+      });
+    });
+
+    describe('operator', () => {
+      it('!', () => {
+        const op = parser.operator;
+        expect(op).toEqual(String(SyntaxKind.ExclamationToken));
       });
     });
 

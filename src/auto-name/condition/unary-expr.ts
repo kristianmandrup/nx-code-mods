@@ -1,15 +1,25 @@
 // readonly operator: PrefixUnaryOperator;
 // readonly operand: UnaryExpression;
 
-import { PrefixUnaryExpression } from 'typescript';
+import { PrefixUnaryExpression, SyntaxKind } from 'typescript';
 import { findAllIdentifiersFor, idToStr } from '../../find';
 import { camelizedIdentifier } from '../utils';
 import { ExpressionParser } from './expr-parser';
 
-const operatorMap: any = {
-  '++': 'add',
-  '--': 'sub',
-  '!': 'not',
+const {
+  PlusPlusToken,
+  PlusToken,
+  MinusToken,
+  MinusMinusToken,
+  ExclamationToken,
+} = SyntaxKind;
+
+export const operatorMap: any = {
+  [PlusPlusToken]: 'add',
+  [PlusToken]: 'add',
+  [MinusToken]: 'sub',
+  [MinusMinusToken]: 'sub',
+  [ExclamationToken]: 'not',
 };
 
 export const createUnaryExpressionParser = (expr: PrefixUnaryExpression) =>
@@ -17,13 +27,13 @@ export const createUnaryExpressionParser = (expr: PrefixUnaryExpression) =>
 
 export class UnaryExpressionParser extends ExpressionParser {
   ids: string[] = [];
-  operator: string = '';
+  operator: any;
   operatorName: string = '';
 
   constructor(public expr: PrefixUnaryExpression) {
     super(expr);
     this.findOperandIds();
-    this.getOperator();
+    this.getOperatorName();
   }
 
   name() {
@@ -33,7 +43,7 @@ export class UnaryExpressionParser extends ExpressionParser {
 
   getOperatorName() {
     this.getOperator();
-    this.operator = operatorMap[this.operator];
+    this.operatorName = operatorMap[this.operator];
     return this;
   }
 

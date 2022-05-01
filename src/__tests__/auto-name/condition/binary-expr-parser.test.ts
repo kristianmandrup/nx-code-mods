@@ -5,38 +5,45 @@ import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import {
   findFunctionBlock,
   findBinaryExpressions,
-  findIfStatementsWithElseBlocks,
+  findIfStatements,
 } from '../../../find';
-import { createBinaryExpressionParser } from '../../../auto-name';
+import {
+  BinaryExpressionParser,
+  createBinaryExpressionParser,
+} from '../../../auto-name';
 
 const context = describe;
 
 describe('binary expression parser', () => {
   context('binary expression is', () => {
-    const filePath = path.join(__dirname, 'files', 'binary-expr-is.txt');
-    const content = readFileIfExisting(filePath);
-    const srcNode = tsquery.ast(content);
-    const block = findFunctionBlock(srcNode, 'xyz') as Block;
-    const ifElseStmts = findIfStatementsWithElseBlocks(block);
-    if (!ifElseStmts || ifElseStmts.length === 0) return;
-    const ifElseStmt = ifElseStmts[0] as IfStatement;
-    if (!ifElseStmt) return;
-    const exprs = findBinaryExpressions(ifElseStmt);
-    const binExpr = exprs[0];
-    if (!binExpr) return;
-    const parser = createBinaryExpressionParser(binExpr);
+    let parser: BinaryExpressionParser;
+
+    beforeAll(() => {
+      const filePath = path.join(__dirname, 'files', 'binary-expr-is.txt');
+      const content = readFileIfExisting(filePath);
+      const srcNode = tsquery.ast(content);
+      const block = findFunctionBlock(srcNode, 'xyz') as Block;
+      const ifElseStmts = findIfStatements(block);
+      if (!ifElseStmts || ifElseStmts.length === 0) return;
+      const ifElseStmt = ifElseStmts[0] as IfStatement;
+      if (!ifElseStmt) return;
+      const exprs = findBinaryExpressions(ifElseStmt);
+      const binExpr = exprs[0];
+      if (!binExpr) return;
+      parser = createBinaryExpressionParser(binExpr);
+    });
 
     describe('leftIds', () => {
-      it('user, type, admin', () => {
+      it('user, type', () => {
         const ids = parser.leftIds;
-        expect(ids).toContain(['user', 'type', 'admin']);
+        expect(ids).toEqual(['user', 'type']);
       });
     });
 
     describe('rightIds', () => {
-      it('user, type, admin', () => {
+      it('admin', () => {
         const ids = parser.rightIds;
-        expect(ids).toContain(['user', 'type', 'admin']);
+        expect(ids).toEqual(['admin']);
       });
     });
 
