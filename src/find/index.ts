@@ -9,7 +9,7 @@ export * from './iteration';
 export * from './literals';
 export * from './return';
 export * from './scope';
-export * from './source-file';
+export * from './sourcefile';
 export * from './statement';
 export * from './variable';
 export * from './positional';

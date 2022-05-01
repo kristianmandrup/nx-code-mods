@@ -27,17 +27,51 @@ export class BlockMatcher {
   arrayOps: string[] = [];
   stmtMatchers: StatementMatcher[] = [];
 
+  listNames = [
+    'unmatchedIds',
+    'matchedIds',
+    'nouns',
+    'verbs',
+    'adjectives',
+    'prepositions',
+    'actions',
+  ];
+  unmatchedIds: string[] = [];
+  matchedIds: string[] = [];
+  nouns: string[] = [];
+  verbs: string[] = [];
+  adjectives: string[] = [];
+  prepositions: string[] = [];
+  actions: string[] = [];
+  idCountMap: any = {};
+  ranked: any = {};
+
   constructor(public block: Block) {
     this.findMainId();
-    this.getActions();
+    this.processStatements();
   }
 
   get statements() {
-    return this.block.statements;
+    return Array.from(this.block.statements);
+  }
+
+  get statementsLatestFirst() {
+    return Array.from(this.block.statements).reverse();
   }
 
   get lastStatement() {
     return getLastStatement(this.block);
+  }
+
+  rankIdLists() {
+    this.listNames.map((name) => this.byRank(name));
+    return this;
+  }
+
+  byRank(name: string) {
+    this.ranked[name] = (this as any)[name].sort(
+      (k1: string, k2: string) => this.idCountMap[k1] - this.idCountMap[k2],
+    );
   }
 
   popStatementMatcher() {
@@ -49,16 +83,47 @@ export class BlockMatcher {
     return this;
   }
 
-  getActions() {
-    this.statements.map((stmt: Statement) => {
+  processStatements() {
+    this.statementsLatestFirst.map((stmt: Statement) => {
       const stmtMatcher = createStmtMatcher(stmt);
+      this.processStmtMatcher(stmtMatcher);
       this.stmtMatchers.push(stmtMatcher);
-      const result = findArrayActionAndId(stmtMatcher);
-      if (!result) return;
-      const { action, id } = result as any;
-      this.arrayOps.push(action);
-      this.mainId = id;
     });
+  }
+
+  add(label: string, stmtMatcher: StatementMatcher) {
+    const arr: any[] = (this as any)[label];
+    arr.push(...(stmtMatcher as any)[label]);
+    return this;
+  }
+
+  addIdCountMap(idCountMap: any) {
+    idCountMap.entries(([k, v]: [string, number]) => {
+      this.idCountMap[k] = this.idCountMap[k] || 0;
+      this.idCountMap[k] = this.idCountMap[k] + v;
+    });
+    return this;
+  }
+
+  transferIdLists(stmtMatcher: StatementMatcher) {
+    this.listNames.map((lbl) => this.add(lbl, stmtMatcher));
+    return this;
+  }
+
+  processStmtMatcher(stmtMatcher: StatementMatcher) {
+    this.transferIdLists(stmtMatcher);
+    this.addIdCountMap(stmtMatcher.idCountMap);
+    this.rankIdLists();
+    this.processArrayAction(stmtMatcher);
+  }
+
+  // TODO: do we really need to process array actions separately!?
+  processArrayAction(stmtMatcher: StatementMatcher) {
+    const result = findArrayActionAndId(stmtMatcher);
+    if (!result) return;
+    const { action, id } = result as any;
+    this.arrayOps.push(action);
+    this.mainId = id;
   }
 
   getBeforeNoun({ action }: any) {
@@ -66,6 +131,7 @@ export class BlockMatcher {
     return 'by';
   }
 
+  // TODO: refactor
   toName() {
     const stmtMatcher = this.popStatementMatcher();
 

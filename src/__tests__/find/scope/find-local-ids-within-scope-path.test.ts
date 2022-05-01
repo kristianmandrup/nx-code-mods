@@ -2,15 +2,15 @@ import {
   idToStr,
   findIfStatements,
   findIfStatementThenBlock,
-  findDeclaredIdentifiersInScope,
-} from '../../find';
+  findLocalIdentifiersWithinScopePath,
+} from '../../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { tsquery } from '@phenomnomnominal/tsquery';
 
 const context = describe;
 
-describe('find ids in parent scopes', () => {
+describe('find id declarations in local block scope', () => {
   context('if else user block', () => {
     it('only xyz function in parent scopes', () => {
       const filePath = path.join(__dirname, 'files', 'if-else-user-block.txt');
@@ -20,9 +20,9 @@ describe('find ids in parent scopes', () => {
       if (!ifStmts) return;
       const firstIf = ifStmts[0];
       const thenBlock = findIfStatementThenBlock(firstIf);
-      const result = findDeclaredIdentifiersInScope(thenBlock);
+      const result = findLocalIdentifiersWithinScopePath(thenBlock);
       const ids = result.map(idToStr);
-      expect(ids).toContain(['xyc']);
+      expect(ids).toContain(['ctx', 'v']);
     });
   });
 });
