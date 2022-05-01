@@ -1,8 +1,8 @@
 import { tsquery } from '@phenomnomnominal/tsquery';
-import { findFunctionBlock } from '../../find';
+import { findFunctionBlock } from '../../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
-import { blockName } from '../../auto-name';
+import { blockName } from '../../../auto-name';
 import { Block } from 'typescript';
 
 const context = describe;

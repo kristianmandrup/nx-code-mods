@@ -1,0 +1,3 @@
+function xyz() {
+  return users.sort((userA, userB) => userA.level - userB.level);
+}

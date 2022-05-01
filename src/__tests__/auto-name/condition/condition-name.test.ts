@@ -1,12 +1,12 @@
 import {
   findIfStatementsWithElseBlocks,
   findBinaryExpressions,
-} from '../../find';
+} from '../../../find';
 import { tsquery } from '@phenomnomnominal/tsquery';
-import { findFunctionBlock } from '../../find';
+import { findFunctionBlock } from '../../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
-import { conditionName } from '../../auto-name';
+import { conditionName } from '../../../auto-name';
 import { Block, IfStatement, BinaryExpression } from 'typescript';
 
 const context = describe;

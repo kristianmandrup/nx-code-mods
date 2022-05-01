@@ -7,7 +7,7 @@ import {
   isSingularActionNoun,
 } from './action-name';
 import { determineMainIdentifier } from '../id-matcher';
-import { createStmtMatcher, StatementMatcher } from './statement-name';
+import { createStmtMatcher, StatementMatcher } from './statement-matcher';
 import * as inflection from 'inflection';
 import {
   camelizedIdentifier,
@@ -38,6 +38,7 @@ export class BlockMatcher {
   stmtMatchers: StatementMatcher[] = [];
 
   listNames = [
+    'ids',
     'unmatchedIds',
     'matchedIds',
     'nouns',
@@ -46,6 +47,8 @@ export class BlockMatcher {
     'prepositions',
     'actions',
   ];
+
+  ids: string[] = [];
   unmatchedIds: string[] = [];
   matchedIds: string[] = [];
   nouns: string[] = [];
