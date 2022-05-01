@@ -11,9 +11,9 @@ import { createBinaryExpressionParser } from '../../../auto-name';
 
 const context = describe;
 
-describe('statement matcher', () => {
-  context('if else user block', () => {
-    const filePath = path.join(__dirname, 'files', 'user-type-is-admin.txt');
+describe('binary expression parser', () => {
+  context('binary expression is', () => {
+    const filePath = path.join(__dirname, 'files', 'binary-expr-is.txt');
     const content = readFileIfExisting(filePath);
     const srcNode = tsquery.ast(content);
     const block = findFunctionBlock(srcNode, 'xyz') as Block;

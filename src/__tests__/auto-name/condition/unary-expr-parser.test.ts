@@ -11,9 +11,9 @@ import { createUnaryExpressionParser } from '../../../auto-name';
 
 const context = describe;
 
-describe('statement matcher', () => {
-  context('if else user block', () => {
-    const filePath = path.join(__dirname, 'files', 'user-type-is-admin.txt');
+describe('unary expression parser', () => {
+  context('unary expr: not', () => {
+    const filePath = path.join(__dirname, 'files', 'unary-expr-not.txt');
     const content = readFileIfExisting(filePath);
     const srcNode = tsquery.ast(content);
     const block = findFunctionBlock(srcNode, 'xyz') as Block;
