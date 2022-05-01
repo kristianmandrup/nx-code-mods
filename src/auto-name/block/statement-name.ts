@@ -3,11 +3,11 @@ import { idMatcher } from '../id-matcher';
 import { unique } from '../utils';
 import { findNodeIds } from '../../find';
 
-export const createStmtMatcher = (stmt: Statement) =>
-  new StatementMatcher(stmt);
+export const createStmtMatcher = (stmt: Statement, index: number) =>
+  new StatementMatcher(stmt, index);
 
 export class StatementMatcher {
-  constructor(public stmt: Statement) {
+  constructor(public stmt: Statement, public index: number) {
     this.getCode();
     this.getIds();
     this.parseGrammar();

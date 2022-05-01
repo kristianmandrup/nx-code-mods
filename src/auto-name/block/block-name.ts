@@ -22,6 +22,16 @@ export const createBlockMatcher = (block: Block) => new BlockMatcher(block);
 
 export const blockName = (block: Block) => createBlockMatcher(block).toName();
 
+export type IdRankMapEntry = {
+  count: number;
+  rank: number;
+  indexList: number[];
+};
+
+export type IdRankMap = {
+  [key: string]: IdRankMapEntry;
+};
+
 export class BlockMatcher {
   mainId: string = '';
   arrayOps: string[] = [];
@@ -43,8 +53,16 @@ export class BlockMatcher {
   adjectives: string[] = [];
   prepositions: string[] = [];
   actions: string[] = [];
-  idCountMap: any = {};
+  idRankMap: IdRankMap = {};
   ranked: any = {};
+
+  indexRankMap: any = {
+    0: 1.5,
+    1: 1,
+    2: 0.8,
+    3: 0.6,
+    default: 0.4,
+  };
 
   constructor(public block: Block) {
     this.findMainId();
@@ -70,7 +88,8 @@ export class BlockMatcher {
 
   byRank(name: string) {
     this.ranked[name] = (this as any)[name].sort(
-      (k1: string, k2: string) => this.idCountMap[k1] - this.idCountMap[k2],
+      (k1: string, k2: string) =>
+        this.idRankMap[k1].rank - this.idRankMap[k2].rank,
     );
   }
 
@@ -84,11 +103,12 @@ export class BlockMatcher {
   }
 
   processStatements() {
-    this.statementsLatestFirst.map((stmt: Statement) => {
-      const stmtMatcher = createStmtMatcher(stmt);
-      this.processStmtMatcher(stmtMatcher);
+    this.statementsLatestFirst.map((stmt: Statement, index: number) => {
+      const stmtMatcher = createStmtMatcher(stmt, index);
+      this.processStmtMatcher(stmtMatcher, index);
       this.stmtMatchers.push(stmtMatcher);
     });
+    this.calcRanks();
   }
 
   add(label: string, stmtMatcher: StatementMatcher) {
@@ -97,12 +117,33 @@ export class BlockMatcher {
     return this;
   }
 
-  addIdCountMap(idCountMap: any) {
-    idCountMap.entries(([k, v]: [string, number]) => {
-      this.idCountMap[k] = this.idCountMap[k] || 0;
-      this.idCountMap[k] = this.idCountMap[k] + v;
+  addToRankMap(stmtMatcher: StatementMatcher, index: number) {
+    stmtMatcher.idCountMap.entries(([k, count]: [string, number]) => {
+      const idMapEntry = this.idRankMap[k];
+      idMapEntry.count = idMapEntry.count || 0;
+      idMapEntry.count = idMapEntry.count + count;
+      idMapEntry.indexList = idMapEntry.indexList || [];
+      idMapEntry.indexList.push(index);
     });
     return this;
+  }
+
+  getRank(index: number) {
+    return this.indexRankMap[index] || this.indexRankMap['default'];
+  }
+
+  calcRank(entry: IdRankMapEntry) {
+    entry.indexList.map((index) => {
+      const rank = this.getRank(index);
+      // todo: iterate indexList to calc rank
+      entry.rank = entry.rank + rank;
+    });
+  }
+
+  calcRanks() {
+    (this.idRankMap as any).values((entry: IdRankMapEntry) => {
+      this.calcRank(entry);
+    });
   }
 
   transferIdLists(stmtMatcher: StatementMatcher) {
@@ -110,9 +151,9 @@ export class BlockMatcher {
     return this;
   }
 
-  processStmtMatcher(stmtMatcher: StatementMatcher) {
+  processStmtMatcher(stmtMatcher: StatementMatcher, index: number) {
     this.transferIdLists(stmtMatcher);
-    this.addIdCountMap(stmtMatcher.idCountMap);
+    this.addToRankMap(stmtMatcher, index);
     this.rankIdLists();
     this.processArrayAction(stmtMatcher);
   }
