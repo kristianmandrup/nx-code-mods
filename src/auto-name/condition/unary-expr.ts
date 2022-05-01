@@ -2,8 +2,8 @@
 // readonly operand: UnaryExpression;
 
 import { PrefixUnaryExpression } from 'typescript';
-import { findAllIdentifiersFor } from '../../find';
-import { camelizedIdentifier, idToStr, unique } from '../utils';
+import { findAllIdentifiersFor, idToStr } from '../../find';
+import { camelizedIdentifier } from '../utils';
 import { ExpressionParser } from './expr-parser';
 
 const operatorMap: any = {

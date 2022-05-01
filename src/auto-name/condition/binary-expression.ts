@@ -1,6 +1,6 @@
 import { idMatcher } from '../id-matcher';
-import { camelizedIdentifier, idToStr } from '../utils';
-import { findAllIdentifiersOrStringLiteralsFor } from '../../find';
+import { camelizedIdentifier } from '../utils';
+import { findAllIdentifiersOrStringLiteralsFor, idToStr } from '../../find';
 import { BinaryExpression } from 'typescript';
 import { ExpressionParser } from './expr-parser';
 
