@@ -9,7 +9,7 @@ describe('id matcher', () => {
     describe('words', () => {
       it('set, admin, type', () => {
         const words = matcher.words;
-        expect(words).toContain(['set', 'type', 'admin']);
+        expect(words).toEqual(['set', 'admin', 'type']);
       });
     });
 
@@ -28,16 +28,16 @@ describe('id matcher', () => {
     });
 
     describe('nouns', () => {
-      it('type, admin', () => {
+      it('set, admin, type', () => {
         const nouns = matcher.nouns;
-        expect(nouns).toContain(['type', 'admin']);
+        expect(nouns).toEqual(['set', 'admin', 'type']);
       });
     });
 
     describe('prepositions', () => {
       it('empty', () => {
         const prepositions = matcher.prepositions;
-        expect(prepositions).toContain([]);
+        expect(prepositions).toEqual([]);
       });
     });
   });

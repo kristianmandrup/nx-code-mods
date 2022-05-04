@@ -16,8 +16,8 @@ const {
 
 export const operatorMap: any = {
   [PlusPlusToken]: 'add',
-  [PlusToken]: 'add',
-  [MinusToken]: 'sub',
+  [PlusToken]: 'pos',
+  [MinusToken]: 'neg',
   [MinusMinusToken]: 'sub',
   [ExclamationToken]: 'not',
 };

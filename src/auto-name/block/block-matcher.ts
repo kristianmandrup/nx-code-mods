@@ -1,26 +1,12 @@
 import { getLastStatement } from '../../find';
 import { Statement } from 'typescript';
 import { Block } from 'typescript';
-import {
-  findArrayActionAndId,
-  isSingularAction,
-  isSingularActionNoun,
-} from './action-name';
+import { findArrayActionAndId, isSingularActionNoun } from './action-name';
 import { determineMainIdentifier } from '../id-matcher';
 import { createStmtMatcher, StatementMatcher } from './statement-matcher';
 import * as inflection from 'inflection';
-import {
-  camelizedIdentifier,
-  createSingularArrayMatcher,
-  ensureValidParts,
-  shouldAddExtraNoun,
-  unique,
-} from '../utils';
-import { conditionName, conditionParts } from '../condition';
 
 export const createBlockMatcher = (block: Block) => new BlockMatcher(block);
-
-export const blockName = (block: Block) => createBlockMatcher(block).toName();
 
 export type IdRankMapEntry = {
   count: number;
@@ -72,6 +58,18 @@ export class BlockMatcher {
     this.processStatements();
   }
 
+  getMainId(stmtMatcher: StatementMatcher | undefined) {
+    if (!stmtMatcher) return;
+    let { arrayOps, mainId } = this;
+    let { verbs } = stmtMatcher;
+    const action = arrayOps[0] || verbs[0];
+
+    if (isSingularActionNoun({ action, id: mainId })) {
+      mainId = inflection.singularize(mainId);
+    }
+    return mainId;
+  }
+
   get statements() {
     return Array.from(this.block.statements);
   }
@@ -96,8 +94,8 @@ export class BlockMatcher {
     );
   }
 
-  popStatementMatcher() {
-    return this.stmtMatchers.pop();
+  nextStatementMatcher() {
+    return this.stmtMatchers.shift();
   }
 
   findMainId() {
@@ -168,57 +166,5 @@ export class BlockMatcher {
     const { action, id } = result as any;
     this.arrayOps.push(action);
     this.mainId = id;
-  }
-
-  getBeforeNoun({ action }: any) {
-    if (action === 'find') return 'where';
-    return 'by';
-  }
-
-  // TODO: refactor
-  toName() {
-    const stmtMatcher = this.popStatementMatcher();
-
-    if (!stmtMatcher) return;
-    let { arrayOps, mainId } = this;
-    let { verbs, adjectives, prepositions, nouns } = stmtMatcher;
-    const action = arrayOps[0] || verbs[0];
-
-    if (isSingularActionNoun({ action, id: mainId })) {
-      mainId = inflection.singularize(mainId);
-    }
-
-    nouns = nouns.filter((noun) => !arrayOps.includes(noun)).reverse();
-
-    let beforeNoun = [adjectives[0], prepositions[0]].filter((x) => x);
-    let noun = nouns.pop();
-    if (mainId.includes('' + noun)) {
-      noun = nouns.pop();
-    }
-
-    let beforeNounStr =
-      beforeNoun.length === 0
-        ? this.getBeforeNoun({ action, noun })
-        : beforeNoun.join('-');
-
-    const condParts = conditionParts(stmtMatcher.stmt);
-
-    // pick the best combination (best effort)
-    let parts = [action, mainId, beforeNounStr, noun, ...condParts];
-
-    parts = ensureValidParts(parts);
-    // console.log({ parts });
-    if (shouldAddExtraNoun(parts)) {
-      // console.log('add extra', { parts, nouns });
-      parts.push(nouns.pop());
-    }
-
-    const removeGrammaticalDuplicates = createSingularArrayMatcher(parts);
-
-    const filteredParts = unique(parts)
-      .filter((x) => x)
-      .filter(removeGrammaticalDuplicates);
-
-    return camelizedIdentifier(filteredParts);
   }
 }
