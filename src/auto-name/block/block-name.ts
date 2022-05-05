@@ -66,8 +66,7 @@ export class BlockName {
   }
 
   getBeforeNounStr() {
-    const { beforeNoun, action } = this;
-    const noun = this.getFirstNoun();
+    const { beforeNoun, action, noun } = this;
     return beforeNoun.length === 0
       ? this.getBeforeNoun({ action, noun })
       : beforeNoun.join('-');
@@ -78,7 +77,7 @@ export class BlockName {
     return arrayOps[0] || verbs[0];
   }
 
-  getFirstNoun() {
+  get noun() {
     if (this.firstNoun) return this.firstNoun;
     const { nouns, mainId } = this;
     let noun = nouns.pop();
@@ -89,30 +88,30 @@ export class BlockName {
     return noun;
   }
 
-  toName(): string | undefined {
-    const { mainId, stmtMatcher, nouns, action } = this;
-    if (!stmtMatcher) return;
+  conditionParts() {
+    return this.stmtMatcher ? conditionParts(this.stmtMatcher.stmt) : [];
+  }
 
-    let beforeNounStr = this.getBeforeNounStr();
-    const condParts = conditionParts(stmtMatcher.stmt);
-    const noun = this.getFirstNoun();
+  filtered(parts: any[]) {
+    const removeGrammaticalDuplicates = createSingularArrayMatcher(parts);
+    return unique(parts)
+      .filter((x) => x)
+      .filter(removeGrammaticalDuplicates);
+  }
 
+  getParts() {
+    const { action, mainId, beforeNoun, noun, nouns } = this;
     // pick the best combination (best effort)
-    let parts = [action, mainId, beforeNounStr, noun, ...condParts];
-
+    let parts = [action, mainId, beforeNoun, noun, ...this.conditionParts()];
     parts = ensureValidParts(parts);
-    // console.log({ parts });
     if (shouldAddExtraNoun(parts)) {
       // console.log('add extra', { parts, nouns });
       parts.push(nouns.pop());
     }
+    return this.filtered(parts);
+  }
 
-    const removeGrammaticalDuplicates = createSingularArrayMatcher(parts);
-
-    const filteredParts = unique(parts)
-      .filter((x) => x)
-      .filter(removeGrammaticalDuplicates);
-
-    return camelizedIdentifier(filteredParts);
+  toName(): string | undefined {
+    return camelizedIdentifier(this.getParts());
   }
 }
