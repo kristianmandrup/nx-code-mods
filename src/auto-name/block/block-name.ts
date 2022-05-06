@@ -1,5 +1,11 @@
+import {
+  SentenceMaker,
+  GrammarObject,
+  GrammarSubject,
+  createSentenceMaker,
+} from './../sentence-maker';
 import { Block } from 'typescript';
-import { BlockMatcher, createBlockMatcher } from './block-matcher';
+import { BlockMatcher, createBlockMatcher, getMainId } from './block-matcher';
 import {
   camelizedIdentifier,
   createSingularArrayMatcher,
@@ -14,73 +20,123 @@ export const createBlockName = (block: Block) => new BlockName(block);
 
 export const blockName = (block: Block) => createBlockName(block).toName();
 
+const subjectPrepositionMap: any = {
+  in: ['context', 'ctx', 'product', 'user', 'admin', 'role'],
+  on: ['canvas', 'plane', 'screen'],
+};
+
+const actionPrepositionMap: any = {
+  by: ['sort', 'filter', 'reduce'],
+  where: ['find'],
+};
+
+export const prepositionForSubject = (subject?: string) => {
+  if (!subject) return;
+  return Object.keys(subjectPrepositionMap).find((key) => {
+    const list = subjectPrepositionMap[key];
+    list.includes(subject);
+  });
+};
+
+export const prepositionForAction = (action?: string) => {
+  if (!action) return;
+  return Object.keys(actionPrepositionMap).find((key) => {
+    const list = actionPrepositionMap[key];
+    list.includes(action);
+  });
+};
+
 export class BlockName {
   matcher: BlockMatcher;
   stmtMatcher: StatementMatcher | undefined;
   firstNoun: string | undefined;
+  nouns: string[] = [];
+  sentenceMaker: SentenceMaker;
 
   constructor(public block: Block) {
     this.matcher = createBlockMatcher(block);
-    this.stmtMatcher = this.nextStatementMatcher();
+    this.setNouns();
+    this.sentenceMaker = this.createSentenceMaker();
+  }
+
+  get object(): GrammarObject {
+    return {
+      noun: this.nextNoun(),
+      action: this.action,
+    };
+  }
+
+  get subject(): GrammarSubject {
+    return {
+      noun: this.nextNoun(),
+      preposition: this.preposition,
+    };
+  }
+
+  createSentenceMaker() {
+    return createSentenceMaker({ object: this.object, subject: this.subject });
   }
 
   nextStatementMatcher() {
     return this.matcher.nextStatementMatcher();
   }
 
+  setNouns() {
+    this.nouns = this.raw.nouns
+      .filter((noun) => !this.raw.arrayOps.includes(noun))
+      .reverse();
+  }
+
   get mainId() {
-    return this.matcher.getMainId(this.stmtMatcher);
+    const { action } = this;
+    const id = this.noun || '';
+    return getMainId({ action, id });
   }
 
-  get verbs() {
-    return this.matcher.nouns;
+  get raw() {
+    const { matcher } = this;
+    return {
+      nouns: matcher.nouns,
+      unmatchedIds: matcher.unmatchedIds,
+      verbs: matcher.verbs,
+      adjectives: matcher.adjectives,
+      prepositions: matcher.prepositions,
+      arrayOps: matcher.arrayOps,
+    };
   }
 
-  get nouns() {
-    return this.matcher.nouns;
+  get firstAdjective() {
+    return this.raw.adjectives[0];
   }
 
-  get adjectives() {
-    return this.matcher.adjectives;
+  get firstPreposition() {
+    return (
+      this.raw.prepositions[0] ||
+      this.prepositionFor(this.subject.noun, this.object.action)
+    );
   }
 
-  get prepositions() {
-    return this.matcher.prepositions;
+  prepositionFor(subject?: string, action?: string) {
+    return prepositionForSubject(subject) || prepositionForAction(action);
   }
 
-  get arrayOps() {
-    return this.matcher.arrayOps;
-  }
-
-  getNouns() {
-    return this.nouns.filter((noun) => !this.arrayOps.includes(noun)).reverse();
-  }
-
-  get beforeNoun() {
-    return [this.adjectives[0], this.prepositions[0]].filter((x) => x);
-  }
-
-  getBeforeNoun({ action }: any) {
-    if (action === 'find') return 'where';
-    return 'by';
-  }
-
-  getBeforeNounStr() {
-    const { beforeNoun, action, noun } = this;
-    return beforeNoun.length === 0
-      ? this.getBeforeNoun({ action, noun })
-      : beforeNoun.join('-');
+  get preposition() {
+    return this.firstPreposition;
   }
 
   get action() {
-    const { arrayOps, verbs } = this;
+    const { arrayOps, verbs } = this.raw;
     return arrayOps[0] || verbs[0];
+  }
+
+  nextNoun() {
+    return this.nouns.pop() || this.raw.unmatchedIds.pop();
   }
 
   get noun() {
     if (this.firstNoun) return this.firstNoun;
     const { nouns, mainId } = this;
-    let noun = nouns.pop();
+    let noun = this.nextNoun();
     if (mainId && mainId.includes('' + noun)) {
       noun = nouns.pop();
     }
@@ -99,19 +155,19 @@ export class BlockName {
       .filter(removeGrammaticalDuplicates);
   }
 
-  getParts() {
-    const { action, mainId, beforeNoun, noun, nouns } = this;
-    // pick the best combination (best effort)
-    let parts = [action, mainId, beforeNoun, noun, ...this.conditionParts()];
-    parts = ensureValidParts(parts);
-    if (shouldAddExtraNoun(parts)) {
-      // console.log('add extra', { parts, nouns });
-      parts.push(nouns.pop());
-    }
-    return this.filtered(parts);
-  }
+  //   getParts() {
+  //     const { action, mainId, noun, nouns } = this;
+  //     // pick the best combination (best effort)
+  //     let parts = [action, mainId, beforeNoun, noun, ...this.conditionParts()];
+  //     parts = ensureValidParts(parts);
+  //     if (shouldAddExtraNoun(parts)) {
+  //       // console.log('add extra', { parts, nouns });
+  //       parts.push(nouns.pop());
+  //     }
+  //     return this.filtered(parts);
+  //   }
 
   toName(): string | undefined {
-    return camelizedIdentifier(this.getParts());
+    return camelizedIdentifier(this.sentenceMaker.parts());
   }
 }

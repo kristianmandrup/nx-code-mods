@@ -8,6 +8,10 @@ import * as inflection from 'inflection';
 
 export const createBlockMatcher = (block: Block) => new BlockMatcher(block);
 
+export const getMainId = ({ action, id }: { action: string; id: string }) => {
+  return isSingularActionNoun({ action, id }) ? inflection.singularize(id) : id;
+};
+
 export type IdRankMapEntry = {
   count: number;
   rank: number;
