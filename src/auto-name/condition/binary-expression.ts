@@ -1,4 +1,4 @@
-import { idMatcher } from '../id-matcher';
+import { idMatcher } from '../id/id-matcher';
 import { camelizedIdentifier } from '../utils';
 import { findAllIdentifiersOrStringLiteralsFor, idToStr } from '../../find';
 import { BinaryExpression } from 'typescript';

@@ -168,6 +168,6 @@ export class BlockName {
   //   }
 
   toName(): string | undefined {
-    return camelizedIdentifier(this.sentenceMaker.parts());
+    return camelizedIdentifier(this.sentenceMaker.parts);
   }
 }

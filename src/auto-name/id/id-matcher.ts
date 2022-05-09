@@ -1,11 +1,12 @@
-import { arrToObject, humanize, unique, wordsFromId } from './utils';
+import { GrammarMatcher } from './../grammar-matcher';
+import { arrToObject, humanize, unique, wordsFromId } from '../utils';
 import * as inflection from 'inflection';
-import { nouns } from './nouns';
+import { nouns } from '../nouns';
 import { complete as verbs } from 'verb-corpus';
 import * as adjectives from 'adjectives';
 import * as prepositions from 'prepositions';
 import { Block } from 'typescript';
-import { idToStr, findFirstIdentifier, getLastStatement } from '../find';
+import { idToStr, findFirstIdentifier, getLastStatement } from '../../find';
 
 const nounAliases = ['admin', 'id', 'ctx'];
 
@@ -29,14 +30,9 @@ export const determineMainIdentifier = (block: Block): string | undefined => {
 
 export const isNoun = (txt: string) => nounsMap[inflection.singularize(txt)];
 
-export class IdentifierMatcher {
-  words: string[] = [];
-  nouns: string[] = [];
-  verbs: string[] = [];
-  adjectives: string[] = [];
-  prepositions: string[] = [];
-
+export class IdentifierMatcher extends GrammarMatcher {
   constructor(public identifier: string) {
+    super();
     this.split();
     this.getNouns();
     this.getVerbs();
@@ -47,26 +43,26 @@ export class IdentifierMatcher {
   }
 
   split() {
-    this.words = wordsFromId(this.identifier);
+    this.grammar.words = wordsFromId(this.identifier);
     return this;
   }
 
   getAdjectives() {
-    this.adjectives = mapWords(this.words, adjectivesMap);
+    this.grammar.adjectives = mapWords(this.grammar.words, adjectivesMap);
     return this;
   }
 
   getPrepositions() {
-    this.prepositions = mapWords(this.words, prepositionsMap);
+    this.grammar.prepositions = mapWords(this.grammar.words, prepositionsMap);
   }
 
   getNouns() {
-    this.nouns = mapWords(this.words, nounsMap);
+    this.grammar.nouns = mapWords(this.grammar.words, nounsMap);
     return this;
   }
 
   getVerbs() {
-    this.verbs = mapWords(this.words, verbsMap);
+    this.grammar.verbs = mapWords(this.grammar.words, verbsMap);
     return this;
   }
 }

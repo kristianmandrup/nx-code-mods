@@ -1,10 +1,14 @@
+import { IdRanker } from './../id/id-ranker';
+import { GrammarMatcher } from './../grammar-matcher';
+import { GrammarSet } from './../';
 import { getLastStatement } from '../../find';
 import { Statement } from 'typescript';
 import { Block } from 'typescript';
 import { findArrayActionAndId, isSingularActionNoun } from './action-name';
-import { determineMainIdentifier } from '../id-matcher';
+import { determineMainIdentifier } from '../id/id-matcher';
 import { createStmtMatcher, StatementMatcher } from './statement-matcher';
 import * as inflection from 'inflection';
+import { listNames } from '../utils';
 
 export const createBlockMatcher = (block: Block) => new BlockMatcher(block);
 
@@ -22,42 +26,18 @@ export type IdRankMap = {
   [key: string]: IdRankMapEntry;
 };
 
-export class BlockMatcher {
+export class BlockMatcher extends GrammarMatcher {
   mainId: string = '';
   arrayOps: string[] = [];
   stmtMatchers: StatementMatcher[] = [];
-
-  listNames = [
-    'ids',
-    'unmatchedIds',
-    'matchedIds',
-    'nouns',
-    'verbs',
-    'adjectives',
-    'prepositions',
-    'actions',
-  ];
-
   ids: string[] = [];
   unmatchedIds: string[] = [];
   matchedIds: string[] = [];
-  nouns: string[] = [];
-  verbs: string[] = [];
-  adjectives: string[] = [];
-  prepositions: string[] = [];
   actions: string[] = [];
-  idRankMap: IdRankMap = {};
-  ranked: any = {};
-
-  indexRankMap: any = {
-    0: 1.5,
-    1: 1,
-    2: 0.8,
-    3: 0.6,
-    default: 0.4,
-  };
+  ranker: IdRanker = new IdRanker(this.grammar);
 
   constructor(public block: Block) {
+    super();
     this.findMainId();
     this.processStatements();
   }
@@ -86,18 +66,6 @@ export class BlockMatcher {
     return getLastStatement(this.block);
   }
 
-  rankIdLists() {
-    this.listNames.map((name) => this.byRank(name));
-    return this;
-  }
-
-  byRank(name: string) {
-    this.ranked[name] = (this as any)[name].sort(
-      (k1: string, k2: string) =>
-        this.idRankMap[k1].rank - this.idRankMap[k2].rank,
-    );
-  }
-
   nextStatementMatcher() {
     return this.stmtMatchers.shift();
   }
@@ -108,12 +76,13 @@ export class BlockMatcher {
   }
 
   processStatements() {
+    this.ranker = new IdRanker(this.grammar);
     this.statementsLatestFirst.map((stmt: Statement, index: number) => {
       const stmtMatcher = createStmtMatcher(stmt, index);
       this.processStmtMatcher(stmtMatcher, index);
       this.stmtMatchers.push(stmtMatcher);
     });
-    this.calcRanks();
+    this.ranker.calcRanks();
   }
 
   add(label: string, stmtMatcher: StatementMatcher) {
@@ -122,44 +91,14 @@ export class BlockMatcher {
     return this;
   }
 
-  addToRankMap(stmtMatcher: StatementMatcher, index: number) {
-    stmtMatcher.idCountMap.entries(([k, count]: [string, number]) => {
-      const idMapEntry = this.idRankMap[k];
-      idMapEntry.count = idMapEntry.count || 0;
-      idMapEntry.count = idMapEntry.count + count;
-      idMapEntry.indexList = idMapEntry.indexList || [];
-      idMapEntry.indexList.push(index);
-    });
-    return this;
-  }
-
-  getRank(index: number) {
-    return this.indexRankMap[index] || this.indexRankMap['default'];
-  }
-
-  calcRank(entry: IdRankMapEntry) {
-    entry.indexList.map((index) => {
-      const rank = this.getRank(index);
-      // todo: iterate indexList to calc rank
-      entry.rank = entry.rank + rank;
-    });
-  }
-
-  calcRanks() {
-    (this.idRankMap as any).values((entry: IdRankMapEntry) => {
-      this.calcRank(entry);
-    });
-  }
-
   transferIdLists(stmtMatcher: StatementMatcher) {
-    this.listNames.map((lbl) => this.add(lbl, stmtMatcher));
+    listNames.map((lbl) => this.add(lbl, stmtMatcher));
     return this;
   }
 
   processStmtMatcher(stmtMatcher: StatementMatcher, index: number) {
     this.transferIdLists(stmtMatcher);
-    this.addToRankMap(stmtMatcher, index);
-    this.rankIdLists();
+    this.ranker.rank(stmtMatcher, index);
     this.processArrayAction(stmtMatcher);
   }
 

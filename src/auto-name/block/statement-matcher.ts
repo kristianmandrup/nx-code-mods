@@ -1,13 +1,15 @@
+import { GrammarMatcher } from './../grammar-matcher';
 import { Statement } from 'typescript';
-import { idMatcher } from '../id-matcher';
+import { idMatcher } from '../id/id-matcher';
 import { unique } from '../utils';
 import { findNodeIds } from '../../find';
 
 export const createStmtMatcher = (stmt: Statement, index: number) =>
   new StatementMatcher(stmt, index);
 
-export class StatementMatcher {
+export class StatementMatcher extends GrammarMatcher {
   constructor(public stmt: Statement, public index: number) {
+    super();
     this.getCode();
     this.getIds();
     this.parseGrammar();
@@ -19,10 +21,6 @@ export class StatementMatcher {
 
   unmatchedIds: string[] = [];
   matchedIds: string[] = [];
-  nouns: string[] = [];
-  verbs: string[] = [];
-  adjectives: string[] = [];
-  prepositions: string[] = [];
   arrayOps: string[] = [];
   idCountMap: any = {};
 

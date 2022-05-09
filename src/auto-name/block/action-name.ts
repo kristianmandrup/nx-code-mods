@@ -1,5 +1,5 @@
 import { escapeRegExp } from '../../utils';
-import { isNoun } from '../id-matcher';
+import { isNoun } from '../id/id-matcher';
 
 const arrayOps: any = [
   'map',

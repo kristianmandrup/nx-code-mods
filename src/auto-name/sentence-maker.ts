@@ -37,13 +37,12 @@ export class SentenceMaker implements SentenceMakerOpts {
     return ensureValidParts(parts);
   }
 
-  parts() {
+  get orderedParts() {
     const { object, subject } = this;
-    return this.filtered([
-      object.action,
-      object.noun,
-      subject.preposition,
-      subject.noun,
-    ]);
+    return [object.action, object.noun, subject.preposition, subject.noun];
+  }
+
+  get parts() {
+    return this.filtered(this.orderedParts);
   }
 }

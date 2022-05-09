@@ -4,6 +4,18 @@ export const camelizedIdentifier = (parts: string[]) =>
   inflection.camelize(parts.join('_'), true);
 
 const adjectivesList = ['by', 'where'];
+
+export const listNames = [
+  'ids',
+  'unmatchedIds',
+  'matchedIds',
+  'nouns',
+  'verbs',
+  'adjectives',
+  'prepositions',
+  'actions',
+];
+
 export const lastPartIsAdjective = (parts: string[]) => {
   const word = parts[parts.length - 1];
   return adjectivesList.includes(word);
