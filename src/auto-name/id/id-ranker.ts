@@ -27,11 +27,9 @@ export class IdRanker {
 
   byRank(name: string) {
     const grammarList = (this.grammarSet as any)[name] || [];
-    console.log('byRank', { name, grammarSet: this.grammarSet });
     this.ranked[name] = grammarList.sort((k1: string, k2: string) => {
       const entry1 = this.idRankMap[k1];
       const entry2 = this.idRankMap[k2];
-      console.log({ k1, k2, entry1, entry2 });
       if (!entry1 || !entry2) return;
       return entry1.rank - entry2.rank;
     });
@@ -39,14 +37,13 @@ export class IdRanker {
 
   addToRankMap(idCountMap: AnyOpts, index: number) {
     Object.keys(idCountMap).map((k: string, i: number) => {
-      const idCountMapEntry = idCountMap[k];
-      console.log({ idCountMap, index, k, i, idCountMapEntry });
+      const count = idCountMap[k];
 
       this.idRankMap[k] = this.idRankMap[k] || {};
       const idMapEntry: any = this.idRankMap[k];
 
       idMapEntry.count = idMapEntry.count || 0;
-      idMapEntry.count = idMapEntry.count + (idCountMapEntry.count || 0);
+      idMapEntry.count = idMapEntry.count + (count || 0);
       idMapEntry.indexList = idMapEntry.indexList || [];
       idMapEntry.indexList.push(index);
     });
@@ -69,13 +66,14 @@ export class IdRanker {
       // todo: iterate indexList to calc rank
       entry.rank = (entry.rank || 0) + rank;
     });
+    return entry;
   }
 
   calcRanks() {
     const mapEntries = Object.values(this.idRankMap);
-    console.log({ mapEntries });
     mapEntries.map((entry: IdRankMapEntry) => {
       this.calcRank(entry);
     });
+    return this;
   }
 }
