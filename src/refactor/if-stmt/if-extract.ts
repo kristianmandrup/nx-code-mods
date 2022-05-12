@@ -24,7 +24,7 @@ export const createFnCode = (block: Block, expr: Expression, opts: any) => {
   const code = `
     function ${name}(opts: any) {
         const { ${strIds} } = opts
-        if (!(${exprSrc})) return;
+        if (${exprSrc}) return;
         ${src}
         return;
     }
@@ -56,6 +56,8 @@ export const ifStmtBlockToCall = (
 };
 
 export const srcsFor = (block: Block, expr: Expression, opts: any) => {
+  // ignore any blocks for refactor with less than 3 statements
+  if (block.statements.length < 3) return;
   const name = opts.name || blockName(block);
   opts.name = name;
   const fnSrc = createFnCode(block, expr, opts);

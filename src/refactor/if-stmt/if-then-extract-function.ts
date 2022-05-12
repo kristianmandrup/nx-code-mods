@@ -46,6 +46,7 @@ export const extractIfThenStmtToFunctions =
     const codeParts = ifThenStmtExtractFunction(stmt, opts);
     if (!codeParts) return;
     const { fnSrc, callSrc } = codeParts;
+    if (!callSrc || !fnSrc) return;
 
     const newSource = replaceWithCallToExtractedFunction(srcNode, callSrc);
     const newSrcNode = tsquery.ast(newSource);

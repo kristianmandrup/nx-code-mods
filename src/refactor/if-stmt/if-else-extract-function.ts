@@ -48,6 +48,7 @@ export const extractIfElseBlockToFunctions =
     if (!codeParts) return;
     const { fnSrc, callSrc } = codeParts;
 
+    if (!callSrc || !fnSrc) return;
     const newSource = replaceWithCallToExtractedFunction(srcNode, callSrc);
     const newSrcNode = tsquery.ast(newSource);
     return insertExtractedFunction(newSrcNode, fnSrc);
