@@ -1,4 +1,4 @@
-import { ifElseStmtExtractFunction } from '../../refactor/if-stmt';
+import { ifStmtExtractFunction } from '../../refactor/if-stmt';
 import { Block, IfStatement } from 'typescript';
 import { findFunctionBlock, findIfStatements } from '../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
@@ -18,7 +18,7 @@ describe('if else block extract function', () => {
       const ifStmts = findIfStatements(block);
       if (!ifStmts) return;
       const ifStmt = ifStmts[0] as IfStatement;
-      const result = ifElseStmtExtractFunction(ifStmt, {});
+      const result = ifStmtExtractFunction(ifStmt, { mode: 'else' });
       if (!result) return;
       expect(result.callSrc).toBeUndefined();
       expect(result.fnSrc).toBeUndefined();
@@ -37,7 +37,7 @@ describe('if else block extract function', () => {
       const ifStmts = findIfStatements(block);
       if (!ifStmts) return;
       const ifStmt = ifStmts[0] as IfStatement;
-      const result = ifElseStmtExtractFunction(ifStmt, {});
+      const result = ifStmtExtractFunction(ifStmt, { mode: 'else' });
       if (!result) return;
       expect(result.callSrc).toBeUndefined();
       expect(result.fnSrc).toBeUndefined();
@@ -58,7 +58,7 @@ describe('if else block extract function', () => {
       const ifStmts = findIfStatements(block);
       if (!ifStmts) return;
       const ifStmt = ifStmts[0] as IfStatement;
-      const result = ifElseStmtExtractFunction(ifStmt, {});
+      const result = ifStmtExtractFunction(ifStmt, { mode: 'else' });
       if (!result) return;
       if (!result.callSrc || !result.fnSrc) return;
       expect(result.callSrc.code).toContain(

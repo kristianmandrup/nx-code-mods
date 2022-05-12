@@ -1,4 +1,4 @@
-import { ifThenStmtExtractFunction } from '../../refactor/if-stmt';
+import { ifStmtExtractFunction } from './../../refactor/if-stmt/if-extract-common';
 import { Block, IfStatement } from 'typescript';
 import { findFunctionBlock, findIfStatements } from '../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
@@ -18,7 +18,7 @@ describe('if extract function', () => {
       const ifStmts = findIfStatements(block);
       if (!ifStmts) return;
       const ifStmt = ifStmts[0] as IfStatement;
-      const result = ifThenStmtExtractFunction(ifStmt, {});
+      const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
       expect(result.callSrc.code).toContain(
         `setUserGuest({user, setGuest, ctx})`,
@@ -70,7 +70,7 @@ describe('if extract function', () => {
       const ifStmts = findIfStatements(block);
       if (!ifStmts) return;
       const ifStmt = ifStmts[0] as IfStatement;
-      const result = ifThenStmtExtractFunction(ifStmt, {});
+      const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
       expect(result.callSrc.code).toContain(`return setUserAdmin({user, ctx})`);
       expect(result.fnSrc.code).toContain(`const { user, ctx } = opts`);
@@ -94,8 +94,9 @@ describe('if extract function', () => {
       const ifStmts = findIfStatements(block);
       if (!ifStmts) return;
       const ifStmt = ifStmts[0] as IfStatement;
-      const result = ifThenStmtExtractFunction(ifStmt, {});
+      const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
+      if (!result.callSrc || !result.fnSrc) return;
       expect(result.callSrc.code).toContain(`return setUserAdmin({user, ctx})`);
       expect(result.fnSrc.code).toContain(`const { user, ctx } = opts`);
       expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);

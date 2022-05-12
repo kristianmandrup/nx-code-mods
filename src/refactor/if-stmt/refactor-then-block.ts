@@ -1,17 +1,13 @@
-import { IfStatement } from 'typescript';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
-import {
-  findIfStatementsWithoutElseBlocks,
-  getIfStatementThenBlocks,
-} from '../../find';
+import { findIfStatementsWithoutElseBlocks } from '../../find';
 import { AnyOpts, replaceInSource } from '../../modify';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import {
+  ifStmtExtractFunction,
   insertExtractedFunction,
   RefactorIfStmtOpts,
   replaceWithCallToExtractedFunction,
-  srcsFor,
-} from './if-extract';
+} from './if-extract-common';
 
 // function isCondition({ids}) {
 //     if (!condition) return
@@ -19,19 +15,7 @@ import {
 // }
 // callFunction(thenFunction, {ids})
 
-export const ifThenStmtExtractFunction = (node: IfStatement, opts: AnyOpts) => {
-  const blocks = getIfStatementThenBlocks(node);
-  if (!blocks) return;
-  const thenBlock = blocks[0];
-  const expression = node.expression;
-  const srcs = srcsFor(thenBlock, expression, opts);
-  return {
-    node,
-    ...srcs,
-  };
-};
-
-export const extractIfThenStmtToFunctions =
+export const extractThenBlock =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
     const { code } = opts;
@@ -43,7 +27,7 @@ export const extractIfThenStmtToFunctions =
       return;
     }
     const stmt = stmts[0];
-    const codeParts = ifThenStmtExtractFunction(stmt, opts);
+    const codeParts = ifStmtExtractFunction(stmt, { ...opts, mode: 'then' });
     if (!codeParts) return;
     const { fnSrc, callSrc } = codeParts;
     if (!callSrc || !fnSrc) return;
@@ -61,7 +45,7 @@ export function refactorThenBlocksToFunctions(
 
   return replaceInSource(source, {
     findNodeFn,
-    modifyFn: extractIfThenStmtToFunctions,
+    modifyFn: extractThenBlock,
     ...opts,
   });
 }

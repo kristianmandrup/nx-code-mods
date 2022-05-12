@@ -1,9 +1,10 @@
-import { Block, Expression } from 'typescript';
-import { insertCode, replaceCode } from '../../modify';
+import { Block, Expression, IfStatement, isDefaultClause } from 'typescript';
+import { AnyOpts, insertCode, replaceCode } from '../../modify';
 import { blockName } from '../../auto-name';
 import { findAllLocalRefIds, idsToSrc } from '../utils';
 import { getPosAfterLastImport } from '../../append';
 import { PositionBounds } from '../../types';
+import { getIfStatementElseBlocks, getIfStatementThenBlocks } from '../../find';
 export interface RefactorIfStmtOpts {
   condName: string;
   fnName: string;
@@ -55,9 +56,18 @@ export const ifStmtBlockToCall = (
   };
 };
 
+const defaults = {
+  minBlockSize: 3,
+};
+
 export const srcsFor = (block: Block, expr: Expression, opts: any) => {
+  opts = {
+    ...defaults,
+    ...opts,
+  };
+  const { minBlockSize } = opts;
   // ignore any blocks for refactor with less than 3 statements
-  if (block.statements.length < 3) return;
+  if (block.statements.length < minBlockSize) return;
   const name = opts.name || blockName(block);
   opts.name = name;
   const fnSrc = createFnCode(block, expr, opts);
@@ -65,6 +75,28 @@ export const srcsFor = (block: Block, expr: Expression, opts: any) => {
   return {
     fnSrc,
     callSrc,
+  };
+};
+
+const modeMap: any = {
+  else: getIfStatementElseBlocks,
+  then: getIfStatementThenBlocks,
+};
+
+export const ifStmtExtractFunction = (node: IfStatement, opts: AnyOpts) => {
+  const { mode } = opts;
+  const getBlocksFn = modeMap[mode];
+  if (!getBlocksFn) {
+    throw new Error('Invalid mode ');
+  }
+  const blocks = getBlocksFn(node);
+  if (!blocks) return;
+  const block = blocks[0];
+  const expression = node.expression;
+  const srcs = srcsFor(block, expression, opts);
+  return {
+    node,
+    ...srcs,
   };
 };
 

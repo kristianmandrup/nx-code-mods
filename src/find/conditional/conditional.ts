@@ -88,6 +88,18 @@ export const findIfStatements = (node: Node): IfStatement[] | undefined => {
   return result;
 };
 
+export type GroupedIfStmts = {
+  then?: IfStatement[];
+  else?: IfStatement[];
+};
+
+export const findGroupedIfStatements = (node: Node): GroupedIfStmts => {
+  return {
+    else: findIfStatementsWithElseBlocks(node),
+    then: findIfStatementsWithoutElseBlocks(node),
+  };
+};
+
 export const findIfStatementsBlocks = (node: Node): Block[] | undefined => {
   const result: Block[] = tsquery(node, `IfStatement > Block`);
   if (!result || result.length === 0) return;
