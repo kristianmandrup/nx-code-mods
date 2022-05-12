@@ -30,7 +30,7 @@ describe('id matcher', () => {
     describe('nouns', () => {
       it('set, admin, type', () => {
         const nouns = matcher.nouns;
-        expect(nouns).toEqual(['set', 'admin', 'type']);
+        expect(nouns).toEqual(['admin', 'type']);
       });
     });
 

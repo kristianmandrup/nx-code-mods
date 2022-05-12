@@ -24,7 +24,7 @@ export const findMatchingImportDeclarationsByFileRef = (
 };
 
 export const findImportIdentifiers = (node: any): Identifier[] => {
-  const selector = `ImportSpecifier > Identifier']`;
+  const selector = `ImportSpecifier > Identifier`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) return [];
   return result as Identifier[];

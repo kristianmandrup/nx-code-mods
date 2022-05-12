@@ -79,6 +79,9 @@ export const findIfStatementsBlocks = (node: Node): Block[] | undefined => {
 export const findIfStatementsWithElseBlocks = (
   node: Node,
 ): IfStatement[] | undefined => {
+  if (!node) {
+    throw new Error('findIfStatementsWithElseBlocks missing node');
+  }
   const result = findIfStatements(node);
   if (!result || result.length === 0) return;
   const ifStatements: IfStatement[] = result;

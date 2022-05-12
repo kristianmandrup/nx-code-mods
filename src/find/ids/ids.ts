@@ -1,5 +1,5 @@
 import { tsquery } from '@phenomnomnominal/tsquery';
-import { Identifier, Node, StringLiteral } from 'typescript';
+import { Identifier, Node, StringLiteral, SyntaxKind } from 'typescript';
 import { sortByPosition } from '../positional';
 import { findAllStringLiteralsFor } from '../literals';
 
@@ -62,4 +62,16 @@ export const findAllIdentifiersFor = (node: Node): Identifier[] => {
     return [];
   }
   return result as Identifier[];
+};
+
+export const nonRefIdKinds = [
+  SyntaxKind.VariableDeclaration,
+  SyntaxKind.ClassDeclaration,
+  SyntaxKind.MethodDeclaration,
+  SyntaxKind.Parameter,
+];
+
+export const findReferenceIdentifiersFor = (node: Node): Identifier[] => {
+  const ids = findAllIdentifiersFor(node);
+  return ids.filter((id) => !nonRefIdKinds.includes(id.parent.kind));
 };

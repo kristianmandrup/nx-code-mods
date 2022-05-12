@@ -20,13 +20,15 @@ describe('if extract function', () => {
       const ifStmt = ifStmts[0] as IfStatement;
       const result = ifThenStmtExtractFunction(ifStmt, {});
       if (!result) return;
-      expect(result.callSrc).toContain(
-        `return setAdminByUser({user, setAdmin, ctx})`,
+      expect(result.callSrc.code).toContain(
+        `setUserAdmin({user, setAdmin, ctx})`,
       );
-      expect(result.fnSrc).toContain(`const { user, setAdmin, ctx } = opts`);
-      expect(result.fnSrc).toContain(`function setAdminByUser(opts: any)`);
-      expect(result.fnSrc).toContain(`if (!(user.type === 'admin'))`);
-      expect(result.fnSrc).toContain(`setAdmin(user, ctx);`);
+      expect(result.fnSrc.code).toContain(
+        `const { user, setAdmin, ctx } = opts`,
+      );
+      expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);
+      expect(result.fnSrc.code).toContain(`if (!(user.type === 'admin'))`);
+      expect(result.fnSrc.code).toContain(`setAdmin(user, ctx);`);
     });
   });
 
@@ -46,11 +48,11 @@ describe('if extract function', () => {
       const ifStmt = ifStmts[0] as IfStatement;
       const result = ifThenStmtExtractFunction(ifStmt, {});
       if (!result) return;
-      expect(result.callSrc).toContain(`return setAdminByUser({user, ctx})`);
-      expect(result.fnSrc).toContain(`const { user, ctx } = opts`);
-      expect(result.fnSrc).toContain(`function setAdminByUser(opts: any)`);
-      expect(result.fnSrc).toContain(`if (!(user.type === 'admin'))`);
-      expect(result.fnSrc).toContain(`setAdmin(user, ctx);`);
+      expect(result.callSrc.code).toContain(`return setUserAdmin({user, ctx})`);
+      expect(result.fnSrc.code).toContain(`const { user, ctx } = opts`);
+      expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);
+      expect(result.fnSrc.code).toContain(`if (!(user.type === 'admin'))`);
+      expect(result.fnSrc.code).toContain(`setAdmin(user, ctx);`);
     });
   });
 
@@ -70,11 +72,11 @@ describe('if extract function', () => {
       const ifStmt = ifStmts[0] as IfStatement;
       const result = ifThenStmtExtractFunction(ifStmt, {});
       if (!result) return;
-      expect(result.callSrc).toContain(`return setAdminByUser({user, ctx})`);
-      expect(result.fnSrc).toContain(`const { user, ctx } = opts`);
-      expect(result.fnSrc).toContain(`function setAdminByUser(opts: any)`);
-      expect(result.fnSrc).toContain(`if (!(user.type === 'admin'))`);
-      expect(result.fnSrc).toContain(`setAdmin(user, ctx);`);
+      expect(result.callSrc.code).toContain(`return setUserAdmin({user, ctx})`);
+      expect(result.fnSrc.code).toContain(`const { user, ctx } = opts`);
+      expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);
+      expect(result.fnSrc.code).toContain(`if (!(user.type === 'admin'))`);
+      expect(result.fnSrc.code).toContain(`setAdmin(user, ctx);`);
     });
   });
 });

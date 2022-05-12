@@ -39,7 +39,7 @@ describe('block matcher', () => {
     describe('nouns', () => {
       it('type, set', () => {
         const nouns = matcher.nouns;
-        expect(nouns).toEqual(['set', 'admin', 'user', 'ctx']);
+        expect(nouns).toEqual(['admin', 'user', 'ctx']);
       });
     });
 
@@ -85,7 +85,7 @@ describe('block matcher', () => {
       });
 
       it('nouns: ordered by rank', () => {
-        expect(nouns).toEqual(['set', 'admin', 'user', 'ctx']);
+        expect(nouns).toEqual(['admin', 'user', 'ctx']);
       });
     });
   });

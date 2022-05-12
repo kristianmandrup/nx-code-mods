@@ -20,8 +20,8 @@ describe('id ranker', () => {
       it('puts ranked ids in idRankMap', () => {
         ranker.rankIdLists();
         expect(ranker.idRankMap).toEqual({});
-        expect(ranker.ranked.nouns).toEqual(['set', 'admin', 'type']);
-        expect(ranker.ranked.verbs).toEqual(['set', 'type']);
+        expect(ranker.ranked.nouns).toEqual(['admin', 'type']);
+        expect(ranker.ranked.verbs).toEqual(['set']);
       });
     });
 
@@ -45,7 +45,7 @@ describe('id ranker', () => {
         it('ranks by nouns', () => {
           ranker.calcRanks();
           const list = ranker.grammarByRank('nouns');
-          expect(list).toEqual(['type', 'set', 'admin']);
+          expect(list).toEqual(['type', 'admin']);
         });
       });
 
@@ -54,10 +54,6 @@ describe('id ranker', () => {
           const rankedList = ranker.grammarByRankAsEntries('nouns');
           expect(rankedList).toEqual([
             { key: 'type', rank: 1.5 },
-            {
-              key: 'set',
-              rank: 1,
-            },
             {
               key: 'admin',
               rank: 1,
@@ -69,7 +65,7 @@ describe('id ranker', () => {
       describe('setRanked', () => {
         it('ranks by nouns', () => {
           ranker.setRanked('nouns');
-          expect(ranker.ranked.nouns).toEqual(['type', 'set', 'admin']);
+          expect(ranker.ranked.nouns).toEqual(['type', 'admin']);
         });
       });
     });

@@ -14,7 +14,7 @@ import {
 } from '../find';
 import { AnyOpts, insertCode, replaceCode, replaceInSource } from '../modify';
 import { blockName } from '../auto-name';
-import { findAllLocalIds, idsToSrc } from './utils';
+import { findAllLocalIds, findAllLocalRefIds, idsToSrc } from './utils';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { getPosAfterLastImport } from '../append';
 import { PositionBounds } from '../types';
@@ -33,8 +33,8 @@ export interface RefactorIfStmtOpts {
 export const createFnCode = (block: Block, expr: Expression, opts: any) => {
   let { name } = opts;
   name = name || blockName(block);
-  const strIds = idsToSrc(findAllLocalIds(expr));
-
+  const ids = findAllLocalRefIds(block);
+  const strIds = idsToSrc(ids);
   const blockSrc = block.getFullText();
   const pos = block.pos;
   const startPos = block.getStart() - pos + 1;
@@ -65,7 +65,8 @@ export const ifStmtToCall = (
   },
 ) => {
   name = name || blockName(block);
-  const strIds = idsToSrc(findAllLocalIds(block));
+  const ids = findAllLocalRefIds(block);
+  const strIds = idsToSrc(ids);
   const code = `
     return ${name}({${strIds}})`;
   const positions = { startPos: block.getStart(), endPos: block.getEnd() };

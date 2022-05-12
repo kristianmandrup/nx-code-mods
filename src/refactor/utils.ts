@@ -10,6 +10,7 @@ import {
   findTopLevelIdentifiers,
   findAllIdentifiersFor,
   getSourceFile,
+  findReferenceIdentifiersFor,
 } from '../find';
 
 export const mapIdentifiersToTxtList = (ids: Identifier[]): string[] =>
@@ -41,8 +42,16 @@ export const srcIdsFor = (node: Node, find: IdsFinder) => {
 };
 
 export const findAllLocalIds = (node: Node): Identifier[] => {
-  return filterLocalIdentifiers(node, findAllIdentifiersFor(node));
+  const ids = findAllIdentifiersFor(node);
+  return filterLocalIdentifiers(node, ids);
 };
+
+export const findAllLocalRefIds = (node: Node): Identifier[] => {
+  const ids = findReferenceIdentifiersFor(node);
+  return filterLocalIdentifiers(node, ids);
+};
+
+// findLocalIdentifiersWithinScopePath
 
 export const idsToSrc = (ids: Identifier[]) => {
   const filteredIds = filterChildIds(ids);

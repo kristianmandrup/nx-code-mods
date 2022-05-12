@@ -1,7 +1,5 @@
-import {
-  findIfStatementsWithElseBlocks,
-  findBinaryExpressions,
-} from '../../../find';
+import { findIfStatementsWithoutElseBlocks } from './../../../find/conditional/conditional';
+import { findBinaryExpressions } from '../../../find';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { findFunctionBlock } from '../../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
@@ -12,16 +10,16 @@ import { Block, IfStatement, BinaryExpression } from 'typescript';
 const context = describe;
 
 describe('condition name', () => {
-  context('if else user block', () => {
+  context('user type is admin', () => {
     it('name: userTypeIsAdmin', () => {
-      const filePath = path.join(__dirname, 'files', 'if-else-user-block.txt');
+      const filePath = path.join(__dirname, 'files', 'binary-expr-is.txt');
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
-      const ifElseStmts = findIfStatementsWithElseBlocks(block);
-      if (!ifElseStmts) return;
-      const ifElseStmt = ifElseStmts[0] as IfStatement;
-      const expression = ifElseStmt.expression;
+      const ifStmts = findIfStatementsWithoutElseBlocks(block);
+      if (!ifStmts) return;
+      const ifStmt = ifStmts[0] as IfStatement;
+      const expression = ifStmt.expression;
       if (!expression) return;
       const name = conditionName(expression);
       expect(name).toEqual('userTypeIsAdmin');

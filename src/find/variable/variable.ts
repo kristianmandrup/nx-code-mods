@@ -24,7 +24,7 @@ export const getVariableStatementIdentifiers = (
 };
 
 export const findVarDeclIdentifiers = (node: Node): Identifier[] => {
-  const selector = `> VariableStatement`;
+  const selector = `SourceFile > VariableStatement`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
     return [];

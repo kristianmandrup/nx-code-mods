@@ -1,10 +1,4 @@
 import { Block, Expression, Identifier, IfStatement } from 'typescript';
-// if (condition) {
-//     trueStatements
-// } else {
-//     falseStatements
-// }
-
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import {
   findAllIdentifiersFor,

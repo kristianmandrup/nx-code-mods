@@ -10,7 +10,7 @@ import { findBlock } from '../block';
 import { findVariableDeclaration } from '../variable';
 
 export const findFunctionDeclIdentifiers = (node: Node) => {
-  const selector = `> FunctionDeclaration > Identifier`;
+  const selector = `SourceFile > FunctionDeclaration > Identifier`;
   const result = tsquery(node, selector);
   if (!result || result.length === 0) {
     return [];
