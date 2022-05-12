@@ -1,4 +1,4 @@
-import { findMatchingDecoratorForNode } from '../find/types';
+import { findMatchingDecoratorForNode } from '../find/decorator';
 import {
   AnyOpts,
   replaceInFile,
@@ -10,7 +10,7 @@ import {
 import { Tree } from '@nrwl/devkit';
 import { findClassDeclaration, findClassMethodDeclaration } from '../find';
 import { SourceFile } from 'typescript';
-import { CollectionModifyOpts, removeFromNode } from './positional';
+import { CollectionModifyOpts } from './positional';
 
 export interface ClassMethodDecoratorRemoveOptions {
   classId: string;

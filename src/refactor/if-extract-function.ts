@@ -61,7 +61,7 @@ export const ifStmtToCall = (
   {
     name,
   }: {
-    name: string;
+    name?: string;
   },
 ) => {
   name = name || blockName(block);

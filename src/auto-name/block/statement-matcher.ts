@@ -17,10 +17,6 @@ export class StatementMatcher extends GrammarMatcher {
   }
 
   code: string = '';
-  ids: string[] = [];
-
-  unmatchedIds: string[] = [];
-  matchedIds: string[] = [];
   arrayOps: string[] = [];
   idCountMap: any = {};
 
@@ -30,7 +26,7 @@ export class StatementMatcher extends GrammarMatcher {
   }
 
   getIds() {
-    this.ids = unique(findNodeIds(this.stmt));
+    this.grammar.ids = unique(findNodeIds(this.stmt));
     return this;
   }
 
@@ -63,11 +59,13 @@ export class StatementMatcher extends GrammarMatcher {
       ...this.nouns,
       ...this.prepositions,
     ];
-    this.matchedIds = unique(matched);
+    this.grammar.matchedIds = unique(matched);
   }
 
   findUnmatchedIds() {
     if (this.matchedIds.length === 0) this.findMatchedIds();
-    this.unmatchedIds = this.ids.filter((id) => !this.matchedIds.includes(id));
+    this.grammar.unmatchedIds = this.ids.filter(
+      (id) => !this.matchedIds.includes(id),
+    );
   }
 }

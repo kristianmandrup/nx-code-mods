@@ -6,8 +6,14 @@ import {
   findFirstPropertyDeclaration,
   findPropertyDeclaration,
 } from '../find';
-import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
-import { SourceFile, ClassDeclaration, Node } from 'typescript';
+import {
+  replaceInFile,
+  AnyOpts,
+  modifyTree,
+  replaceInSource,
+  InsertPosition,
+} from '../modify';
+import { SourceFile, Node } from 'typescript';
 import { startOfIndex, afterIndex } from '../positional';
 import { insertInClassScope } from './positional';
 

@@ -1,13 +1,10 @@
 import { insertCode } from '../modify/modify-code';
 import { Tree } from '@nrwl/devkit';
-import {
-  findClassDeclaration,
-  findMatchingDecoratorForNode,
-} from '../find/types';
+import { findClassDeclaration, findMatchingDecoratorForNode } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';
 import { ensureNewlineClosing } from '../ensure';
-import { beforeIndex, startOfIndex } from '../positional';
+import { beforeIndex } from '../positional';
 
 export interface ClassDecoratorInsertOptions {
   classId: string;

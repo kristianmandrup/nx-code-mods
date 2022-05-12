@@ -1,3 +1,4 @@
+import { AnyOpts } from '../../modify';
 import { IdRankMap, IdRankMapEntry, StatementMatcher } from '../block';
 import { GrammarSet } from '../grammar-matcher';
 import { listNames } from '../utils';
@@ -25,17 +26,27 @@ export class IdRanker {
   }
 
   byRank(name: string) {
-    this.ranked[name] = (this as any)[name].sort(
-      (k1: string, k2: string) =>
-        this.idRankMap[k1].rank - this.idRankMap[k2].rank,
-    );
+    const grammarList = (this.grammarSet as any)[name] || [];
+    console.log('byRank', { name, grammarSet: this.grammarSet });
+    this.ranked[name] = grammarList.sort((k1: string, k2: string) => {
+      const entry1 = this.idRankMap[k1];
+      const entry2 = this.idRankMap[k2];
+      console.log({ k1, k2, entry1, entry2 });
+      if (!entry1 || !entry2) return;
+      return entry1.rank - entry2.rank;
+    });
   }
 
-  addToRankMap(idCountMap: any, index: number) {
-    idCountMap.entries(([k, count]: [string, number]) => {
-      const idMapEntry = this.idRankMap[k];
+  addToRankMap(idCountMap: AnyOpts, index: number) {
+    Object.keys(idCountMap).map((k: string, i: number) => {
+      const idCountMapEntry = idCountMap[k];
+      console.log({ idCountMap, index, k, i, idCountMapEntry });
+
+      this.idRankMap[k] = this.idRankMap[k] || {};
+      const idMapEntry: any = this.idRankMap[k];
+
       idMapEntry.count = idMapEntry.count || 0;
-      idMapEntry.count = idMapEntry.count + count;
+      idMapEntry.count = idMapEntry.count + (idCountMapEntry.count || 0);
       idMapEntry.indexList = idMapEntry.indexList || [];
       idMapEntry.indexList.push(index);
     });
@@ -52,15 +63,18 @@ export class IdRanker {
   }
 
   calcRank(entry: IdRankMapEntry) {
+    entry.indexList = entry.indexList || [];
     entry.indexList.map((index) => {
       const rank = this.getRank(index);
       // todo: iterate indexList to calc rank
-      entry.rank = entry.rank + rank;
+      entry.rank = (entry.rank || 0) + rank;
     });
   }
 
   calcRanks() {
-    (this.idRankMap as any).values((entry: IdRankMapEntry) => {
+    const mapEntries = Object.values(this.idRankMap);
+    console.log({ mapEntries });
+    mapEntries.map((entry: IdRankMapEntry) => {
       this.calcRank(entry);
     });
   }

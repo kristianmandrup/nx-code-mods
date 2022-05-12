@@ -1,6 +1,5 @@
 import { IdRanker } from './../id/id-ranker';
 import { GrammarMatcher } from './../grammar-matcher';
-import { GrammarSet } from './../';
 import { getLastStatement } from '../../find';
 import { Statement } from 'typescript';
 import { Block } from 'typescript';
@@ -30,9 +29,6 @@ export class BlockMatcher extends GrammarMatcher {
   mainId: string = '';
   arrayOps: string[] = [];
   stmtMatchers: StatementMatcher[] = [];
-  ids: string[] = [];
-  unmatchedIds: string[] = [];
-  matchedIds: string[] = [];
   actions: string[] = [];
   ranker: IdRanker = new IdRanker(this.grammar);
 

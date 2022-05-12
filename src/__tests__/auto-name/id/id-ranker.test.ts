@@ -1,4 +1,3 @@
-import { createStmtMatcher } from './../../../auto-name/block/statement-matcher';
 import { idMatcher, createRanker } from '../../../auto-name';
 
 const context = describe;
@@ -6,7 +5,7 @@ const context = describe;
 describe('id ranker', () => {
   context('find users by type', () => {
     const matcher = idMatcher('setAdminType');
-    const ranker = createRanker(matcher);
+    const ranker = createRanker(matcher.grammar);
 
     describe('rankIdLists', () => {
       it('puts ranked ids in idRankMap', () => {
@@ -23,12 +22,13 @@ describe('id ranker', () => {
     });
 
     context('simple idCountMap', () => {
-      const idCountMap = {
-        user: 2,
-        type: 1,
-      };
+      let idCountMap;
 
       beforeAll(() => {
+        idCountMap = {
+          user: 2,
+          type: 1,
+        };
         ranker.addToRankMap(idCountMap, 0);
       });
 
