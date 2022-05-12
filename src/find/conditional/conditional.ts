@@ -1,5 +1,11 @@
 import { tsquery } from '@phenomnomnominal/tsquery';
-import { Block, Identifier, IfStatement, Node } from 'typescript';
+import {
+  Block,
+  createTypeReferenceDirectiveResolutionCache,
+  Identifier,
+  IfStatement,
+  Node,
+} from 'typescript';
 import { findDeclaredIdentifiersInScope } from '../scope';
 
 interface IfStatementBlocks {
@@ -50,6 +56,18 @@ export const getIfStatementBlocks = (
     thenBlock,
     elseBlock,
   };
+};
+
+export const getIfStatementThenBlocks = (node: Node): Block[] | undefined => {
+  const result = findIfStatementsWithoutElseBlocks(node);
+  if (!result || result.length === 0) return;
+  return result.map((res) => res.thenStatement) as Block[];
+};
+
+export const getIfStatementElseBlocks = (node: Node): Block[] | undefined => {
+  const result = findIfStatementsWithElseBlocks(node);
+  if (!result || result.length === 0) return;
+  return result.map((res) => res.elseStatement) as Block[];
 };
 
 export const findIfStatementThenBlock = (node: Node): Block | undefined => {
