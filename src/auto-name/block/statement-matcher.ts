@@ -7,6 +7,10 @@ import { findNodeIds } from '../../find';
 export const createStmtMatcher = (stmt: Statement, index: number) =>
   new StatementMatcher(stmt, index);
 
+export type IdCountMap = {
+  [key: string]: any;
+};
+
 export class StatementMatcher extends GrammarMatcher {
   constructor(public stmt: Statement, public index: number) {
     super();
@@ -18,7 +22,7 @@ export class StatementMatcher extends GrammarMatcher {
 
   code: string = '';
   arrayOps: string[] = [];
-  idCountMap: any = {};
+  idCountMap: IdCountMap = {};
 
   getCode() {
     this.code = this.stmt.getFullText();

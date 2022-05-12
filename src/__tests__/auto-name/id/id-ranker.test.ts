@@ -25,9 +25,47 @@ describe('id ranker', () => {
       });
     });
 
-    describe('byRank', () => {
+    describe('grammarByRank', () => {
       it('ranks by nouns', () => {
-        ranker.byRank('nouns');
+        ranker.calcRanks();
+        const list = ranker.grammarByRank('nouns');
+        expect(list).toEqual(['set', 'admin', 'type']);
+      });
+    });
+
+    describe('grammarByRankAsEntries', () => {
+      it('ranks by nouns', () => {
+        const idCountMaps: any = {
+          0: {
+            type: 1,
+          },
+          1: {
+            set: 1,
+            admin: 1,
+          },
+        };
+        ranker.addToRankMap(idCountMaps[0], 0);
+        ranker.addToRankMap(idCountMaps[1], 1);
+
+        ranker.calcRanks();
+        const rankedList = ranker.grammarByRankAsEntries('nouns');
+        expect(rankedList).toEqual([
+          {
+            key: 'set',
+            rank: 1,
+          },
+          {
+            key: 'admin',
+            rank: 1,
+          },
+          { key: 'type', rank: 1.5 },
+        ]);
+      });
+    });
+
+    describe('setRanked', () => {
+      it('ranks by nouns', () => {
+        ranker.setRanked('nouns');
         expect(ranker.idRankMap).toEqual({});
         expect(ranker.ranked.nouns).toEqual(['set', 'admin', 'type']);
       });

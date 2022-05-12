@@ -7,7 +7,7 @@ import { findArrayActionAndId, isSingularActionNoun } from './action-name';
 import { determineMainIdentifier } from '../id/id-matcher';
 import { createStmtMatcher, StatementMatcher } from './statement-matcher';
 import * as inflection from 'inflection';
-import { listNames } from '../utils';
+import { listNames, unique } from '../utils';
 
 export const createBlockMatcher = (block: Block) => new BlockMatcher(block);
 
@@ -50,6 +50,14 @@ export class BlockMatcher extends GrammarMatcher {
     return mainId;
   }
 
+  get ranked() {
+    return this.ranker.ranked;
+  }
+
+  get idRankMap() {
+    return this.ranker.idRankMap;
+  }
+
   get statements() {
     return Array.from(this.block.statements);
   }
@@ -81,20 +89,32 @@ export class BlockMatcher extends GrammarMatcher {
     this.ranker.calcRanks();
   }
 
-  add(label: string, stmtMatcher: StatementMatcher) {
-    const arr: any[] = (this as any)[label];
-    arr.push(...(stmtMatcher as any)[label]);
+  shouldBeUnique(key: string, makeUnique: boolean = false) {
+    return makeUnique || !['ids'].includes(key);
+  }
+
+  add(key: string, stmtMatcher: StatementMatcher, makeUnique: boolean = false) {
+    const arr: any[] = (this as any)[key];
+    const stmtGrammarList = (stmtMatcher as any)[key];
+    arr.push(...stmtGrammarList);
+    if (this.shouldBeUnique(key, makeUnique)) {
+      this.setGrammar(key, unique(arr));
+    }
     return this;
   }
 
+  setGrammar(key: string, list: any[]) {
+    (this.grammar as any)[key] = list;
+  }
+
   transferIdLists(stmtMatcher: StatementMatcher) {
-    listNames.map((lbl) => this.add(lbl, stmtMatcher));
+    listNames.map((key) => this.add(key, stmtMatcher));
     return this;
   }
 
   processStmtMatcher(stmtMatcher: StatementMatcher, index: number) {
     this.transferIdLists(stmtMatcher);
-    this.ranker.rank(stmtMatcher, index);
+    this.ranker.addToRankMap(stmtMatcher.idCountMap, index);
     this.processArrayAction(stmtMatcher);
   }
 

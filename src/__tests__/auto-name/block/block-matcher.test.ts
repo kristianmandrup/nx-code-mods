@@ -1,3 +1,4 @@
+import { BlockMatcher } from './../../../auto-name/block/block-matcher';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
@@ -14,41 +15,57 @@ describe('block matcher', () => {
     const srcNode = tsquery.ast(content);
     const block = findFunctionBlock(srcNode, 'xyz') as Block;
     if (!block) return;
-    const matcher = createBlockMatcher(block);
+
+    let matcher: BlockMatcher;
+    beforeEach(() => {
+      matcher = createBlockMatcher(block);
+    });
 
     describe('ids', () => {
-      it('user, type, admin', () => {
+      it('set, admin, user, ctx', () => {
         const ids = matcher.ids;
-        expect(ids).toContain(['ctx', 'set', 'guest', 'user', 'type', 'admin']);
+        expect(ids).toContain(['setAdmin', 'user', 'ctx', 'ctx', 'user']);
       });
     });
 
     describe('verbs', () => {
-      it('type, set', () => {
-        const ids = matcher.ids;
-        expect(ids).toContain(['type', 'set']);
+      it('set', () => {
+        const verbs = matcher.verbs;
+        expect(verbs).toContain(['set']);
       });
     });
 
     describe('nouns', () => {
       it('type, set', () => {
-        const ids = matcher.ids;
-        expect(ids).toContain(['ctx', 'guest', 'user', 'admin']);
+        const nouns = matcher.nouns;
+        expect(nouns).toContain(['set', 'admin', 'user', 'ctx']);
       });
     });
 
     describe('unmatched', () => {
       it('empty', () => {
-        const ids = matcher.ids;
-        expect(ids).toContain([]);
+        const unmatched = matcher.unmatchedIds;
+        expect(unmatched).toEqual(['setAdmin']);
+      });
+    });
+
+    describe('matched', () => {
+      it('empty', () => {
+        const matched = matcher.matchedIds;
+        expect(matched).toEqual(['set', 'admin', 'user', 'ctx']);
       });
     });
 
     describe('idRankMap', () => {
-      const idRankMap = matcher.idRankMap;
-      const user = idRankMap.user;
+      let idRankMap: any, user: any;
+      beforeEach(() => {
+        idRankMap = matcher.idRankMap;
+        user = idRankMap.user;
+        console.log({ idRankMap, user });
+      });
+
       it('user: has count 4', () => {
-        expect(user.count).toEqual(4);
+        expect(user.count).toEqual(2);
       });
 
       it('user: has indexList 0,1', () => {
@@ -60,11 +77,15 @@ describe('block matcher', () => {
       });
     });
 
-    describe('ranked', () => {
-      const ranked = matcher.ranked;
-      const nouns = ranked.nouns;
-      it('user: has count 4', () => {
-        expect(nouns).toEqual(['user', 'ctx', 'admin']);
+    describe.only('ranked', () => {
+      let ranked: any, nouns: any;
+      beforeEach(() => {
+        ranked = matcher.ranked;
+        nouns = ranked.nouns;
+      });
+
+      it('nouns: ordered by rank', () => {
+        expect(nouns).toEqual(['set', 'admin', 'user', 'ctx']);
       });
     });
   });

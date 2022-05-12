@@ -18,19 +18,39 @@ export class IdRanker {
     default: 0.4,
   };
 
-  constructor(public grammarSet: GrammarSet) {}
+  constructor(public grammar: GrammarSet) {}
 
   rankIdLists() {
-    listNames.map((name) => this.byRank(name));
+    listNames.map((name) => this.setRanked(name));
     return this;
   }
 
-  byRank(name: string) {
-    const grammarList = (this.grammarSet as any)[name] || [];
-    this.ranked[name] = grammarList.sort((k1: string, k2: string) => {
+  setRanked(name: string) {
+    this.ranked[name] = this.grammarByRank(name);
+    return this;
+  }
+
+  grammarByRankAsEntries(name: string) {
+    const list = this.grammarByRank(name);
+    return list.map((key: string) => {
+      const rankObj = this.idRankMap[key];
+      const rank = rankObj?.rank;
+      return { key, rank };
+    });
+  }
+
+  grammarByRank(name: string) {
+    const grammarList = (this.grammar as any)[name] || [];
+    return grammarList.sort((k1: string, k2: string) => {
       const entry1 = this.idRankMap[k1];
       const entry2 = this.idRankMap[k2];
       if (!entry1 || !entry2) return;
+      if (!entry1.rank) {
+        this.idRankMap[k1] = this.calcRank(entry1);
+      }
+      if (!entry2.rank) {
+        this.idRankMap[k2] = this.calcRank(entry2);
+      }
       return entry1.rank - entry2.rank;
     });
   }
@@ -38,12 +58,12 @@ export class IdRanker {
   addToRankMap(idCountMap: AnyOpts, index: number) {
     Object.keys(idCountMap).map((k: string, i: number) => {
       const count = idCountMap[k];
-
       this.idRankMap[k] = this.idRankMap[k] || {};
       const idMapEntry: any = this.idRankMap[k];
 
       idMapEntry.count = idMapEntry.count || 0;
       idMapEntry.count = idMapEntry.count + (count || 0);
+
       idMapEntry.indexList = idMapEntry.indexList || [];
       idMapEntry.indexList.push(index);
     });
@@ -63,7 +83,6 @@ export class IdRanker {
     entry.indexList = entry.indexList || [];
     entry.indexList.map((index) => {
       const rank = this.getRank(index);
-      // todo: iterate indexList to calc rank
       entry.rank = (entry.rank || 0) + rank;
     });
     return entry;
@@ -74,6 +93,7 @@ export class IdRanker {
     mapEntries.map((entry: IdRankMapEntry) => {
       this.calcRank(entry);
     });
+    this.rankIdLists();
     return this;
   }
 }
