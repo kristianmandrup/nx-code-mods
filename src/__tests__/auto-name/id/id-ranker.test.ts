@@ -25,16 +25,8 @@ describe('id ranker', () => {
       });
     });
 
-    describe('grammarByRank', () => {
-      it('ranks by nouns', () => {
-        ranker.calcRanks();
-        const list = ranker.grammarByRank('nouns');
-        expect(list).toEqual(['set', 'admin', 'type']);
-      });
-    });
-
-    describe('grammarByRankAsEntries', () => {
-      it('ranks by nouns', () => {
+    context('sorted by rank', () => {
+      beforeEach(() => {
         const idCountMaps: any = {
           0: {
             type: 1,
@@ -46,28 +38,39 @@ describe('id ranker', () => {
         };
         ranker.addToRankMap(idCountMaps[0], 0);
         ranker.addToRankMap(idCountMaps[1], 1);
-
         ranker.calcRanks();
-        const rankedList = ranker.grammarByRankAsEntries('nouns');
-        expect(rankedList).toEqual([
-          {
-            key: 'set',
-            rank: 1,
-          },
-          {
-            key: 'admin',
-            rank: 1,
-          },
-          { key: 'type', rank: 1.5 },
-        ]);
       });
-    });
 
-    describe('setRanked', () => {
-      it('ranks by nouns', () => {
-        ranker.setRanked('nouns');
-        expect(ranker.idRankMap).toEqual({});
-        expect(ranker.ranked.nouns).toEqual(['set', 'admin', 'type']);
+      describe('grammarByRank', () => {
+        it('ranks by nouns', () => {
+          ranker.calcRanks();
+          const list = ranker.grammarByRank('nouns');
+          expect(list).toEqual(['type', 'set', 'admin']);
+        });
+      });
+
+      describe('grammarByRankAsEntries', () => {
+        it('ranks by nouns', () => {
+          const rankedList = ranker.grammarByRankAsEntries('nouns');
+          expect(rankedList).toEqual([
+            { key: 'type', rank: 1.5 },
+            {
+              key: 'set',
+              rank: 1,
+            },
+            {
+              key: 'admin',
+              rank: 1,
+            },
+          ]);
+        });
+      });
+
+      describe('setRanked', () => {
+        it('ranks by nouns', () => {
+          ranker.setRanked('nouns');
+          expect(ranker.ranked.nouns).toEqual(['type', 'set', 'admin']);
+        });
       });
     });
 

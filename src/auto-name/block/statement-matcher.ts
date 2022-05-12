@@ -17,7 +17,7 @@ export class StatementMatcher extends GrammarMatcher {
     this.getCode();
     this.getIds();
     this.parseGrammar();
-    this.findMatchedAndUnmatchedIds();
+    this.findMatchedAndUnmatchedWords();
   }
 
   code: string = '';
@@ -51,25 +51,25 @@ export class StatementMatcher extends GrammarMatcher {
     });
   }
 
-  findMatchedAndUnmatchedIds() {
-    this.findMatchedIds();
-    this.findUnmatchedIds();
+  findMatchedAndUnmatchedWords() {
+    this.findMatchedWords();
+    this.findUnmatchedWords();
   }
 
-  findMatchedIds() {
+  findMatchedWords() {
     const matched = [
       ...this.adjectives,
       ...this.verbs,
       ...this.nouns,
       ...this.prepositions,
     ];
-    this.grammar.matchedIds = unique(matched);
+    this.grammar.matchedWords = unique(matched);
   }
 
-  findUnmatchedIds() {
-    if (this.matchedIds.length === 0) this.findMatchedIds();
-    this.grammar.unmatchedIds = this.ids.filter(
-      (id) => !this.matchedIds.includes(id),
+  findUnmatchedWords() {
+    if (this.matchedWords.length === 0) this.findMatchedWords();
+    this.grammar.unmatchedWords = this.words.filter(
+      (word) => !this.matchedWords.includes(word),
     );
   }
 }

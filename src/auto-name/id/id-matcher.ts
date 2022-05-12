@@ -11,12 +11,25 @@ import { idToStr, findFirstIdentifier, getLastStatement } from '../../find';
 const nounAliases = ['admin', 'id', 'ctx'];
 
 const nounsMap = arrToObject([...nouns, ...nounAliases]);
+const nounsExcludeMap: any = {
+  set: true,
+};
+
 const verbsMap = arrToObject(verbs);
+
+const verbsExcludeMap: any = {
+  type: true,
+};
+
 const adjectivesMap = arrToObject(adjectives);
 const prepositionsMap = arrToObject(prepositions);
 
-export const mapWords = (words: string[], kvMap: any) =>
-  unique(words.filter((word) => kvMap[word]));
+export const mapWords = (words: string[], includeMap: any, excludeMap?: any) =>
+  unique(
+    words.filter((word) => {
+      return includeMap[word] && !(excludeMap && excludeMap[word]);
+    }),
+  );
 
 export const idMatcher = (identifier: string) =>
   new IdentifierMatcher(identifier);
@@ -57,12 +70,20 @@ export class IdentifierMatcher extends GrammarMatcher {
   }
 
   getNouns() {
-    this.grammar.nouns = mapWords(this.grammar.words, nounsMap);
+    this.grammar.nouns = mapWords(
+      this.grammar.words,
+      nounsMap,
+      nounsExcludeMap,
+    );
     return this;
   }
 
   getVerbs() {
-    this.grammar.verbs = mapWords(this.grammar.words, verbsMap);
+    this.grammar.verbs = mapWords(
+      this.grammar.words,
+      verbsMap,
+      verbsExcludeMap,
+    );
     return this;
   }
 }

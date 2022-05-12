@@ -5,6 +5,7 @@ import * as path from 'path';
 import { Block } from 'typescript';
 import { findFunctionBlock } from '../../../find';
 import { createBlockMatcher } from '../../../auto-name';
+import { arrayContains } from '../../utils';
 
 const context = describe;
 
@@ -24,34 +25,34 @@ describe('block matcher', () => {
     describe('ids', () => {
       it('set, admin, user, ctx', () => {
         const ids = matcher.ids;
-        expect(ids).toContain(['setAdmin', 'user', 'ctx', 'ctx', 'user']);
+        arrayContains(ids, ['user', 'ctx', 'ctx', 'user', 'setAdmin']);
       });
     });
 
     describe('verbs', () => {
       it('set', () => {
         const verbs = matcher.verbs;
-        expect(verbs).toContain(['set']);
+        arrayContains(verbs, ['set']);
       });
     });
 
     describe('nouns', () => {
       it('type, set', () => {
         const nouns = matcher.nouns;
-        expect(nouns).toContain(['set', 'admin', 'user', 'ctx']);
+        expect(nouns).toEqual(['set', 'admin', 'user', 'ctx']);
       });
     });
 
     describe('unmatched', () => {
       it('empty', () => {
-        const unmatched = matcher.unmatchedIds;
-        expect(unmatched).toEqual(['setAdmin']);
+        const unmatched = matcher.unmatchedWords;
+        expect(unmatched).toEqual([]);
       });
     });
 
     describe('matched', () => {
       it('empty', () => {
-        const matched = matcher.matchedIds;
+        const matched = matcher.matchedWords;
         expect(matched).toEqual(['set', 'admin', 'user', 'ctx']);
       });
     });
@@ -61,15 +62,14 @@ describe('block matcher', () => {
       beforeEach(() => {
         idRankMap = matcher.idRankMap;
         user = idRankMap.user;
-        console.log({ idRankMap, user });
       });
 
-      it('user: has count 4', () => {
+      it('user: has count 2', () => {
         expect(user.count).toEqual(2);
       });
 
       it('user: has indexList 0,1', () => {
-        expect(user.rank).toEqual(2.5);
+        expect(user.indexList).toEqual([0, 1]);
       });
 
       it('user: has rank 2.5', () => {
@@ -77,7 +77,7 @@ describe('block matcher', () => {
       });
     });
 
-    describe.only('ranked', () => {
+    describe('ranked', () => {
       let ranked: any, nouns: any;
       beforeEach(() => {
         ranked = matcher.ranked;

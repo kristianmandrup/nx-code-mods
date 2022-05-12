@@ -7,8 +7,8 @@ const adjectivesList = ['by', 'where'];
 
 export const listNames = [
   'ids',
-  'unmatchedIds',
-  'matchedIds',
+  'unmatchedWords',
+  'matchedWords',
   'nouns',
   'verbs',
   'adjectives',

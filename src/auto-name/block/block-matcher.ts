@@ -95,7 +95,7 @@ export class BlockMatcher extends GrammarMatcher {
 
   add(key: string, stmtMatcher: StatementMatcher, makeUnique: boolean = false) {
     const arr: any[] = (this as any)[key];
-    const stmtGrammarList = (stmtMatcher as any)[key];
+    const stmtGrammarList = (stmtMatcher as any)[key] || [];
     arr.push(...stmtGrammarList);
     if (this.shouldBeUnique(key, makeUnique)) {
       this.setGrammar(key, unique(arr));

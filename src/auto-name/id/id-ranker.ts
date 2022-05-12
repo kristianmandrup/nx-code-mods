@@ -41,7 +41,7 @@ export class IdRanker {
 
   grammarByRank(name: string) {
     const grammarList = (this.grammar as any)[name] || [];
-    return grammarList.sort((k1: string, k2: string) => {
+    const sorted = grammarList.sort((k1: string, k2: string) => {
       const entry1 = this.idRankMap[k1];
       const entry2 = this.idRankMap[k2];
       if (!entry1 || !entry2) return;
@@ -51,8 +51,9 @@ export class IdRanker {
       if (!entry2.rank) {
         this.idRankMap[k2] = this.calcRank(entry2);
       }
-      return entry1.rank - entry2.rank;
+      return entry2.rank - entry1.rank;
     });
+    return sorted;
   }
 
   addToRankMap(idCountMap: AnyOpts, index: number) {

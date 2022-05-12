@@ -52,22 +52,26 @@ export class BlockName {
   firstNoun: string | undefined;
   nouns: string[] = [];
   sentenceMaker: SentenceMaker;
+  subject?: GrammarSubject;
+  object?: GrammarObject;
 
   constructor(public block: Block) {
     this.matcher = createBlockMatcher(block);
     this.setNouns();
+    this.setSubject();
+    this.setObject();
     this.sentenceMaker = this.createSentenceMaker();
   }
 
-  get object(): GrammarObject {
-    return {
+  setObject() {
+    this.object = this.object || {
       noun: this.nextNoun(),
       action: this.action,
     };
   }
 
-  get subject(): GrammarSubject {
-    return {
+  setSubject() {
+    this.subject = this.subject || {
       noun: this.nextNoun(),
       preposition: this.preposition,
     };
@@ -97,7 +101,7 @@ export class BlockName {
     const { matcher } = this;
     return {
       nouns: matcher.nouns,
-      unmatchedIds: matcher.unmatchedIds,
+      unmatchedWords: matcher.unmatchedWords,
       verbs: matcher.verbs,
       adjectives: matcher.adjectives,
       prepositions: matcher.prepositions,
@@ -112,7 +116,7 @@ export class BlockName {
   get firstPreposition() {
     return (
       this.raw.prepositions[0] ||
-      this.prepositionFor(this.subject.noun, this.object.action)
+      this.prepositionFor(this.subject?.noun, this.object?.action)
     );
   }
 
@@ -130,7 +134,7 @@ export class BlockName {
   }
 
   nextNoun() {
-    return this.nouns.pop() || this.raw.unmatchedIds.pop();
+    return this.nouns.pop() || this.raw.unmatchedWords.pop();
   }
 
   get noun() {

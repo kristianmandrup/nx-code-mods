@@ -13,13 +13,13 @@ export interface GrammarSubject {
 }
 
 export interface SentenceMakerOpts {
-  object: GrammarObject;
-  subject: GrammarSubject;
+  object?: GrammarObject;
+  subject?: GrammarSubject;
 }
 
 export class SentenceMaker implements SentenceMakerOpts {
-  object: GrammarObject;
-  subject: GrammarSubject;
+  object?: GrammarObject;
+  subject?: GrammarSubject;
 
   constructor({ object, subject }: SentenceMakerOpts) {
     this.object = object;
@@ -39,6 +39,7 @@ export class SentenceMaker implements SentenceMakerOpts {
 
   get orderedParts() {
     const { object, subject } = this;
+    if (!object || !subject) return [];
     return [object.action, object.noun, subject.preposition, subject.noun];
   }
 

@@ -1,7 +1,7 @@
 export interface GrammarSet {
   ids: string[];
-  unmatchedIds: string[];
-  matchedIds: string[];
+  unmatchedWords: string[];
+  matchedWords: string[];
   words: string[];
   nouns: string[];
   verbs: string[];
@@ -12,8 +12,8 @@ export interface GrammarSet {
 export class GrammarMatcher {
   grammar: GrammarSet = {
     ids: [],
-    unmatchedIds: [],
-    matchedIds: [],
+    unmatchedWords: [],
+    matchedWords: [],
     words: [],
     nouns: [],
     verbs: [],
@@ -25,12 +25,12 @@ export class GrammarMatcher {
     return this.grammar.ids;
   }
 
-  get unmatchedIds() {
-    return this.grammar.unmatchedIds;
+  get unmatchedWords() {
+    return this.grammar.unmatchedWords;
   }
 
-  get matchedIds() {
-    return this.grammar.matchedIds;
+  get matchedWords() {
+    return this.grammar.matchedWords;
   }
 
   get words() {

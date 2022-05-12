@@ -23,7 +23,7 @@ describe('id matcher', () => {
     describe('verbs', () => {
       it('set, type', () => {
         const verbs = matcher.verbs;
-        expect(verbs).toEqual(['set', 'type']);
+        expect(verbs).toEqual(['set']);
       });
     });
 
