@@ -4,16 +4,33 @@ import { AnyOpts, replaceInSource } from '../../modify';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import {
   ifStmtExtractFunction,
+  IfStmtExtractResult,
   insertExtractedFunction,
   RefactorIfStmtOpts,
   replaceWithCallToExtractedFunction,
 } from './common';
+import { IfStatement } from 'typescript';
 
 // function isCondition({ids}) {
 //     if (!condition) return
 //     thenStatements
 // }
 // callFunction(thenFunction, {ids})
+
+export const extractIfThenBlock = (
+  srcNode: any,
+  stmt: IfStatement,
+  opts: AnyOpts,
+): IfStmtExtractResult | undefined => {
+  const codeParts = ifStmtExtractFunction(stmt, { ...opts, mode: 'then' });
+  if (!codeParts) return;
+  const { name, fnSrc, callSrc } = codeParts;
+  if (!callSrc || !fnSrc) return;
+  const { replace } = opts;
+  const source =
+    replace && replaceWithCallToExtractedFunction(srcNode, callSrc);
+  return { name, callSrc, fnSrc, source };
+};
 
 export const extractThenBlock =
   (opts: AnyOpts): TSQueryStringTransformer =>
@@ -27,13 +44,14 @@ export const extractThenBlock =
       return;
     }
     const stmt = stmts[0];
-    const codeParts = ifStmtExtractFunction(stmt, { ...opts, mode: 'then' });
-    if (!codeParts) return;
-    const { fnSrc, callSrc } = codeParts;
-    if (!callSrc || !fnSrc) return;
-
-    const newSource = replaceWithCallToExtractedFunction(srcNode, callSrc);
-    const newSrcNode = tsquery.ast(newSource);
+    const result = extractIfThenBlock(srcNode, stmt, {
+      ...opts,
+      replace: true,
+    });
+    if (!result) return;
+    const { source, fnSrc } = result;
+    if (!source) return;
+    const newSrcNode = tsquery.ast(source);
     return insertExtractedFunction(newSrcNode, fnSrc);
   };
 

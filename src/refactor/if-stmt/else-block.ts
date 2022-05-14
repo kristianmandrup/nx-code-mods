@@ -4,23 +4,33 @@ import { AnyOpts, replaceInSource } from '../../modify';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import {
   ifStmtExtractFunction,
+  IfStmtExtractResult,
   insertExtractedFunction,
   RefactorIfStmtOpts,
   replaceWithCallToExtractedFunction,
-  srcsFor,
 } from './common';
-import {
-  findIfStatementsWithElseBlocks,
-  findIfStatementsWithoutElseBlocks,
-  getIfStatementElseBlocks,
-  getIfStatementThenBlocks,
-} from '../../find';
+import { findIfStatementsWithElseBlocks } from '../../find';
 
 // function isCondition({ids}) {
 //     if (!condition) return
 //     thenStatements
 // }
 // callFunction(thenFunction, {ids})
+
+export const extractIfElseBlock = (
+  srcNode: any,
+  stmt: IfStatement,
+  opts: AnyOpts,
+): IfStmtExtractResult | undefined => {
+  const codeParts = ifStmtExtractFunction(stmt, { ...opts, mode: 'else' });
+  if (!codeParts) return;
+  const { name, fnSrc, callSrc } = codeParts;
+
+  if (!callSrc || !fnSrc) return;
+  const source =
+    opts.replace && replaceWithCallToExtractedFunction(srcNode, callSrc);
+  return { name, callSrc, fnSrc, source };
+};
 
 export const extractElseBlock =
   (opts: AnyOpts): TSQueryStringTransformer =>
@@ -34,13 +44,14 @@ export const extractElseBlock =
       return;
     }
     const stmt = stmts[0];
-    const codeParts = ifStmtExtractFunction(stmt, { ...opts, mode: 'else' });
-    if (!codeParts) return;
-    const { fnSrc, callSrc } = codeParts;
-
-    if (!callSrc || !fnSrc) return;
-    const newSource = replaceWithCallToExtractedFunction(srcNode, callSrc);
-    const newSrcNode = tsquery.ast(newSource);
+    const result = extractIfElseBlock(srcNode, stmt, {
+      ...opts,
+      replace: true,
+    });
+    if (!result) return;
+    const { source, fnSrc } = result;
+    if (!source) return;
+    const newSrcNode = tsquery.ast(source);
     return insertExtractedFunction(newSrcNode, fnSrc);
   };
 

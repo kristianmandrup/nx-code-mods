@@ -23,6 +23,7 @@ describe('if statement', () => {
       const filePath = path.join(__dirname, 'files', 'if-then-user-block.txt');
       const content = readFileIfExisting(filePath);
       const result = refactorIfStmtsToFunctions(content);
+      console.log({ result });
       if (!result) return;
       expect(result).toBeDefined();
     });

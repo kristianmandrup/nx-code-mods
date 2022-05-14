@@ -5,6 +5,7 @@ import { findAllLocalRefIds, idsToSrc } from '../utils';
 import { getPosAfterLastImport } from '../../append';
 import { PositionBounds } from '../../types';
 import { getIfStatementElseBlocks, getIfStatementThenBlocks } from '../../find';
+import { tsquery } from '@phenomnomnominal/tsquery';
 export interface RefactorIfStmtOpts {
   condName?: string;
   fnName?: string;
@@ -44,7 +45,7 @@ export const ifStmtBlockToCall = (
   }: {
     name?: string;
   },
-) => {
+): ReplaceDef => {
   name = name || blockName(block);
   const ids = findAllLocalRefIds(block);
   const strIds = idsToSrc(ids);
@@ -76,6 +77,7 @@ export const srcsFor = (block: Block, expr: Expression, opts: any = {}) => {
   const fnSrc = createFnCode(block, expr, opts);
   const callSrc = ifStmtBlockToCall(block, opts);
   return {
+    name,
     fnSrc,
     callSrc,
   };
@@ -103,15 +105,27 @@ export const ifStmtExtractFunction = (node: IfStatement, opts: AnyOpts) => {
   };
 };
 
-interface InsertDef {
+export interface InsertDef {
   code: string;
   insertPos: number;
 }
 
-interface ReplaceDef {
+export interface ReplaceDef {
   code: string;
   positions: PositionBounds;
 }
+
+export const insertNewFunction = (source: string, insertDef: InsertDef) => {
+  const srcNode = tsquery.ast(source);
+  return insertExtractedFunction(srcNode, insertDef);
+};
+
+export type IfStmtExtractResult = {
+  name: string;
+  source: string;
+  callSrc: ReplaceDef;
+  fnSrc: InsertDef;
+};
 
 export const insertExtractedFunction = (srcNode: any, insertDef: InsertDef) => {
   return insertCode(srcNode, insertDef.insertPos, insertDef.code);
