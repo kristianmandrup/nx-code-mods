@@ -7,7 +7,7 @@ import {
   insertExtractedFunction,
   RefactorIfStmtOpts,
   replaceWithCallToExtractedFunction,
-} from './if-extract-common';
+} from './common';
 
 // function isCondition({ids}) {
 //     if (!condition) return

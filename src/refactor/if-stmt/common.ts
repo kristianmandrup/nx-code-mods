@@ -11,7 +11,7 @@ export interface RefactorIfStmtOpts {
 }
 
 export const createFnCode = (block: Block, expr: Expression, opts: any) => {
-  let { name } = opts;
+  let { name, inverseGuard } = opts;
   name = name || blockName(block);
   const ids = findAllLocalRefIds(block);
   const strIds = idsToSrc(ids);
@@ -22,10 +22,11 @@ export const createFnCode = (block: Block, expr: Expression, opts: any) => {
   const src = blockSrc.substring(startPos, endPos);
   const exprSrc = expr.getFullText();
   const insertPos = getPosAfterLastImport(block.getSourceFile());
+  const guardClauseCode = inverseGuard ? `!(${exprSrc})` : exprSrc;
   const code = `
     function ${name}(opts: any) {
         const { ${strIds} } = opts
-        if (${exprSrc}) return;
+        if (${guardClauseCode}) return;
         ${src}
         return;
     }
@@ -60,9 +61,11 @@ const defaults = {
   minBlockSize: 3,
 };
 
-export const srcsFor = (block: Block, expr: Expression, opts: any) => {
+export const srcsFor = (block: Block, expr: Expression, opts: any = {}) => {
+  const inverseGuard = opts.mode === 'then';
   opts = {
     ...defaults,
+    inverseGuard,
     ...opts,
   };
   const { minBlockSize } = opts;

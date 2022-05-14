@@ -2,7 +2,7 @@ import { IfStatement } from 'typescript';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { findGroupedIfStatements, findIfStatements } from '../../find';
 import { AnyOpts, replaceInSource } from '../../modify';
-import { RefactorIfStmtOpts } from './if-extract-common';
+import { RefactorIfStmtOpts } from './common';
 
 export const extractIfElseStmtToFunctions = (stmt: IfStatement) => {};
 export const extractIfThenStmtToFunctions = (stmt: IfStatement) => {};

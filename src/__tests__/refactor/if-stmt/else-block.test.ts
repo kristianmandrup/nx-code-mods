@@ -1,6 +1,6 @@
-import { ifStmtExtractFunction } from '../../refactor/if-stmt';
+import { ifStmtExtractFunction } from '../../../refactor/if-stmt';
+import { findFunctionBlock, findIfStatements } from '../../../find';
 import { Block, IfStatement } from 'typescript';
-import { findFunctionBlock, findIfStatements } from '../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { tsquery } from '@phenomnomnominal/tsquery';

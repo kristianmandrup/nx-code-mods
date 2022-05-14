@@ -8,7 +8,7 @@ import {
   RefactorIfStmtOpts,
   replaceWithCallToExtractedFunction,
   srcsFor,
-} from './if-extract-common';
+} from './common';
 import {
   findIfStatementsWithElseBlocks,
   findIfStatementsWithoutElseBlocks,

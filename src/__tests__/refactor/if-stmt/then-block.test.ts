@@ -1,6 +1,6 @@
-import { ifStmtExtractFunction } from './../../refactor/if-stmt/if-extract-common';
+import { ifStmtExtractFunction } from '../../../refactor/if-stmt/common';
+import { findFunctionBlock, findIfStatements } from '../../../find';
 import { Block, IfStatement } from 'typescript';
-import { findFunctionBlock, findIfStatements } from '../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { tsquery } from '@phenomnomnominal/tsquery';
@@ -10,7 +10,12 @@ const context = describe;
 describe('if extract function', () => {
   context('if then user block', () => {
     it('replaced with: function and function call', () => {
-      const filePath = path.join(__dirname, 'files', 'if-then-user-block.txt');
+      const filePath = path.join(
+        __dirname,
+        '..',
+        'files',
+        'if-then-user-block.txt',
+      );
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
@@ -20,6 +25,7 @@ describe('if extract function', () => {
       const ifStmt = ifStmts[0] as IfStatement;
       const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
+      if (!result.callSrc || !result.fnSrc) return;
       expect(result.callSrc.code).toContain(
         `setUserGuest({user, setGuest, ctx})`,
       );
@@ -42,8 +48,9 @@ describe('if extract function', () => {
       const ifStmts = findIfStatements(block);
       if (!ifStmts) return;
       const ifStmt = ifStmts[0] as IfStatement;
-      const result = ifThenStmtExtractFunction(ifStmt, {});
+      const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
+      if (!result.callSrc || !result.fnSrc) return;
       expect(result.callSrc.code).toContain(
         `setUserAdmin({user, setAdmin, ctx})`,
       );
@@ -72,6 +79,7 @@ describe('if extract function', () => {
       const ifStmt = ifStmts[0] as IfStatement;
       const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
+      if (!result.callSrc || !result.fnSrc) return;
       expect(result.callSrc.code).toContain(`return setUserAdmin({user, ctx})`);
       expect(result.fnSrc.code).toContain(`const { user, ctx } = opts`);
       expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);
