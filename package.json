@@ -46,6 +46,7 @@
     "noun-json": "^1.0.1",
     "prettier": "^2.6.2",
     "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0",
     "typescript": "^4.6.3",
     "verb-corpus": "^3.1.5"
   },

@@ -6,8 +6,8 @@ import { getPosAfterLastImport } from '../../append';
 import { PositionBounds } from '../../types';
 import { getIfStatementElseBlocks, getIfStatementThenBlocks } from '../../find';
 export interface RefactorIfStmtOpts {
-  condName: string;
-  fnName: string;
+  condName?: string;
+  fnName?: string;
 }
 
 export const createFnCode = (block: Block, expr: Expression, opts: any) => {

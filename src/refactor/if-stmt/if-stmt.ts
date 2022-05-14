@@ -27,7 +27,7 @@ export const extractIfStmtToFunctions =
 
 export function refactorIfStmtsToFunctions(
   source: string,
-  opts: RefactorIfStmtOpts,
+  opts: RefactorIfStmtOpts = {},
 ) {
   const findNodeFn = (node: any) => findIfStatements(node);
 
