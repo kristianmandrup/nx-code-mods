@@ -39,6 +39,7 @@ export const createFnCode = (block: Block, expr: Expression, opts: any) => {
 };
 
 export const ifStmtBlockToCall = (
+  ifStmt: IfStatement,
   block: Block,
   {
     name,
@@ -49,9 +50,8 @@ export const ifStmtBlockToCall = (
   name = name || blockName(block);
   const ids = findAllLocalRefIds(block);
   const strIds = idsToSrc(ids);
-  const code = `
-      return ${name}({${strIds}})`;
-  const positions = { startPos: block.getStart(), endPos: block.getEnd() };
+  const code = `${name}({${strIds}})`;
+  const positions = { startPos: ifStmt.getStart(), endPos: block.getEnd() };
   return {
     code,
     positions,
@@ -59,10 +59,15 @@ export const ifStmtBlockToCall = (
 };
 
 const defaults = {
-  minBlockSize: 3,
+  minBlockSize: 2,
 };
 
-export const srcsFor = (block: Block, expr: Expression, opts: any = {}) => {
+export const srcsFor = (
+  ifStmt: IfStatement,
+  block: Block,
+  expr: Expression,
+  opts: any = {},
+) => {
   const inverseGuard = opts.mode === 'then';
   opts = {
     ...defaults,
@@ -75,7 +80,7 @@ export const srcsFor = (block: Block, expr: Expression, opts: any = {}) => {
   const name = opts.name || blockName(block);
   opts.name = name;
   const fnSrc = createFnCode(block, expr, opts);
-  const callSrc = ifStmtBlockToCall(block, opts);
+  const callSrc = ifStmtBlockToCall(ifStmt, block, opts);
   return {
     name,
     fnSrc,
@@ -88,19 +93,19 @@ const modeMap: any = {
   then: getIfStatementThenBlocks,
 };
 
-export const ifStmtExtractFunction = (node: IfStatement, opts: AnyOpts) => {
+export const ifStmtExtractFunction = (ifStmt: IfStatement, opts: AnyOpts) => {
   const { mode } = opts;
   const getBlocksFn = modeMap[mode];
   if (!getBlocksFn) {
     throw new Error('Invalid mode ');
   }
-  const blocks = getBlocksFn(node);
+  const blocks = getBlocksFn(ifStmt);
   if (!blocks) return;
   const block = blocks[0];
-  const expression = node.expression;
-  const srcs = srcsFor(block, expression, opts);
+  const expression = ifStmt.expression;
+  const srcs = srcsFor(ifStmt, block, expression, opts);
   return {
-    node,
+    ifStmt,
     ...srcs,
   };
 };
@@ -135,6 +140,8 @@ export const replaceWithCallToExtractedFunction = (
   srcNode: any,
   replaceDef: ReplaceDef,
 ) => {
-  const opts = { ...replaceDef.positions, code: replaceDef.code };
+  const { code } = replaceDef;
+  const returnCallCode = `return ${code}`;
+  const opts = { ...replaceDef.positions, code: returnCallCode };
   return replaceCode(srcNode, opts);
 };

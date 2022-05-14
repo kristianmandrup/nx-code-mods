@@ -35,10 +35,10 @@ export const extractIfElseBlock = (
 export const extractElseBlock =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { code } = opts;
-    if (!code) {
-      throw new Error('Missing code');
-    }
+    // const { code } = opts;
+    // if (!code) {
+    //   throw new Error('Missing code');
+    // }
     const stmts = findIfStatementsWithElseBlocks(srcNode);
     if (!stmts || stmts.length === 0) {
       return;

@@ -59,7 +59,7 @@ export const getIfStatementBlocks = (
 };
 
 export const getIfStatementThenBlocks = (node: Node): Block[] | undefined => {
-  const result = findIfStatementsWithoutElseBlocks(node);
+  const result = findIfStatements(node);
   if (!result || result.length === 0) return;
   return result.map((res) => res.thenStatement) as Block[];
 };

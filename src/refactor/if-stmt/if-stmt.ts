@@ -1,3 +1,4 @@
+import { removeCode } from './../../modify/modify-code';
 import { IfStatement, SourceFile } from 'typescript';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { findGroupedIfStatements, findIfStatements } from '../../find';
@@ -19,7 +20,7 @@ export const replaceIfStmtWithOrCalls = (
   thenDef: IfStmtExtractResult,
   elseDef: IfStmtExtractResult,
 ): string => {
-  const code = `${thenDef.callSrc} || ${elseDef.callSrc}`;
+  const code = `${thenDef.callSrc.code} || ${elseDef.callSrc.code}`;
   const positions = {
     startPos: stmt.getStart(),
     endPos: stmt.getEnd(),
@@ -35,45 +36,50 @@ export const extractIfElseStmtToFunctions = (
   stmt: IfStatement,
   opts: AnyOpts,
 ) => {
+  opts = { minBlockSize: 0, ...opts };
   const thenDef = extractIfThenBlock(srcNode, stmt, opts);
   const elseDef = extractIfElseBlock(srcNode, stmt, opts);
-
   if (!thenDef || !elseDef) return;
   let newSource = replaceIfStmtWithOrCalls(srcNode, stmt, thenDef, elseDef);
   newSource = insertNewFunction(newSource, thenDef.fnSrc);
   newSource = insertNewFunction(newSource, elseDef.fnSrc);
+
   return newSource;
 };
 
 export const extractIfThenStmtToFunctions = (
   srcNode: SourceFile,
   stmt: IfStatement,
-  opts: AnyOpts,
+  opts: AnyOpts = {},
 ) => {
   const then = extractIfThenBlock(srcNode, stmt, { ...opts, replace: true });
   if (!then) return;
   const { source, fnSrc } = then;
   const newSrcNode = tsquery.ast(source);
-  const refactoredCode = insertExtractedFunction(newSrcNode, fnSrc);
-  return refactoredCode;
+  return insertExtractedFunction(newSrcNode, fnSrc);
 };
 
 export const extractIfStmtToFunctions =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    const { code } = opts;
-    if (!code) {
-      throw new Error('Missing code');
-    }
+    // const { code } = opts;
+    // if (!code) {
+    //   throw new Error('Missing code');
+    // }
     const group = findGroupedIfStatements(srcNode);
     if (!group) return;
+    let source: any;
+    let newSrcNode: any;
     group?.else?.map((stmt: IfStatement) => {
-      extractIfElseStmtToFunctions(srcNode, stmt, opts);
+      newSrcNode = source ? tsquery.ast(source) : srcNode;
+      source = extractIfElseStmtToFunctions(newSrcNode, stmt, opts);
     });
 
     group?.then?.map((stmt: IfStatement) => {
-      extractIfThenStmtToFunctions(srcNode, stmt, opts);
+      newSrcNode = source ? tsquery.ast(source) : srcNode;
+      source = extractIfThenStmtToFunctions(srcNode, stmt, opts);
     });
+    return source;
   };
 
 export function refactorIfStmtsToFunctions(
