@@ -1,0 +1,24 @@
+function xyz(name, items, ...rest) {
+    function printName(name) {
+        name = name || 'no name'
+        print(name)
+    }
+
+    function iterateItems(items) {
+        for (let item of items) {
+            print(item)
+        }
+    }
+
+    function addRestToItems(items, rest) {
+        items.push(...rest)
+        return items
+    }
+
+    printName(name)
+    iterateItems(items)
+    addRestToItems(items, rest)
+    return items
+}
+
+

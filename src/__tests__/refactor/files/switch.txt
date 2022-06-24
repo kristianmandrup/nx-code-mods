@@ -1,0 +1,12 @@
+function xyz() {
+  switch (type) {
+    case 'a':
+        print('a);
+        break;
+    case 'b':
+        print('b);
+        break;
+    default: 
+        return 0;
+  }
+}

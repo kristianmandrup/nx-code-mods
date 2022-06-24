@@ -1,0 +1,13 @@
+function xyz(name, items, ...rest) {
+    name = name || 'no name'
+    print(name)
+
+    for (let item of items) {
+        print(item)
+    }
+
+    items.push(...rest)
+    return items
+}
+
+

@@ -1,0 +1,5 @@
+function xyz(a, b, c) {
+    print(a)
+}
+
+xyz(a, b, c)

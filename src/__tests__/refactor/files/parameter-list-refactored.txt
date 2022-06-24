@@ -1,0 +1,6 @@
+function xyz({a, b, c}) {
+    print(a)
+}
+
+const data = {a, b, c}
+xyz(data)
