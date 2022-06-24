@@ -10,7 +10,12 @@ const context = describe;
 describe('if else block extract function', () => {
   context('if then user block', () => {
     it('replaced with: function and function call', () => {
-      const filePath = path.join(__dirname, 'files', 'if-then-user-block.txt');
+      const filePath = path.join(
+        __dirname,
+        '..',
+        'files',
+        'if-then-user-block.txt',
+      );
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
@@ -48,6 +53,7 @@ describe('if else block extract function', () => {
     it('replacement if function and call', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'if-else-guest-user-block.txt',
       );

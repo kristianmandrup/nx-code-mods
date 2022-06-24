@@ -1,0 +1,11 @@
+function xyz(name, items, ...rest) {
+    function iterateItem(item) {
+        count = item.count + 1
+        print(item)
+    }
+
+    for (let item of items) {
+        iterateItem(item)
+    }
+}
+

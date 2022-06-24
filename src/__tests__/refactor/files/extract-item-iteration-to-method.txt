@@ -1,0 +1,7 @@
+function xyz(name, items, ...rest) {
+    for (let item of items) {
+        count = item.count + 1
+        print(item)
+    }
+}
+

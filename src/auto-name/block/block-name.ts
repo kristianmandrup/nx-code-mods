@@ -9,8 +9,6 @@ import { BlockMatcher, createBlockMatcher, getMainId } from './block-matcher';
 import {
   camelizedIdentifier,
   createSingularArrayMatcher,
-  ensureValidParts,
-  shouldAddExtraNoun,
   unique,
 } from '../utils';
 import { conditionParts } from '../condition';

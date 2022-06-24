@@ -7,7 +7,6 @@ import { Block, IfStatement } from 'typescript';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { tsquery } from '@phenomnomnominal/tsquery';
-import { escapeRegExp } from '../../../utils';
 import { strContains, strNotContains } from '../../utils';
 
 const context = describe;

@@ -40,7 +40,12 @@ describe('if extract function', () => {
 
   context('if else user block', () => {
     it('replaced with: function and function call', () => {
-      const filePath = path.join(__dirname, 'files', 'if-else-user-block.txt');
+      const filePath = path.join(
+        __dirname,
+        '..',
+        'files',
+        'if-else-user-block.txt',
+      );
       const content = readFileIfExisting(filePath);
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
@@ -67,6 +72,7 @@ describe('if extract function', () => {
     it('replaced with: function and function call', () => {
       const filePath = path.join(
         __dirname,
+        '..',
         'files',
         'if-else-using-imports.txt',
       );
