@@ -3,16 +3,15 @@ import { IfStatement, SourceFile } from 'typescript';
 import { TSQueryStringTransformer } from '@phenomnomnominal/tsquery/dist/src/tsquery-types';
 import { findGroupedIfStatements, findIfStatements } from '../../find';
 import { AnyOpts, replaceInSource } from '../../modify';
-import {
-  IfStmtExtractResult,
-  replaceWithCallToExtractedFunction,
-  insertNewFunction,
-  insertExtractedFunction,
-  RefactorIfStmtOpts,
-} from './common';
+import { IfStmtExtractResult, RefactorIfStmtOpts } from './common';
 import { extractIfElseBlock } from './else-block';
 import { extractIfThenBlock } from './then-block';
 import { tsquery } from '@phenomnomnominal/tsquery';
+import {
+  insertExtractedFunction,
+  insertNewFunction,
+  replaceWithCallToExtractedFunction,
+} from '../common';
 
 export const replaceIfStmtWithOrCalls = (
   srcNode: any,
@@ -25,10 +24,14 @@ export const replaceIfStmtWithOrCalls = (
     startPos: stmt.getStart(),
     endPos: stmt.getEnd(),
   };
-  return replaceWithCallToExtractedFunction(srcNode, {
-    positions,
-    code,
-  });
+  return replaceWithCallToExtractedFunction(
+    srcNode,
+    {
+      positions,
+      code,
+    },
+    true,
+  );
 };
 
 export const extractIfElseStmtToFunctions = (
@@ -62,10 +65,6 @@ export const extractIfThenStmtToFunctions = (
 export const extractIfStmtToFunctions =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    // const { code } = opts;
-    // if (!code) {
-    //   throw new Error('Missing code');
-    // }
     const group = findGroupedIfStatements(srcNode);
     if (!group) return;
     let source: any;

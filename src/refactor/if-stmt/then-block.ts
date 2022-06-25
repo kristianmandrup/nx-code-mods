@@ -5,11 +5,13 @@ import { tsquery } from '@phenomnomnominal/tsquery';
 import {
   ifStmtExtractFunction,
   IfStmtExtractResult,
-  insertExtractedFunction,
   RefactorIfStmtOpts,
-  replaceWithCallToExtractedFunction,
 } from './common';
 import { IfStatement } from 'typescript';
+import {
+  insertExtractedFunction,
+  replaceWithCallToExtractedFunction,
+} from '../common';
 
 // function isCondition({ids}) {
 //     if (!condition) return
@@ -28,7 +30,7 @@ export const extractIfThenBlock = (
   if (!callSrc || !fnSrc) return;
   const { replace } = opts;
   const source =
-    replace && replaceWithCallToExtractedFunction(srcNode, callSrc);
+    replace && replaceWithCallToExtractedFunction(srcNode, callSrc, true);
   return { name, callSrc, fnSrc, source };
 };
 

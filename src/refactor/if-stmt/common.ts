@@ -1,11 +1,10 @@
 import { Block, Expression, IfStatement, isDefaultClause } from 'typescript';
-import { AnyOpts, insertCode, replaceCode } from '../../modify';
+import { AnyOpts } from '../../modify';
 import { blockName } from '../../auto-name';
 import { findAllLocalRefIds, idsToSrc } from '../utils';
 import { getPosAfterLastImport } from '../../append';
-import { PositionBounds } from '../../types';
 import { getIfStatementElseBlocks, getIfStatementThenBlocks } from '../../find';
-import { tsquery } from '@phenomnomnominal/tsquery';
+import { InsertDef, ReplaceDef } from '../common';
 export interface RefactorIfStmtOpts {
   condName?: string;
   fnName?: string;
@@ -110,38 +109,9 @@ export const ifStmtExtractFunction = (ifStmt: IfStatement, opts: AnyOpts) => {
   };
 };
 
-export interface InsertDef {
-  code: string;
-  insertPos: number;
-}
-
-export interface ReplaceDef {
-  code: string;
-  positions: PositionBounds;
-}
-
-export const insertNewFunction = (source: string, insertDef: InsertDef) => {
-  const srcNode = tsquery.ast(source);
-  return insertExtractedFunction(srcNode, insertDef);
-};
-
 export type IfStmtExtractResult = {
   name: string;
   source: string;
   callSrc: ReplaceDef;
   fnSrc: InsertDef;
-};
-
-export const insertExtractedFunction = (srcNode: any, insertDef: InsertDef) => {
-  return insertCode(srcNode, insertDef.insertPos, insertDef.code);
-};
-
-export const replaceWithCallToExtractedFunction = (
-  srcNode: any,
-  replaceDef: ReplaceDef,
-) => {
-  const { code } = replaceDef;
-  const returnCallCode = `return ${code}`;
-  const opts = { ...replaceDef.positions, code: returnCallCode };
-  return replaceCode(srcNode, opts);
 };

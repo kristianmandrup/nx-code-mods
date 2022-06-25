@@ -5,17 +5,13 @@ import { tsquery } from '@phenomnomnominal/tsquery';
 import {
   ifStmtExtractFunction,
   IfStmtExtractResult,
-  insertExtractedFunction,
   RefactorIfStmtOpts,
-  replaceWithCallToExtractedFunction,
 } from './common';
 import { findIfStatementsWithElseBlocks } from '../../find';
-
-// function isCondition({ids}) {
-//     if (!condition) return
-//     thenStatements
-// }
-// callFunction(thenFunction, {ids})
+import {
+  insertExtractedFunction,
+  replaceWithCallToExtractedFunction,
+} from '../common';
 
 export const extractIfElseBlock = (
   srcNode: any,
@@ -28,17 +24,13 @@ export const extractIfElseBlock = (
 
   if (!callSrc || !fnSrc) return;
   const source =
-    opts.replace && replaceWithCallToExtractedFunction(srcNode, callSrc);
+    opts.replace && replaceWithCallToExtractedFunction(srcNode, callSrc, true);
   return { name, callSrc, fnSrc, source };
 };
 
 export const extractElseBlock =
   (opts: AnyOpts): TSQueryStringTransformer =>
   (srcNode: any): string | null | undefined => {
-    // const { code } = opts;
-    // if (!code) {
-    //   throw new Error('Missing code');
-    // }
     const stmts = findIfStatementsWithElseBlocks(srcNode);
     if (!stmts || stmts.length === 0) {
       return;
