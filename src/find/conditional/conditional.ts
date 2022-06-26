@@ -1,10 +1,10 @@
 import { tsquery } from '@phenomnomnominal/tsquery';
 import {
   Block,
-  createTypeReferenceDirectiveResolutionCache,
   Identifier,
   IfStatement,
   Node,
+  SwitchStatement,
 } from 'typescript';
 import { findDeclaredIdentifiersInScope } from '../scope';
 
@@ -84,6 +84,14 @@ export const findIfStatementElseBlock = (node: Node): Block | undefined => {
 
 export const findIfStatements = (node: Node): IfStatement[] | undefined => {
   const result: IfStatement[] = tsquery(node, `IfStatement`);
+  if (!result || result.length === 0) return;
+  return result;
+};
+
+export const findSwitchStatements = (
+  node: Node,
+): SwitchStatement[] | undefined => {
+  const result: SwitchStatement[] = tsquery(node, `SwitchStatement`);
   if (!result || result.length === 0) return;
   return result;
 };

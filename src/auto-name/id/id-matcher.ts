@@ -6,7 +6,12 @@ import { complete as verbs } from 'verb-corpus';
 import * as adjectives from 'adjectives';
 import * as prepositions from 'prepositions';
 import { Block } from 'typescript';
-import { idToStr, findFirstIdentifier, getLastStatement } from '../../find';
+import {
+  idToStr,
+  findFirstIdentifier,
+  getLastStatement,
+  findLastIdentifierOrLit,
+} from '../../find';
 
 const nounAliases = ['admin', 'id', 'ctx'];
 
@@ -36,7 +41,7 @@ export const idMatcher = (identifier: string) =>
 
 export const determineMainIdentifier = (block: Block): string | undefined => {
   const lastStmt = getLastStatement(block);
-  const id = findFirstIdentifier(lastStmt);
+  const id = findLastIdentifierOrLit(lastStmt);
   if (!id) return;
   return idToStr(id);
 };

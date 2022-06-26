@@ -4,10 +4,6 @@ import { blockName } from '../../auto-name';
 import { findReferenceIdentifiersFor } from '../../find';
 import { findBlock } from '../../find/block';
 import { replaceCode } from '../../modify';
-import {
-  insertExtractedFunction,
-  replaceWithCallToExtractedFunction,
-} from '../common';
 import { idsToSrc } from '../utils';
 
 const wrapBlock = (src: string) => {

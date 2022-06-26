@@ -84,7 +84,7 @@ export class BlockName {
   }
 
   setNouns() {
-    this.nouns = this.raw.nouns
+    this.nouns = [this.matcher.mainId, ...this.raw.nouns]
       .filter((noun) => !this.raw.arrayOps.includes(noun))
       .reverse();
   }
@@ -170,6 +170,7 @@ export class BlockName {
   //   }
 
   toName(): string | undefined {
-    return camelizedIdentifier(this.sentenceMaker.parts);
+    const { parts } = this.sentenceMaker;
+    return camelizedIdentifier(parts);
   }
 }

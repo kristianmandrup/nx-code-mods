@@ -38,6 +38,11 @@ export const findFirstIdentifier = (node: Node): Identifier | undefined => {
   return result[0] as Identifier;
 };
 
+export const findLastIdentifierOrLit = (node: Node): IdLike | undefined => {
+  const result = findAllIdentifiersOrStringLiteralsFor(node);
+  return result[result.length - 1] as IdLike;
+};
+
 export const findLastIdentifier = (node: Node): Identifier | undefined => {
   const selector = `Identifier`;
   const result = tsquery(node, selector);
