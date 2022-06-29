@@ -17,7 +17,10 @@ describe('extract methods from switch', () => {
       const code = extractSwitchStatements(srcNode, block);
       expect(code).toContain(`function isTypeA({type})`);
       expect(code).toContain(`function isTypeB({type})`);
-      expect(code).toContain(`isTypeA({type}) || isTypeB({type})`);
+      expect(code).toContain(`function isTypeDefault()`);
+      expect(code).toContain(
+        `isTypeA({type}) || isTypeB({type}) || isTypeDefault()`,
+      );
     });
   });
 });
