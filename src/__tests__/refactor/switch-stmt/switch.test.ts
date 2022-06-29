@@ -15,7 +15,9 @@ describe('extract methods from switch', () => {
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const code = extractSwitchStatements(srcNode, block);
-      expect(code).toBeDefined();
+      expect(code).toContain(`function isTypeA({type})`);
+      expect(code).toContain(`function isTypeB({type})`);
+      expect(code).toContain(`isTypeA({type}) || isTypeB({type})`);
     });
   });
 });

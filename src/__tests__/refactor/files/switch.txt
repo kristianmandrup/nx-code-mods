@@ -1,4 +1,4 @@
-function xyz() {
+function xyz({type}) {
   switch (type) {
     case 'a':
         print('a);

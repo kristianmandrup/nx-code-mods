@@ -1,3 +1,4 @@
+export * from './block';
 export * from './class';
 export * from './conditional';
 export * from './decorator';

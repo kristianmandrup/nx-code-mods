@@ -7,69 +7,94 @@ import {
   SwitchStatement,
   CaseOrDefaultClause,
   CaseClause,
+  Statement,
 } from 'typescript';
-import { blockName, camelizedIdentifier, conditionName } from '../../auto-name';
+import { camelizedIdentifier } from '../../auto-name';
+import { expressionName } from '../../auto-name/expression';
 import { findSwitchStatements } from '../../find';
-import { findBlock } from '../../find/block';
+import { replaceCode } from '../../modify';
+import { wrapBlock } from '../convert';
 
-const callFnTemplate = ({ name, params }: any) => `${name}({${params}});\n`;
+const callFnTemplate = ({ name, params }: any) => `${name}({${params}})`;
 
 const fnTemplate = ({ name, params, block }: any) =>
   `\nfunction ${name}({${params}}) ${block}\n`;
 
-const wrapBlock = (src: string) => {
-  return '{' + src + '}';
-};
-
-const caseName = (expression: Expression) => {
-  const blockCode = wrapBlock(expression.getText());
-  const $block = tsquery.ast(blockCode);
-  const block = findBlock($block);
-  if (!block) return;
-  const exprName = blockName(block);
+const getCaseName = (expression: Expression, caseName: string = 'case') => {
+  const exprName = expressionName(expression);
   if (!exprName) return;
-  const parts = [`case`, exprName];
+  const parts = [caseName, exprName];
   return camelizedIdentifier(parts);
 };
 
-export const extractCaseClause = (srcNode: SourceFile, clause: CaseClause) => {
+type CaseExtract = {
+  fnCode?: string;
+  callCode?: string;
+};
+
+const caseStmtToCode = (stmt: Statement): string => {
+  return stmt.kind === SyntaxKind.BreakStatement
+    ? 'return'
+    : stmt.getFullText();
+};
+
+export const extractCaseClause = (
+  clause: CaseClause,
+  switchStmt: SwitchStatement,
+  caseName: string,
+): CaseExtract | undefined => {
   const { expression, statements } = clause;
-  const name = caseName(expression);
+  const exprName = expressionName(switchStmt.expression);
+  const name = getCaseName(expression, caseName);
   if (!name) return;
-  const params = 'data';
-  const stmtsCode = statements.map((stmt) => stmt.getFullText()).join('/n');
+  // TODO: find reference Ids as well
+  const params = exprName;
+  const stmtsCode = statements.map((stmt) => caseStmtToCode(stmt)).join('/n');
   const block = wrapBlock(stmtsCode);
   const fnCode = fnTemplate({ name, params, block });
-  return fnCode;
+  const callCode = callFnTemplate({ name, params });
+  return { fnCode, callCode };
 };
 
 // SyntaxKind.CaseClause
 export const extractClause = (
-  srcNode: SourceFile,
   clause: CaseOrDefaultClause,
+  switchStmt: SwitchStatement,
+  name: string,
 ) => {
   if (clause.kind === SyntaxKind.CaseClause) {
-    extractCaseClause(srcNode, clause);
+    return extractCaseClause(clause, switchStmt, name);
   }
+  return undefined;
 };
 
 export const extractSwitch = (
   srcNode: SourceFile,
   switchStmt: SwitchStatement,
 ) => {
-  let clauses: any = switchStmt.caseBlock.clauses;
-  clauses = [clauses[0]];
-  clauses.map((clause: any) => {
-    extractClause(srcNode, clause);
-  });
-  return '';
+  const exprName = expressionName(switchStmt.expression) || '';
+  const caseName = camelizedIdentifier([`is`, exprName]);
+  const clauses: any = switchStmt.caseBlock.clauses;
+  const extracted = clauses
+    .map((clause: any) => extractClause(clause, switchStmt, caseName))
+    .filter((x: any) => x);
+  const positions = {
+    startPos: switchStmt.getStart(),
+    endPos: switchStmt.getEnd(),
+  };
+  const fnDefs = extracted.map((extract: CaseExtract) => extract.fnCode);
+  const fnCalls = extracted.map((extract: CaseExtract) => extract.callCode);
+  const fnDefsBlock = fnDefs.join('\n');
+  const fnCallsBlock = fnCalls.join(' || ');
+  const code = [fnDefsBlock, fnCallsBlock].join('\n');
+  return replaceCode(srcNode, { ...positions, code });
 };
 
 export const extractSwitchStatements = (srcNode: SourceFile, block: Block) => {
   const switchStmts = findSwitchStatements(block);
   if (!switchStmts) return;
-  switchStmts.map((switchStmt) => {
-    extractSwitch(srcNode, switchStmt);
-  });
-  return '';
+  const blocks = switchStmts.map((switchStmt) =>
+    extractSwitch(srcNode, switchStmt),
+  );
+  return blocks.join('\n');
 };
