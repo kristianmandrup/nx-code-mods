@@ -8,51 +8,39 @@ import "./index.scss";
 const client = new QueryClient();
 
 const AppContent = () => {
-  const getMessages = trpc.useQuery(["getMessages"]);
+  const [code, setCode] = useState("");
+  // const [positions, setPositions] = useState({startPos: 0});
 
-  const [user, setUser] = useState("");
-  const [message, setMessage] = useState("");
-  const addMessage = trpc.useMutation("addMessage");
-  const onAdd = () => {
-    addMessage.mutate(
+  const refactorSwitch = trpc.useMutation("switch");
+
+  const onRefactorSwitch = () => {
+    refactorSwitch.mutate(
       {
-        message,
-        user,
+        code,
+        positions: {}
       },
       {
         onSuccess: () => {
-          client.invalidateQueries(["getMessages"]);
+          console.log("refactored switch:", code)
+          setCode(code)
         },
       }
     );
   };
 
+
   return (
     <div className="mt-10 text-3xl mx-auto max-w-6xl">
-      <div>
-        {(getMessages.data ?? []).map((row) => (
-          <div key={row.message}>{JSON.stringify(row)}</div>
-        ))}
-      </div>
-
       <div className="mt-10">
-        <input
-          type="text"
-          value={user}
-          onChange={(e) => setUser(e.target.value)}
+        <textarea
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
           className="p-5 border-2 border-gray-300 rounded-lg w-full"
           placeholder="User"
         />
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="p-5 border-2 border-gray-300 rounded-lg w-full"
-          placeholder="Message"
-        />
       </div>
 
-      <button onClick={onAdd}>Add message</button>
+      <button onClick={onRefactorSwitch}>Refactor</button>
     </div>
   );
 };

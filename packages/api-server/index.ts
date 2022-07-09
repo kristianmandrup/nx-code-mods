@@ -4,7 +4,7 @@ import * as trpcExpress from "@trpc/server/adapters/express";
 import cors from "cors";
 import { z } from "zod";
 import * as codeMods from "nx-code-mods";
-import { codeToBlock, codeToSourceFile } from "nx-code-mods";
+import { codeToBlock, codeToSourceFile, PositionBounds } from "nx-code-mods";
 
 interface ChatMessage {
   user: string;
@@ -20,6 +20,14 @@ const messages: ChatMessage[] = [
   { user: "user1", message: "Hello" },
   { user: "user2", message: "Hi" },
 ];
+
+const sliceCode = (code: string, positions: PositionBounds) => {
+  const { startPos, endPos } = positions;
+  if (!startPos || startPos < 0) return code;
+  return endPos && endPos > 0
+    ? code.slice(startPos, endPos)
+    : code.slice(startPos);
+};
 
 const appRouter = trpc
   .router()
@@ -37,14 +45,17 @@ const appRouter = trpc
   .mutation("switch", {
     input: z.object({
       code: z.string(),
-      startPos: z.number().default(0),
-      endPos: z.number(),
+      positions: z.object({
+        startPos: z.number().default(0),
+        endPos: z.number().default(-1),
+      }),
     }),
     resolve({ input }): RefactorResult {
-      const { code } = input;
+      const { code, positions } = input;
       try {
-        const block = codeToBlock(code);
-        const srcFile = codeToSourceFile(code);
+        const slicedCode = sliceCode(code, positions);
+        const block = codeToBlock(slicedCode);
+        const srcFile = codeToSourceFile(slicedCode);
         const newCode = codeMods.extractSwitchStatements(srcFile, block);
         return { code: newCode };
       } catch (e) {
