@@ -3,10 +3,17 @@ import * as trpc from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import cors from "cors";
 import { z } from "zod";
+import * as codeMods from "nx-code-mods";
+import { codeToBlock, codeToSourceFile } from "nx-code-mods";
 
 interface ChatMessage {
   user: string;
   message: string;
+}
+
+interface RefactorResult {
+  code?: string;
+  error?: string | undefined;
 }
 
 const messages: ChatMessage[] = [
@@ -25,6 +32,24 @@ const appRouter = trpc
     input: z.number().default(10),
     resolve({ input }) {
       return messages.slice(-input);
+    },
+  })
+  .mutation("switch", {
+    input: z.object({
+      code: z.string(),
+      startPos: z.number().default(0),
+      endPos: z.number(),
+    }),
+    resolve({ input }): RefactorResult {
+      const { code } = input;
+      try {
+        const block = codeToBlock(code);
+        const srcFile = codeToSourceFile(code);
+        const newCode = codeMods.extractSwitchStatements(srcFile, block);
+        return { code: newCode };
+      } catch (e) {
+        return { error: "invalid code" };
+      }
     },
   })
   .mutation("addMessage", {

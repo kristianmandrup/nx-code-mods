@@ -6,8 +6,15 @@ export const wrapBlock = (src: string) => {
   return '{' + src + '}';
 };
 
+export const codeToSourceFile = (code: string) => tsquery.ast(code);
+
+export const codeToBlock = (code: string) => {
+  const srcFile = codeToSourceFile(code);
+  return findBlock(srcFile) as Block;
+};
+
 export const expressionToBlock = (expr: Expression) => {
   const exprCode = expr.getText();
-  const blockCode = wrapBlock(exprCode);
-  return findBlock(tsquery.ast(blockCode)) as Block;
+  const code = wrapBlock(exprCode);
+  return codeToBlock(code) as Block;
 };
