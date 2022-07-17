@@ -6,6 +6,10 @@ jest.mock("axios");
 
 describe("api", () => {
   context("no switch in code", () => {
+    beforeAll(() => {
+      // server();
+    });
+
     const code = `function x() {}`;
     context("no slice", () => {
       it("returns code not refactored", async () => {

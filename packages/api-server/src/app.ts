@@ -36,18 +36,20 @@ const appRouter = trpc.router().mutation("switch", {
 
 export type AppRouter = typeof appRouter;
 
-const app = express();
-app.use(cors());
-const port = 8080;
+export const server = () => {
+  const app = express();
+  app.use(cors());
+  const port = 8080;
 
-app.use(
-  "/trpc",
-  trpcExpress.createExpressMiddleware({
-    router: appRouter,
-    createContext: () => null,
-  })
-);
+  app.use(
+    "/trpc",
+    trpcExpress.createExpressMiddleware({
+      router: appRouter,
+      createContext: () => null,
+    })
+  );
 
-app.listen(port, () => {
-  console.log(`api-server listening at http://localhost:${port}`);
-});
+  app.listen(port, () => {
+    console.log(`api-server listening at http://localhost:${port}`);
+  });
+};

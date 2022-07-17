@@ -1,5 +1,3 @@
-import { PositionBounds } from "nx-code-mods";
-
 export type FlexPositionBounds = {
   startPos?: number;
   endPos?: number;

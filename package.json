@@ -11,7 +11,7 @@
       "packages/*"
     ],
     "devDependencies": {
-      "concurrently": "^5.2.0",
-      "wsrun": "^5.2.0"
+      "concurrently": "^7.2.2",
+      "wsrun": "^5.2.4"
     }
   }
