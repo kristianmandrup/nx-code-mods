@@ -1,9 +1,17 @@
-import { server } from "./app";
+export { app } from "./app";
 import axios from "axios";
 
-server();
+const switchUrl = "http://localhost:3000/trpc/switch";
 
 export const refactorSwitch = async (body: any) => {
-  const response = await axios.post("https://localhost:3000/trpc/switch", body);
-  return response.data;
+  //
+  try {
+    const response = await axios.post(switchUrl, body);
+    return response;
+
+    // return response.data;
+  } catch (error: any) {
+    console.log({ error });
+    return error?.response?.data;
+  }
 };

@@ -15,10 +15,12 @@ interface RefactorResult {
 const appRouter = trpc.router().mutation("switch", {
   input: z.object({
     code: z.string(),
-    positions: z.object({
-      startPos: z.number().default(0),
-      endPos: z.number().default(-1),
-    }),
+    positions: z.optional(
+      z.object({
+        startPos: z.number().default(0),
+        endPos: z.number().default(-1),
+      })
+    ),
   }),
   resolve({ input }): RefactorResult {
     const { code, positions } = input;
@@ -29,6 +31,7 @@ const appRouter = trpc.router().mutation("switch", {
       const newCode = codeMods.extractSwitchStatements(srcFile, block);
       return { code: newCode };
     } catch (e) {
+      console.log("Invalid code");
       return { error: "invalid code" };
     }
   },
@@ -36,20 +39,13 @@ const appRouter = trpc.router().mutation("switch", {
 
 export type AppRouter = typeof appRouter;
 
-export const server = () => {
-  const app = express();
-  app.use(cors());
-  const port = 8080;
+export const app = express();
+app.use(cors());
 
-  app.use(
-    "/trpc",
-    trpcExpress.createExpressMiddleware({
-      router: appRouter,
-      createContext: () => null,
-    })
-  );
-
-  app.listen(port, () => {
-    console.log(`api-server listening at http://localhost:${port}`);
-  });
-};
+app.use(
+  "/trpc",
+  trpcExpress.createExpressMiddleware({
+    router: appRouter,
+    createContext: () => null,
+  })
+);

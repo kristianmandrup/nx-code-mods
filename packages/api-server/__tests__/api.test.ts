@@ -1,37 +1,55 @@
-import * as api from "../src/api";
+import { app, createServer } from "../src/server";
+import supertest from "supertest";
+import { Server } from "http";
 
 const context = describe;
 
-jest.mock("axios");
+// jest.mock("axios");
 
 describe("api", () => {
-  context("no switch in code", () => {
-    beforeAll(() => {
-      // server();
-    });
+  let server: Server;
+  let request: any;
 
-    const code = `function x() {}`;
-    context("no slice", () => {
-      it("returns code not refactored", async () => {
-        const result = await api.refactorSwitch({ code });
-        expect(result).toBeTruthy();
-      });
+  beforeAll(async () => {
+    server = createServer(3000);
+    request = supertest(app);
+  });
+
+  afterAll(() => {
+    server.close();
+  });
+
+  context("no switch in code", () => {
+    const body = {
+      code: `function x() {}`,
+    };
+
+    it("returns code not refactored", async () => {
+      const response = await request.post("/trpc/switch").send(body);
+      expect(response.status).toBe(200);
+      const data = response.body.result.data;
+      const { code } = data;
+      expect(code).toBeUndefined();
+      // expect(code).toEqual(body.code);
     });
   });
 
   context("switch in code", () => {
-    const code = `function x() {
-        switch (a) {
-            case 'x': return
+    const body = {
+      code: `function x() {
+        switch (key) {
+            case 'open': return
         }
-    }`;
-    context("no slice", () => {
-      it("returns code refactored with no switch", async () => {
-        const result = await api.refactorSwitch({ code });
-        expect(result).not.toContain("switch");
-        expect(result).not.toContain("case");
-        expect(result).toContain("function caseX");
-      });
+      }`,
+    };
+
+    it("returns code refactored with no switch", async () => {
+      const response = await request.post("/trpc/switch").send(body);
+      const res = response.body.result.data;
+      const { code } = res;
+      expect(code).not.toContain("switch");
+      expect(code).not.toContain("case");
+      expect(code).toContain("function isKeyOpen");
     });
   });
 });

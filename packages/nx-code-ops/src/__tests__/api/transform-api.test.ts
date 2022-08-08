@@ -1,4 +1,4 @@
-import { chainApi, chainApiFromFile } from './../../api';
+import { chainApi } from './../../api';
 import * as path from 'path';
 import { transformInSource } from '../../modify';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
