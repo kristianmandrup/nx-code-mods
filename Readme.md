@@ -1,8 +1,14 @@
-# Nx Generator code mods
+# Generator code mods
 
-This library is intended to contain Code Mods (AST Modifiers) for use in generators (such as Nx monorepo generators, Ng (Angular) generators or any other generator).
+This library is intended to contain _Code Mods_ (AST Modifiers) for use in generators such as:
 
-The library includes a number of utility functions which greatly simplify the creation of your own Code Mods.
+- Nx monorepo generators
+- Ng (Angular) generators 
+- Any other generator.
+
+The library includes a number of utility functions which greatly simplify the creation of your own _Code Mods_.
+
+_Code Mods_ are commands that can intelligently update your code by inserting or removing code at specific points in existing code and apply formatting so the change looks native to the code base.
 
 <!-- vscode-markdown-toc -->
 
@@ -11,6 +17,11 @@ The library includes a number of utility functions which greatly simplify the cr
 - [Full example](#Fullexample)
 - [Remove API](#RemoveAPI)
 - [Replace API](#ReplaceAPI)
+
+In addition the toolkit includes experimental support for:
+
+- [Auto-naming](#Autonaming)
+- [Automated refactoring](#Automatedrefactoring)
 
 ## Test results
 
@@ -660,3 +671,44 @@ const code = insertClassMethodParamDecoratorInFile(filePath, {
 - `replaceClassProperty`
 - `replaceImportIds`
 - `replaceInFunction`
+
+## <a name='Autonaming'></a>Auto-naming (Experimental)
+
+Auto-naming allows automatic generation of identifiers such as variable and function names from an expression or code block. This is essential for use with automated refactorings.
+
+- `blockName(block: Block)`
+- `conditionName(node: Node)`
+- `expressionName(expr: Expression)`
+
+## <a name='Automatedrefactoring'></a>Automated refactoring (Experimental)
+
+Automated refactoring leverages auto-naming to allow for specific code constructs to be refactored into cleaner code constructs.
+
+Currently this library includes experimental support for:
+
+- switch statements => functions and function calls
+- if/else statements => functions and function calls
+
+See `src/refactor` for additional API details:
+
+### Extract methods
+
+Extract method from a block of code (using auto-naming)
+
+- `extractMethods(srcNode: SourceFile, block: Block)`
+
+### Refactor If/Else statements
+
+Refactor if/else statements into named functions and function calls with or (`||`)
+
+- `refactorIfStmtsToFunctions(source: string, opts: RefactorIfStmtOpts)`
+- `extractIfThenStmtToFunctions(srcNode: SourceFile, stmt: IfStatement, opts: AnyOpts)`
+- `extractIfElseStmtToFunctions(srcNode: any, stmt: IfStatement, opts: AnyOpts)`
+
+### Refactor Switch statements
+
+Refactor switch statements into named functions and function calls with or (`||`)
+
+- `extractSwitchStatements(srcNode: SourceFile, block: Block)`
+- `extractSwitch(srcNode: SourceFile, switchStmt: SwitchStatement)`
+
