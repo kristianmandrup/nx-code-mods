@@ -1,0 +1,10 @@
+function xyz(name, items, ...rest) {
+    function iterateItems(items) {
+        for (let item of items) {
+            print(item)
+        }
+    }
+
+    iterateItems(items)
+}
+

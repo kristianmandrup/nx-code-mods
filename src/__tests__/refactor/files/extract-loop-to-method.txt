@@ -1,0 +1,6 @@
+function xyz(name, items, ...rest) {
+    for (let item of items) {
+        print(item)
+    }
+}
+

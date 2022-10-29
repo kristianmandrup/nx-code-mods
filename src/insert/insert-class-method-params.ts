@@ -1,14 +1,9 @@
-import { findParameter } from './../find/find';
 import { CollectionInsert, insertIntoNode } from './positional';
 import {
-  findFirstParameter,
-  findLastParameter,
   findClassDeclaration,
   findClassMethodDeclaration,
-  findFirstParamPos,
-  findLastParamPos,
   findParameterBounds,
-  findMatchingDecoratorForNode,
+  findParameter,
 } from '../find';
 import { replaceInFile, AnyOpts, modifyTree, replaceInSource } from '../modify';
 import { Node, SourceFile } from 'typescript';

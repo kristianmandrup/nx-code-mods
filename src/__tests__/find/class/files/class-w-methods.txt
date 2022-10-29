@@ -1,0 +1,14 @@
+export class myClass {
+    meth1(req: Request, body: string): string {
+        console.log('hello')
+    }
+
+    meth2(body: string): string {
+        console.log('hello 2')
+    }
+
+    meth3(req: Request, body: string): string {
+        console.log('hello 3')
+    }
+
+}

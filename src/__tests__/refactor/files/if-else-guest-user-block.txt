@@ -1,0 +1,9 @@
+function xyz() {
+  if (user.type === 'admin') {
+      setAdmin(user, ctx);
+  } else {
+      let ctx = user.ctx;
+      let v = 2;
+      setGuest(user, ctx);
+  }
+}

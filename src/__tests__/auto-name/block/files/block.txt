@@ -1,0 +1,4 @@
+function xyz() {
+    let ctx = user.ctx;
+    setAdmin(user, ctx);
+}

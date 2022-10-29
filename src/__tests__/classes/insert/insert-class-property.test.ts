@@ -77,7 +77,6 @@ describe('insert class property', () => {
       });
       const modifiedCode = code ? code : '';
       const origCode = 'const x = 2;';
-      // console.log({ modifiedCode });
       expect(modifiedCode.includes(origCode)).toBeTruthy();
       // TODO: fix to make correct
       // const str = `${escapeRegExp(insertCode)}\\s*;\\s*propA`;

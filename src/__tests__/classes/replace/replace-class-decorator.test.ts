@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { replaceClassDecoratorInFile } from '../../..';
-import { escapeRegExp } from '../../../utils';
+// import { escapeRegExp } from '../../../utils';
 
 const context = describe;
 

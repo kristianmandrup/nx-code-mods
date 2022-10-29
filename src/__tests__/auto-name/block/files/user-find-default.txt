@@ -1,0 +1,10 @@
+function xyz() {
+  let users = [
+    {
+      type: 'admin',
+    },
+  ];
+  let user = users.find((user) => user.type === 'admin');
+  user = user || defaultUser;
+  return user;
+}

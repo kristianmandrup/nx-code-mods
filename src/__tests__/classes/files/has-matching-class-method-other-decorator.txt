@@ -3,6 +3,6 @@ const x = 2;
 class myClass {  
     @Get  
     myMethod(@Body body: string): string {
-        console.log('hello)
+        console.log('hello')
     }
 }

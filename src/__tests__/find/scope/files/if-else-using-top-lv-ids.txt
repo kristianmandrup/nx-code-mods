@@ -1,0 +1,18 @@
+const setAdmin = (user, ctx) => {
+  user.admin = ctx.isAdmin;
+};
+
+function setGuest(user) {
+  user.guest = true;
+}
+
+function xyz() {
+  let user;
+  if (user.type === 'admin') {
+    let ctx = user.ctx;
+    let v = 2;
+    setAdmin(user, ctx);
+  } else {
+    setGuest(user);
+  }
+}

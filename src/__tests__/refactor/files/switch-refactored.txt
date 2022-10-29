@@ -1,0 +1,19 @@
+function xyz() {
+    function caseA(type) {
+        if (!(type === 'a)) return
+        print('a)
+        return true
+    }
+
+    function caseB(type) {
+        if (!(type === 'b)) return
+        print('b)
+        return true
+    }
+
+    function caseDefault(type) {
+        return 0
+    }
+
+    caseA(type) || caseB(type) || caseDefault(type)
+}

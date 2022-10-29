@@ -1,0 +1,12 @@
+import { setAdmin } from 'admin';
+import { setGuest } from 'guest';
+
+function xyz() {
+  if (user.type === 'admin') {
+    let ctx = user.ctx;
+    let v = 2;
+    setAdmin(user, ctx);
+  } else {
+    setGuest(user);
+  }
+}

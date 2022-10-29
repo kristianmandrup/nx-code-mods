@@ -46,7 +46,6 @@ const aroundElementPos = (
   pos: number,
   relativePos: InsertRelativePos,
 ) => {
-  // console.log('custom aroundElementPos', pos);
   const element = elements[pos];
   // const maxIndex = elements.length - 1
   // const nextElement = (pos < elements.length - 1) ? elements[pos + 1] : elements[maxIndex]

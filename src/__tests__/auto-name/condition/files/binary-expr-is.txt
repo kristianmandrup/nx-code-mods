@@ -1,0 +1,4 @@
+function xyz() {
+  if (user.type === 'admin') {
+  }
+}

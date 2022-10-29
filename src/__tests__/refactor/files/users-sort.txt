@@ -1,0 +1,9 @@
+function xyz() {
+  let users = [
+    {
+      level: 1,
+      type: 'admin',
+    },
+  ];
+  return users.sort((userA, userB) => userA.level - userB.level);
+}
