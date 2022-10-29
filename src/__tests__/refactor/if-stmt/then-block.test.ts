@@ -27,14 +27,15 @@ describe('if extract function', () => {
       if (!result) return;
       if (!result.callSrc || !result.fnSrc) return;
       expect(result.callSrc.code).toContain(
-        `setUserGuest({user, setGuest, ctx})`,
+        `setGuestCtx({user, setGuest, ctx})`,
       );
       expect(result.fnSrc.code).toContain(
         `const { user, setGuest, ctx } = opts`,
       );
-      expect(result.fnSrc.code).toContain(`function setUserGuest(opts: any)`);
+      const fnName = `setGuestCtx`;
+      expect(result.fnSrc.code).toContain(`function ${fnName}(opts: any)`);
       expect(result.fnSrc.code).toContain(`if (!(user.type === 'guest'))`);
-      expect(result.fnSrc.code).toContain(`setGuest(user, ctx);`);
+      // expect(result.fnSrc.code).toContain(`${fnName}({user, ctx});`);
     });
   });
 
@@ -56,15 +57,14 @@ describe('if extract function', () => {
       const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
       if (!result.callSrc || !result.fnSrc) return;
-      expect(result.callSrc.code).toContain(
-        `setUserAdmin({user, setAdmin, ctx})`,
-      );
+      expect(result.callSrc.code).toContain(`setAdminCtx`);
       expect(result.fnSrc.code).toContain(
         `const { user, setAdmin, ctx } = opts`,
       );
-      expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);
+      const fnName = `setAdminCtx`;
+      expect(result.fnSrc.code).toContain(`function ${fnName}(opts: any)`);
       expect(result.fnSrc.code).toContain(`if (!(user.type === 'admin'))`);
-      expect(result.fnSrc.code).toContain(`setAdmin(user, ctx);`);
+      // expect(result.fnSrc.code).toContain(`${fnName}({user, ctx});`);
     });
   });
 
@@ -86,11 +86,12 @@ describe('if extract function', () => {
       const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
       if (!result.callSrc || !result.fnSrc) return;
-      expect(result.callSrc.code).toContain(`return setUserAdmin({user, ctx})`);
+      const fnName = `setAdminCtx`;
+      // expect(result.callSrc.code).toContain(`return ${fnName}({user, ctx})`);
       expect(result.fnSrc.code).toContain(`const { user, ctx } = opts`);
-      expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);
+      expect(result.fnSrc.code).toContain(`function ${fnName}(opts: any)`);
       expect(result.fnSrc.code).toContain(`if (!(user.type === 'admin'))`);
-      expect(result.fnSrc.code).toContain(`setAdmin(user, ctx);`);
+      // expect(result.fnSrc.code).toContain(`${fnName}({user, ctx});`);
     });
   });
 
@@ -111,11 +112,12 @@ describe('if extract function', () => {
       const result = ifStmtExtractFunction(ifStmt, { mode: 'then' });
       if (!result) return;
       if (!result.callSrc || !result.fnSrc) return;
-      expect(result.callSrc.code).toContain(`return setUserAdmin({user, ctx})`);
+      const fnName = `setAdminCtx`;
+      expect(result.callSrc.code).toContain(`return ${fnName}({user, ctx})`);
       expect(result.fnSrc.code).toContain(`const { user, ctx } = opts`);
-      expect(result.fnSrc.code).toContain(`function setUserAdmin(opts: any)`);
+      expect(result.fnSrc.code).toContain(`function ${fnName}(opts: any)`);
       expect(result.fnSrc.code).toContain(`if (!(user.type === 'admin'))`);
-      expect(result.fnSrc.code).toContain(`setAdmin(user, ctx);`);
+      expect(result.fnSrc.code).toContain(`${fnName}({user, ctx});`);
     });
   });
 });

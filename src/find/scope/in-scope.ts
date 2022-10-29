@@ -47,6 +47,7 @@ export const isIfStatement = (node: Node) =>
 
 export const isScopeBlock = (node: Node) => {
   const parent = node.parent;
+  if (!parent) return;
   return (
     isWhileStatement(parent) ||
     isForStatement(parent) ||
@@ -90,6 +91,7 @@ export const findLocalIdentifiersWithinScopePath = (
     if (node.kind === SyntaxKind.Block) {
       recentBlock = node as Block;
     }
+    if (!node) continue;
     if (isScopeBlock(node)) {
       // add special ids
       addIds(findForStmtDeclIds(node));

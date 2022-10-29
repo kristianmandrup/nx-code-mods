@@ -20,12 +20,12 @@ describe('extract method', () => {
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const code = extractMethods(srcNode, block);
-      expect(code).toContain(`function namePrint({name, print})`);
+      expect(code).toContain(`function name({name, print})`);
       expect(code).toContain(`function printItem({items, print, item})`);
-      expect(code).toContain(`function pushRest({items})`);
-      expect(code).toContain(`namePrint({name, print})`);
+      expect(code).toContain(`function pushItems({items})`);
+      expect(code).toContain(`name({name, print})`);
       expect(code).toContain(`printItem({items, print, item})`);
-      expect(code).toContain(`pushRest({items})`);
+      expect(code).toContain(`pushItems({items})`);
     });
   });
 });

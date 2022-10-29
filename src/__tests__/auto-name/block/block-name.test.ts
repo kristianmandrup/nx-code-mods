@@ -19,7 +19,7 @@ describe('block name', () => {
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
-      expect(name).toEqual('findAdminType');
+      expect(name).toEqual('findTypeUsers');
     });
   });
 
@@ -34,7 +34,7 @@ describe('block name', () => {
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
-      expect(name).toEqual('findTypeUser');
+      expect(name).toEqual('findUsers');
     });
   });
 
@@ -45,7 +45,7 @@ describe('block name', () => {
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
-      expect(name).toEqual('findTypeUser');
+      expect(name).toEqual('findUsers');
     });
   });
 
@@ -56,7 +56,7 @@ describe('block name', () => {
       const srcNode = tsquery.ast(content);
       const block = findFunctionBlock(srcNode, 'xyz') as Block;
       const name = blockName(block);
-      expect(name).toEqual('sortLevelUser');
+      expect(name).toEqual('sortUsers');
     });
   });
 });

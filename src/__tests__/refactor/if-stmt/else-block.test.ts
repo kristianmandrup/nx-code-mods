@@ -67,15 +67,14 @@ describe('if else block extract function', () => {
       const result = ifStmtExtractFunction(ifStmt, { mode: 'else' });
       if (!result) return;
       if (!result.callSrc || !result.fnSrc) return;
-      expect(result.callSrc.code).toContain(
-        `setUserGuest({user, setGuest, ctx})`,
-      );
+      expect(result.callSrc.code).toContain(`setGuestCtx`);
       expect(result.fnSrc.code).toContain(
         `const { user, setGuest, ctx } = opts`,
       );
-      expect(result.fnSrc.code).toContain(`function setUserGuest(opts: any)`);
+      const fnName = `setGuestCtx`;
+      expect(result.fnSrc.code).toContain(`function ${fnName}(opts: any)`);
       expect(result.fnSrc.code).toContain(`if (user.type === 'admin')`);
-      expect(result.fnSrc.code).toContain(`setGuest(user, ctx);`);
+      // expect(result.fnSrc.code).toContain(`${fnName}({user, ctx});`);
     });
   });
 });

@@ -38,7 +38,7 @@ describe('if statement', () => {
         const newBlock = findFunctionBlock(newSrcNode, 'xyz') as Block;
         const blockCode = newBlock.getFullText();
         strNotContains(blockCode, 'user.type');
-        strContains(blockCode, `return setUserGuest({user, setGuest, ctx})`);
+        strContains(blockCode, `return setGuestCtx({user, setGuest, ctx})`);
       });
     });
 
@@ -50,7 +50,7 @@ describe('if statement', () => {
         const newBlock = findFunctionBlock(newSrcNode, 'xyz') as Block;
         const blockCode = newBlock.getFullText();
         strNotContains(blockCode, 'user.type');
-        strContains(blockCode, `return setUserGuest({user, setGuest, ctx})`);
+        strContains(blockCode, `setGuestCtx({user, setGuest, ctx})`);
       });
     });
 

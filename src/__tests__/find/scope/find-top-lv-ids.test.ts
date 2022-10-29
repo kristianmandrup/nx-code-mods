@@ -2,6 +2,7 @@ import { idToStr, findTopLevelIdentifiers } from '../../../find';
 import { readFileIfExisting } from '@nrwl/workspace/src/core/file-utils';
 import * as path from 'path';
 import { tsquery } from '@phenomnomnominal/tsquery';
+import { arrayContains } from '../../utils';
 
 const context = describe;
 
@@ -13,7 +14,7 @@ describe('find id declarations in top lv scope of file', () => {
       const srcNode = tsquery.ast(content);
       const result = findTopLevelIdentifiers(srcNode);
       const ids = result.map(idToStr);
-      expect(ids).toContain(['xyc']);
+      arrayContains(ids, ['xyz']);
     });
   });
 });

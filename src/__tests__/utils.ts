@@ -6,3 +6,9 @@ export const strNotContains = (str: string, notExpected: string) =>
 
 export const strContains = (str: string, expected: string) =>
   expect(str).toEqual(expect.stringContaining(expected));
+
+describe('utils', () => {
+  it('works', () => {
+    expect(true).toBe(true);
+  });
+});
